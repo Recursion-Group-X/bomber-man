@@ -7,9 +7,6 @@ import StageList from './pages/StageList';
 const App: React.FC = () => {
   return (
     <>
-      <div className="">
-        My App
-      </div>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
