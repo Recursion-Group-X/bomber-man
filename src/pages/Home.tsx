@@ -1,10 +1,21 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Home: React.FC = () => {
+  const navigate = useNavigate()
+  const chooseStage = (): void => {
+    navigate('/stage-list')
+  }
+  const startGame = (): void => {
+    navigate('/game')
+  }
+
+
   return (
     <div className='h-screen text-xl'>
       <div className='h-20 bg-slate-600 flex items-center justify-center'>
-        <p className='text-center text-lg text-white'>Bomb Game</p>
+        <p className='text-center text-2xl text-white'>Bomb Game</p>
+        <button className='text-white right-10 absolute p-3'>Login</button>
       </div>
       <div className='w-2/3 mx-auto'>
 
@@ -29,7 +40,7 @@ const Home: React.FC = () => {
 
           <div className='flex justify-center mt-10 items-center'>
             <span className='mr-10'>Stage: </span>
-            <button className='border border-2 border-slate-400 p-2'>StageName</button>
+            <button className='border border-2 border-slate-400 p-2' onClick={chooseStage}>StageName</button>
           </div>
           <div className='flex mt-10 justify-center'>
             <div className='flex justify-center flex-col mx-10'>
@@ -37,7 +48,7 @@ const Home: React.FC = () => {
               <p className='text-center'>Avatar</p>
             </div>
             <div className='flex justify-center items-center mx-10'>
-              <button className='p-3 text-2xl border w-32 h-20 bg-green-600 border-4 rounded'>Play</button>
+              <button className='p-3 text-2xl border w-32 h-20 bg-green-600 border-4 rounded' onClick={startGame}>Play</button>
             </div>
           </div>
 
