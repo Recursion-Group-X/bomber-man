@@ -1,30 +1,31 @@
 import playerImg from '../assets/player.png'
+
 export class Player {
-    name
-    x
-    y
-    width
-    height
-    direction
-    isMoving
+
+    name: string
+    x: number
+    y: number
+    width: number
+    height: number
+    direction: string
+    step: number
+    items: Object[] = []
+
+    canvasSize: number = 500
+    numOfBox: number = 15
+    boxSize: number = this.canvasSize / this.numOfBox
     constructor(
         name: string,
-        x: number,
-        y: number,
-        width: number,
-        height: number,
     )
     {
         this.name = name;
-        this.x = x;
-        this.y = y;
-        this.width = width
-        this.height = height
+        this.x = 0
+        this.y = 0
+        this.width = 32
+        this.height = 32
         this.direction = ''
-        this.isMoving = false
+        this.step = 5
     }
-    
-    
 
     getName(): string {
         return this.name
@@ -44,7 +45,7 @@ export class Player {
     }
 
     clear(canvas: CanvasRenderingContext2D | null | undefined): void{
-        canvas?.clearRect(0, 0, 500, 500);
+        canvas?.clearRect(0, 0, this.canvasSize, this.canvasSize);
     }
 
     stopPlayer(e: any): void{
@@ -69,11 +70,51 @@ export class Player {
         }
     }
 
-    move(canvas: CanvasRenderingContext2D | null | undefined): void{
-        if(this.direction === 'up') this.y -= 5
-        else if(this.direction === 'down') this.y += 5
-        else if(this.direction === 'right') this.x += 5
-        else if(this.direction === 'left') this.x -= 5
+    move(canvas: CanvasRenderingContext2D | null | undefined, currentStage: number[][]): void{
+        const centerX = this.x + this.width / 2
+        const centerY = this.y + this.height / 2
+        const i: number = this.getIndex(centerY)
+        const j: number = this.getIndex(centerX)
+
+        if(this.direction === 'up'){
+            this.verticalMove(j, centerY, -1, currentStage)
+        }
+        else if(this.direction === 'down'){
+            this.verticalMove(j, centerY, 1, currentStage)
+        }
+        else if(this.direction === 'left'){
+            this.horizontalMove(i, centerX, -1, currentStage)
+        }
+        else if(this.direction === 'right'){
+            this.horizontalMove(i, centerX, 1, currentStage)
+        }
         this.draw(canvas)
     }
+
+    getIndex(position: number): number{
+        return Math.floor(position / this.boxSize)
+    }
+
+    horizontalMove(i: number, centerX: number, direction: number, currentStage: number[][]): void{
+        const nextX = centerX + this.step * direction
+        const nextIndexJ = this.getIndex(nextX)
+        let bound = this.x + this.step * direction
+        if(direction >= 0) bound += this.width
+        if(this.getIndex(bound) < 0 || this.getIndex(bound) > this.numOfBox - 1) return
+        if(currentStage[i][nextIndexJ] !== 0 || currentStage[i][this.getIndex(bound)] !== 0) return
+        this.y = i * this.boxSize
+        this.x += this.step * direction
+    }
+
+    verticalMove(j: number, centerY: number, direction: number, currentStage: number[][]): void {
+        const nextY = centerY + this.step * direction
+        const nextIndexI = this.getIndex(nextY)
+        let bound = this.y + this.step * direction
+        if(direction >= 0) bound += this.height
+        if(this.getIndex(bound) < 0 || this.getIndex(bound) > this.numOfBox - 1) return
+        if(currentStage[nextIndexI][j] !== 0 || currentStage[this.getIndex(bound)][j] !== 0) return
+        this.x = j * this.boxSize
+        this.y += this.step * direction
+    }
+    
 }
