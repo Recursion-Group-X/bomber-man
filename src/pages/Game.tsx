@@ -7,11 +7,11 @@ import stoneImg from '../assets/stone.png'
 import wallImg from '../assets/wall.png'
 import horizontalFireImg from '../assets/fire-h.png'
 import verticalFireImg from '../assets/fire-v.png'
-import fireOriginImg from '../assets/fire-origin.png'
+import fireOriginImg from '../assets/fire-o.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
 
 const Game: React.FC = () => {
-  const [currentStage, setCurrentStage] = useAtom(currentStageAtom)
+  const [currentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [player] = useAtom(playerAtom)
@@ -60,8 +60,10 @@ const Game: React.FC = () => {
   }
 
   const showResult = (): void => {
-    player.isAlive = true
-    navigate('/result')
+    setTimeout(() => {
+      navigate('/result')
+    }, 1000)
+    
   }
 
   return (
@@ -84,6 +86,7 @@ const Game: React.FC = () => {
               {row.map(box => 
                 <>
                 {
+                // grass:0, player:10,  bomb:3
                  box === 0 || box === 10 || box === 3 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
                  box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
                  box === 2 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>:
