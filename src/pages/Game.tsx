@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai'
+import useInterval from 'use-interval';
 import React, { useEffect, useRef, useState } from 'react'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
@@ -6,10 +7,11 @@ import wallImg from '../assets/wall.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
 
 const Game: React.FC = () => {
-  const [currentStage] = useAtom(currentStageAtom)
+  const [currentStage, setCurrentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [player] = useAtom(playerAtom)
+  const [gameTime, setGameTime] = useState<number>(0)
  
   useEffect(() => {
     if(gameCanvasRef != null){
@@ -18,23 +20,25 @@ const Game: React.FC = () => {
       player.draw(canvasContext)
     }
     addKeyEvents()
-
-    // 0.05秒ごとに状態を更新する // このインターバルでエネミーも移動させる
-    const intervalId = setInterval(() => {
-      // インターバルで方向に基づいて移動する
-      player?.move(canvasContext, currentStage)
-      player?.drawBombs(canvasContext)
-    }, 50);
-    return () => {
-      clearInterval(intervalId);
-    };
+    return () => removeKeyEvents()
+    
+    
   },[canvasContext])
 
-  const addKeyEvents = (): void => {
-    removeEventListener('keydown', playerAction)
-    removeEventListener('keyup', stopPlayer)
+  useInterval(() => {
+    setGameTime(gameTime + 0.05)
+    player?.move(canvasContext, currentStage)
+    player?.drawBombs(canvasContext)
+  }, 50)
+
+  const addKeyEvents = (): void => { 
     addEventListener('keydown', playerAction)
     addEventListener('keyup', stopPlayer)
+  }
+
+  const removeKeyEvents = (): void => {
+    removeEventListener('keydown', playerAction)
+    removeEventListener('keyup', stopPlayer)
   }
 
 
@@ -62,15 +66,15 @@ const Game: React.FC = () => {
         </div>
       </div>
 
-      <div className=' mx-auto bg-white mt-12 flex' style={{height: '500px', width: '500px'}}>
+      <div className=' mx-auto bg-white mt-12 flex' style={{height: '510px', width: '510px'}}>
         <table className='h-full w-full'>
           {currentStage.map(row => 
             <tr className={`h-1/${currentStage.length} w-full`} key={row[0]}>
               {row.map(box => 
                 <>
-                {box === 0 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
-                 box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
-                             <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>
+                {box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
+                 box === 2 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>:
+                              <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>
                 }
                 </>
               )}
