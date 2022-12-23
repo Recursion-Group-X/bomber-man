@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import useInterval from 'use-interval';
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
 import wallImg from '../assets/wall.png'
@@ -15,6 +16,7 @@ const Game: React.FC = () => {
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [player] = useAtom(playerAtom)
   const [gameTime, setGameTime] = useState<number>(0)
+  const navigate = useNavigate()
  
   useEffect(() => {
     if(gameCanvasRef != null){
@@ -32,6 +34,7 @@ const Game: React.FC = () => {
     setGameTime(gameTime + 0.05)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
+    if(!player?.isAlive) showResult()
   }, 50)
 
   const addKeyEvents = (): void => { 
@@ -54,6 +57,11 @@ const Game: React.FC = () => {
   // プレイヤーの移動を止める
   const stopPlayer = (e: any): void => {
     player?.stopPlayer(e)
+  }
+
+  const showResult = (): void => {
+    player.isAlive = true
+    navigate('/result')
   }
 
   return (
