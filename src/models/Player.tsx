@@ -11,18 +11,19 @@ export class Player {
     step: number
     items: Object[] = []
     bombs: number[][] = []
-    numOfBombs: number = 1
+    numOfBombs: number = 3
+    bombPower: number = 3
 
-    canvasSize: number = 500
-    numOfBox: number = 15
+    canvasSize: number = 510
+    numOfBox: number = 17
     boxSize: number = this.canvasSize / this.numOfBox
     constructor(
         name: string,
     )
     {
         this.name = name;
-        this.x = 0
-        this.y = 0
+        this.x = this.boxSize
+        this.y = this.boxSize
         this.width = 32
         this.height = 32
         this.direction = ''
@@ -34,7 +35,6 @@ export class Player {
     }
 
     draw(canvas: CanvasRenderingContext2D | null | undefined): void {
-        canvas?.save()
         this.clear(canvas)
         const img = document.createElement('img')
         img.src = playerImg
@@ -45,13 +45,11 @@ export class Player {
             this.width,
             this.height
         );
-        canvas?.restore()
     }
 
     drawBombs(canvas: CanvasRenderingContext2D | null | undefined): void{
         for(let i = 0; i < this.bombs.length; i++){
             const bomb : number[] = this.bombs[i]
-            canvas?.save()
             const img = document.createElement('img')
             img.src = bombImg
             canvas?.drawImage(
@@ -60,8 +58,7 @@ export class Player {
                 bomb[0] * this.boxSize,
                 this.width,
                 this.height
-            );
-            canvas?.restore()
+            )
         }
         
     }
@@ -154,13 +151,41 @@ export class Player {
         if(e.key === ' '){
             const i: number = this.getIndex(this.y + this.height / 2)
             const j: number = this.getIndex(this.x + this.width / 2)
-            if(this.numOfBombs > this.bombs.length){
+            if(this.bombs.length < this.numOfBombs * 2){
                 this.bombs.push([i, j])
                 setTimeout(() => {
                     this.bombs.splice(0, 1)
                     currentStage[i][j] = 0
+                    this.explodeBomb(i, j, currentStage)
                 }, 3000);
                 currentStage[i][j] = 3
+            }
+        }
+    }
+
+    explodeBomb(i: number, j: number, currentStage: number[][]): void{
+        for(let k:number = 1; k < this.bombPower + 1; k++){
+            if(currentStage[i+k][j] === 1){
+                currentStage[i+k][j] = 0
+                break
+            }
+        }
+        for(let k:number = 1; k < this.bombPower + 1; k++){
+            if(currentStage[i-k][j] === 1){
+                currentStage[i-k][j] = 0
+                break
+            }
+        }
+        for(let k:number = 1; k < this.bombPower + 1; k++){
+            if(currentStage[i][j+k] === 1){
+                currentStage[i][j+k] = 0
+                break
+            }
+        }
+        for(let k:number = 1; k < this.bombPower + 1; k++){
+            if(currentStage[i][j-k] === 1){
+                currentStage[i][j-k] = 0
+                break
             }
         }
     }
