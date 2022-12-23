@@ -13,6 +13,7 @@ export class Player {
     bombs: number[][] = []
     numOfBombs: number = 3
     bombPower: number = 3
+    isAlive: boolean = true
 
     canvasSize: number = 510
     numOfBox: number = 17
@@ -94,6 +95,10 @@ export class Player {
         const centerY = this.y + this.height / 2
         const i: number = this.getIndex(centerY)
         const j: number = this.getIndex(centerX)
+        if(currentStage[i][j] >= 4 || currentStage[i][j] >= 4){
+            this.isAlive = false
+            return
+        }
 
         if(this.direction === 'up'){
             this.verticalMove(j, centerY, -1, currentStage)
@@ -125,6 +130,12 @@ export class Player {
         let bound = this.x + this.step * direction
         if(direction >= 0) bound += this.width
         if(this.getIndex(bound) < 0 || this.getIndex(bound) > this.numOfBox - 1) return
+        if(currentStage[i][nextIndexJ] >= 4 || currentStage[i][this.getIndex(bound)] >= 4){
+            this.isAlive = false
+            this.y = i * this.boxSize
+            this.x += this.step * direction
+            return
+        }
         if(currentStage[i][nextIndexJ] !== 0 || currentStage[i][this.getIndex(bound)] !== 0) return
         this.y = i * this.boxSize
         this.x += this.step * direction
@@ -141,6 +152,12 @@ export class Player {
         let bound = this.y + this.step * direction
         if(direction >= 0) bound += this.height
         if(this.getIndex(bound) < 0 || this.getIndex(bound) > this.numOfBox - 1) return
+        if(currentStage[nextIndexI][j] >= 4 || currentStage[this.getIndex(bound)][j] >= 4){
+            this.isAlive = false
+            this.x = j * this.boxSize
+            this.y += this.step * direction
+            return
+        }
         if(currentStage[nextIndexI][j] !== 0 || currentStage[this.getIndex(bound)][j] !== 0) return
         this.x = j * this.boxSize
         this.y += this.step * direction
