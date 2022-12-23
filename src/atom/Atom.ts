@@ -1,26 +1,12 @@
 import { atom, PrimitiveAtom } from "jotai"
+import { config1 } from "../bombermanConfig"
 import { Player } from "../models/Player"
+import { Stage } from "../models/Stage"
 
 
 export const canvasRefAtom: any = atom(null)
-export const currentStageAtom: PrimitiveAtom<number[][]> = atom(
-    [
-        [0,0,1,0,0,1,1,0,1,0,0,0,0,0,0],
-        [0,2,1,2,0,2,0,2,0,2,0,2,0,2,0],
-        [0,0,0,1,0,1,0,0,0,0,0,0,0,0,0],
-        [1,2,0,2,0,2,0,2,0,2,0,2,0,2,0],
-        [0,0,0,0,0,0,1,1,0,1,0,0,0,0,0],
-        [1,2,0,2,0,2,0,2,0,2,1,2,1,2,0],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,2,0,2,0,2,0,2,0,2,0,2,1,2,0],
-        [0,1,1,0,1,0,1,0,0,0,0,0,1,0,0],
-        [0,2,0,2,0,2,0,2,0,2,0,2,0,2,0],
-        [0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],
-        [0,2,0,2,0,2,1,2,0,2,0,2,0,2,0],
-        [0,0,0,0,1,1,0,0,0,0,0,0,0,0,0],
-        [0,2,0,2,0,2,0,2,0,2,0,2,0,2,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  ]
-)
+const currentStage = new Stage(config1);
+currentStage.setBreakableBlock();
+export const currentStageAtom: PrimitiveAtom<number[][]> = atom(currentStage.getBoard());
 
 export const playerAtom = atom<Player>(new Player('player1'))
