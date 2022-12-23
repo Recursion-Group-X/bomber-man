@@ -11,8 +11,8 @@ export class Player {
     step: number
     items: Object[] = []
     bombs: number[][] = []
-    numOfBombs: number = 3
-    bombPower: number = 3
+    numOfBombs: number = 2
+    bombPower: number = 2
     isAlive: boolean = true
     stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13}
 
@@ -143,7 +143,7 @@ export class Player {
         if(e.key === ' '){
             const i: number = this.getIndex(this.y + this.height / 2)
             const j: number = this.getIndex(this.x + this.width / 2)
-            if(this.bombs.length < this.numOfBombs * 2){
+            if(this.bombs.length < this.numOfBombs){
                 this.bombs.push([i, j])
                 setTimeout(() => {
                     this.bombs.splice(0, 1)
@@ -157,6 +157,7 @@ export class Player {
 
     explodeBomb(i: number, j: number, currentStage: number[][]): void{
         currentStage[i][j] = this.stageMap.fireO
+        // 4方向の爆発を判定
         this.explodeDirection(i, j, 1, 0, 1, currentStage, this.stageMap.fireV)
         this.explodeDirection(i, j, 1, 0, -1, currentStage, this.stageMap.fireV)
         this.explodeDirection(i, j, 0, 1, 1, currentStage, this.stageMap.fireH)
@@ -168,12 +169,13 @@ export class Player {
 
     explodeDirection(i: number, j: number, izero: number, jzero: number, direction: number, currentStage: number[][], imgNum: number): void{
         for(let k:number = 1; k < this.bombPower + 1; k++){
-            if(currentStage[i+k * direction * izero][j+k*direction* jzero] ===  this.stageMap.wall){
+            const pos = currentStage[i+k*direction*izero][j+k*direction*jzero]
+            if(pos === this.stageMap.wall){
                 break
-            } else if(currentStage[i+k*direction * izero][j+k*direction* jzero] === this.stageMap.stone){
-                currentStage[i+k * direction* izero][j+k*direction* jzero] = imgNum
+            } else if(pos === this.stageMap.stone){
+                currentStage[i+k*direction*izero][j+k*direction*jzero] = imgNum
                 break
-            } else if(currentStage[i+k*direction*izero][j+k*direction* jzero] === this.stageMap.grass){
+            } else if(pos === this.stageMap.grass || pos === this.stageMap.player){
                 currentStage[i+k * direction*izero][j+k*direction* jzero] = imgNum
             }
         }
