@@ -17,26 +17,31 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
     }
-    
-    removeEventListener('keydown', changePlayerDirection)
-    removeEventListener('keyup', stopPlayer)
-    addEventListener('keydown', changePlayerDirection)
-    addEventListener('keyup', stopPlayer)
+    addKeyEvents()
 
     // 0.05秒ごとに状態を更新する // このインターバルでエネミーも移動させる
     const intervalId = setInterval(() => {
       // インターバルで方向に基づいて移動する
       player?.move(canvasContext, currentStage)
+      player?.drawBombs(canvasContext)
     }, 50);
     return () => {
       clearInterval(intervalId);
     };
   },[canvasContext])
 
+  const addKeyEvents = (): void => {
+    removeEventListener('keydown', playerAction)
+    removeEventListener('keyup', stopPlayer)
+    addEventListener('keydown', playerAction)
+    addEventListener('keyup', stopPlayer)
+  }
+
 
   // Playerの移動方向を変える
-  const changePlayerDirection = (e: any): void => {
+  const playerAction = (e: any): void => {
     player?.changeDirection(e)
+    player?.putBomb(e, currentStage)
   }
 
   // プレイヤーの移動を止める
