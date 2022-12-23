@@ -95,7 +95,7 @@ export class Player {
         const centerY = this.y + this.height / 2
         const i: number = this.getIndex(centerY)
         const j: number = this.getIndex(centerX)
-        if(currentStage[i][j] >= 4 || currentStage[i][j] >= 4){
+        if(currentStage[i][j] > 10 || currentStage[i][j] > 10){
             this.isAlive = false
             return
         }
@@ -130,13 +130,17 @@ export class Player {
         let bound = this.x + this.step * direction
         if(direction >= 0) bound += this.width
         if(this.getIndex(bound) < 0 || this.getIndex(bound) > this.numOfBox - 1) return
-        if(currentStage[i][nextIndexJ] >= 4 || currentStage[i][this.getIndex(bound)] >= 4){
+        if(currentStage[i][nextIndexJ] > 10 || currentStage[i][this.getIndex(bound)] > 10){
             this.isAlive = false
             this.y = i * this.boxSize
             this.x += this.step * direction
             return
         }
-        if(currentStage[i][nextIndexJ] !== 0 || currentStage[i][this.getIndex(bound)] !== 0) return
+        if(currentStage[i][nextIndexJ] % 10 !== 0 || currentStage[i][this.getIndex(bound)] % 10 !== 0) return
+        if(nextIndexJ !== this.getIndex(centerX)){
+            currentStage[i][this.getIndex(centerX)] = 0
+            currentStage[i][nextIndexJ] = 10
+        }
         this.y = i * this.boxSize
         this.x += this.step * direction
     }
@@ -152,13 +156,18 @@ export class Player {
         let bound = this.y + this.step * direction
         if(direction >= 0) bound += this.height
         if(this.getIndex(bound) < 0 || this.getIndex(bound) > this.numOfBox - 1) return
-        if(currentStage[nextIndexI][j] >= 4 || currentStage[this.getIndex(bound)][j] >= 4){
+        if(currentStage[nextIndexI][j] > 10 || currentStage[this.getIndex(bound)][j] > 10){
             this.isAlive = false
             this.x = j * this.boxSize
             this.y += this.step * direction
             return
         }
-        if(currentStage[nextIndexI][j] !== 0 || currentStage[this.getIndex(bound)][j] !== 0) return
+        if(currentStage[nextIndexI][j] % 10 !== 0 || currentStage[this.getIndex(bound)][j] % 10 !== 0) return
+        if(nextIndexI !== this.getIndex(centerY)){
+            currentStage[this.getIndex(centerY)][j] = 0
+            currentStage[nextIndexI][j] = 10
+            console.log(currentStage)
+        }
         this.x = j * this.boxSize
         this.y += this.step * direction
     }
@@ -181,11 +190,11 @@ export class Player {
     }
 
     explodeBomb(i: number, j: number, currentStage: number[][]): void{
-        currentStage[i][j] = 6
-        this.explodeDirection(i, j, 1, 0, 1, currentStage, 5)
-        this.explodeDirection(i, j, 1, 0, -1, currentStage, 5)
-        this.explodeDirection(i, j, 0, 1, 1, currentStage, 4)
-        this.explodeDirection(i, j, 0, 1, -1, currentStage, 4)
+        currentStage[i][j] = 13
+        this.explodeDirection(i, j, 1, 0, 1, currentStage, 12)
+        this.explodeDirection(i, j, 1, 0, -1, currentStage, 12)
+        this.explodeDirection(i, j, 0, 1, 1, currentStage, 11)
+        this.explodeDirection(i, j, 0, 1, -1, currentStage, 11)
         setTimeout(() => {
             this.removeFire(currentStage)
         }, 1000);
@@ -208,7 +217,7 @@ export class Player {
         for(let i = 0; i < currentStage.length; i++){
             for(let j = 0; j < currentStage[i].length; j++){
                 const f = currentStage[i][j]
-                if(f === 4 || f === 5 || f === 6){
+                if(f > 10){
                     currentStage[i][j] = 0
                 }
             }

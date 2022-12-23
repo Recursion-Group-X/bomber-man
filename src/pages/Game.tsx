@@ -84,13 +84,12 @@ const Game: React.FC = () => {
               {row.map(box => 
                 <>
                 {
-                 box === 0 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
+                 box === 0 || box === 10 || box === 3 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
                  box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
                  box === 2 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>:
-                 box === 3 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
-                 box === 4 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${horizontalFireImg})`}}></td>:
-                 box === 5 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${verticalFireImg})`}}></td>:
-                 box === 6 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>: null
+                 box === 11 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${horizontalFireImg})`}}></td>:
+                 box === 12 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${verticalFireImg})`}}></td>:
+                 box === 13 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>: null
                 }
                 </>
               )}
