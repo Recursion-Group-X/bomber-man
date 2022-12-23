@@ -11,6 +11,7 @@ export class Player {
     step: number
     items: Object[] = []
     bombs: number[][] = []
+    numOfBombs: number = 1
 
     canvasSize: number = 500
     numOfBox: number = 15
@@ -153,12 +154,14 @@ export class Player {
         if(e.key === ' '){
             const i: number = this.getIndex(this.y + this.height / 2)
             const j: number = this.getIndex(this.x + this.width / 2)
-            this.bombs.push([i, j])
-            setTimeout(() => {
-                this.bombs.splice(0, 1)
-                currentStage[i][j] = 0
-            }, 3000);
-            currentStage[i][j] = 3
+            if(this.numOfBombs > this.bombs.length){
+                this.bombs.push([i, j])
+                setTimeout(() => {
+                    this.bombs.splice(0, 1)
+                    currentStage[i][j] = 0
+                }, 3000);
+                currentStage[i][j] = 3
+            }
         }
     }
     
