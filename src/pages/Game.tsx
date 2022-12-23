@@ -4,6 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
 import wallImg from '../assets/wall.png'
+import horizontalFireImg from '../assets/fire-h.png'
+import verticalFireImg from '../assets/fire-v.png'
+import fireOriginImg from '../assets/fire-origin.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
 
 const Game: React.FC = () => {
@@ -72,9 +75,14 @@ const Game: React.FC = () => {
             <tr className={`h-1/${currentStage.length} w-full`} key={row[0]}>
               {row.map(box => 
                 <>
-                {box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
+                {
+                 box === 0 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
+                 box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
                  box === 2 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>:
-                              <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>
+                 box === 3 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
+                 box === 4 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${horizontalFireImg})`}}></td>:
+                 box === 5 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${verticalFireImg})`}}></td>:
+                 box === 6 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>: null
                 }
                 </>
               )}

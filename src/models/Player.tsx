@@ -164,28 +164,36 @@ export class Player {
     }
 
     explodeBomb(i: number, j: number, currentStage: number[][]): void{
+        currentStage[i][j] = 6
+        this.explodeDirection(i, j, 1, 0, 1, currentStage, 5)
+        this.explodeDirection(i, j, 1, 0, -1, currentStage, 5)
+        this.explodeDirection(i, j, 0, 1, 1, currentStage, 4)
+        this.explodeDirection(i, j, 0, 1, -1, currentStage, 4)
+        setTimeout(() => {
+            this.removeFire(currentStage)
+        }, 1000);
+    }
+
+    explodeDirection(i: number, j: number, izero: number, jzero: number, direction: number, currentStage: number[][], imgNum: number): void{
         for(let k:number = 1; k < this.bombPower + 1; k++){
-            if(currentStage[i+k][j] === 1){
-                currentStage[i+k][j] = 0
+            if(currentStage[i+k * direction * izero][j+k*direction* jzero] ===  2){
                 break
+            } else if(currentStage[i+k*direction * izero][j+k*direction* jzero] === 1){
+                currentStage[i+k * direction* izero][j+k*direction* jzero] = imgNum
+                break
+            } else if(currentStage[i+k*direction*izero][j+k*direction* jzero] === 0){
+                currentStage[i+k * direction*izero][j+k*direction* jzero] = imgNum
             }
         }
-        for(let k:number = 1; k < this.bombPower + 1; k++){
-            if(currentStage[i-k][j] === 1){
-                currentStage[i-k][j] = 0
-                break
-            }
-        }
-        for(let k:number = 1; k < this.bombPower + 1; k++){
-            if(currentStage[i][j+k] === 1){
-                currentStage[i][j+k] = 0
-                break
-            }
-        }
-        for(let k:number = 1; k < this.bombPower + 1; k++){
-            if(currentStage[i][j-k] === 1){
-                currentStage[i][j-k] = 0
-                break
+    }
+
+    removeFire(currentStage: number[][]): void{
+        for(let i = 0; i < currentStage.length; i++){
+            for(let j = 0; j < currentStage[i].length; j++){
+                const f = currentStage[i][j]
+                if(f === 4 || f === 5 || f === 6){
+                    currentStage[i][j] = 0
+                }
             }
         }
     }
