@@ -178,12 +178,8 @@ export class Player {
                 break
             } else if(pos === this.stageMap.stone){
                 this.breakStone(i+k*direction*izero, j+k*direction*jzero, imgNum, currentStage)
-                // if(Math.random() > 0.7){
-                //     currentStage[i+k*direction*izero][j+k*direction*jzero] = 21
-                // }
-                // else currentStage[i+k*direction*izero][j+k*direction*jzero] = imgNum
                 break
-            } else if(pos === this.stageMap.grass || pos === this.stageMap.player){
+            } else if(pos === this.stageMap.grass || pos === this.stageMap.player || pos >= this.stageMap.bombUp){
                 currentStage[i+k * direction*izero][j+k*direction* jzero] = imgNum
             }
         }
