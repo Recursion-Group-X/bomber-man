@@ -24,7 +24,11 @@ export class Stage {
         for(let i=0; i<this._y; i++){
             board[i] = [];
             for(let j=0; j<this._x; j++){
-                (i % 2 === 1) && (j % 2 === 1) ? board[i][j] = 2 : board[i][j] = 0;
+                if(i === 0 || i === this._y - 1 || j === 0 || j === this._x - 1 ){
+                    board[i][j] = 2
+                }else{
+                (i % 2 === 0) && (j % 2 === 0) ? board[i][j] = 2 : board[i][j] = 0;
+                }
             }
         }
         return board;
