@@ -1,8 +1,13 @@
 import { useAtom } from 'jotai'
+import useInterval from 'use-interval';
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
 import wallImg from '../assets/wall.png'
+import horizontalFireImg from '../assets/fire-h.png'
+import verticalFireImg from '../assets/fire-v.png'
+import fireOriginImg from '../assets/fire-o.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
 
 const Game: React.FC = () => {
@@ -10,6 +15,8 @@ const Game: React.FC = () => {
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [player] = useAtom(playerAtom)
+  const [gameTime, setGameTime] = useState<number>(0)
+  const navigate = useNavigate()
  
   useEffect(() => {
     if(gameCanvasRef != null){
@@ -17,31 +24,46 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
     }
+    addKeyEvents()
+    return () => removeKeyEvents()
     
-    removeEventListener('keydown', changePlayerDirection)
-    removeEventListener('keyup', stopPlayer)
-    addEventListener('keydown', changePlayerDirection)
-    addEventListener('keyup', stopPlayer)
-
-    // 0.05秒ごとに状態を更新する // このインターバルでエネミーも移動させる
-    const intervalId = setInterval(() => {
-      // インターバルで方向に基づいて移動する
-      player?.move(canvasContext, currentStage)
-    }, 50);
-    return () => {
-      clearInterval(intervalId);
-    };
+    
   },[canvasContext])
+
+  useInterval(() => {
+    setGameTime(gameTime + 0.05)
+    player?.move(canvasContext, currentStage)
+    player?.drawBombs(canvasContext)
+    if(!player?.isAlive) showResult()
+  }, 50)
+
+  const addKeyEvents = (): void => { 
+    addEventListener('keydown', playerAction)
+    addEventListener('keyup', stopPlayer)
+  }
+
+  const removeKeyEvents = (): void => {
+    removeEventListener('keydown', playerAction)
+    removeEventListener('keyup', stopPlayer)
+  }
 
 
   // Playerの移動方向を変える
-  const changePlayerDirection = (e: any): void => {
+  const playerAction = (e: any): void => {
     player?.changeDirection(e)
+    player?.putBomb(e, currentStage)
   }
 
   // プレイヤーの移動を止める
   const stopPlayer = (e: any): void => {
     player?.stopPlayer(e)
+  }
+
+  const showResult = (): void => {
+    setTimeout(() => {
+      navigate('/result')
+    }, 1000)
+    
   }
 
   return (
@@ -57,15 +79,20 @@ const Game: React.FC = () => {
         </div>
       </div>
 
-      <div className=' mx-auto bg-white mt-12 flex' style={{height: '500px', width: '500px'}}>
+      <div className=' mx-auto bg-white mt-12 flex' style={{height: '510px', width: '510px'}}>
         <table className='h-full w-full'>
           {currentStage.map(row => 
             <tr className={`h-1/${currentStage.length} w-full`} key={row[0]}>
               {row.map(box => 
                 <>
-                {box === 0 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
+                {
+                // grass:0, player:10,  bomb:3
+                 box === 0 || box === 10 || box === 3 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${grassImg})`}}></td>:
                  box === 1 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${stoneImg})`}}></td>:
-                             <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>
+                 box === 2 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>:
+                 box === 11 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${horizontalFireImg})`}}></td>:
+                 box === 12 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${verticalFireImg})`}}></td>:
+                 box === 13 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>: null
                 }
                 </>
               )}
