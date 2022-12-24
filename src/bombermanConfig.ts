@@ -6,12 +6,12 @@ export interface Config {
 }
   
 export const config1: Config = {
-    x: 15,
-    y: 15,
+    x: 17,
+    y: 17,
     breakableBlocks: 80,
     notPutArea: [
-      [0,0],
-      [0,1],
-      [1,0],
+      [2,2],
+      [1,2],
+      [2,1],
     ]
 }
