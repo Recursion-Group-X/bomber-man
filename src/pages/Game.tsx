@@ -8,6 +8,7 @@ import wallImg from '../assets/wall.png'
 import horizontalFireImg from '../assets/fire-h.png'
 import verticalFireImg from '../assets/fire-v.png'
 import fireOriginImg from '../assets/fire-o.png'
+import bombUpImg from '../assets/bomb-up.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
 
 const Game: React.FC = () => {
@@ -92,7 +93,8 @@ const Game: React.FC = () => {
                  box === 2 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${wallImg})`}}></td>:
                  box === 11 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${horizontalFireImg})`}}></td>:
                  box === 12 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${verticalFireImg})`}}></td>:
-                 box === 13 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>: null
+                 box === 13 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>:
+                 box === 21 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${bombUpImg})`}}></td>: null
                 }
                 </>
               )}
