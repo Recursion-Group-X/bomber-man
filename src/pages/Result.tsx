@@ -1,9 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import db from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const Result: React.FC = () => {
   const navigate = useNavigate()
-  const [players, setPlayers] = useState<string[]>(['player1', 'player2', 'player3', 'player4'])
+  const [players, setPlayers] = useState<any>([])
+
+  const recordsList: any = async () => {
+    const data = await collection(db, "records");
+    await getDocs(data).then((snapshot => {
+      setPlayers(snapshot.docs.map((doc) => (doc.data())))
+    }))
+  }
+  
+  useEffect(() => {
+    recordsList();
+  }, [])
 
   const navigateHome = (): void => {
     navigate('/')
@@ -20,16 +33,16 @@ const Result: React.FC = () => {
       </div>
       <div className='flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6'>
         <div className='w-1/3'>
-          {players.map(player => 
-            <div key={player}>
-              <p className='text-center my-4 text-2xl'>{player}</p>
+          {players.map((player: any) => 
+            <div key={player.id}>
+              <p className='text-center my-4 text-2xl'>{player.name}</p>
             </div>
           )}
         </div>
         <div className='w-2/3'>
-          {players.map((player, i) => 
+          {players.map((player: any) => 
             <div key={player}>
-              <p className='text-center my-4 text-2xl'>{i+1}. Time: {player}</p>
+              <p className='text-center my-4 text-2xl'>Time: {player.alivedTime}</p>
             </div>
           )}
         </div>

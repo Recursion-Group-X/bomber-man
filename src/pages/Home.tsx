@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import db from '../firebase';
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
@@ -9,7 +11,6 @@ const Home: React.FC = () => {
   const startGame = (): void => {
     navigate('/game')
   }
-
 
   return (
     <div className='h-screen text-xl'>
