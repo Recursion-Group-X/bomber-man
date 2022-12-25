@@ -68,7 +68,7 @@ const Game: React.FC = () => {
 
   const showResult = (): void => {
     setTimeout(() => {
-      navigate('/result')
+      navigate('/result', {state: getCurrntRecord()})
     }, 1000)
     gameRecordGateway.postGameRecord(getCurrntRecord());
   }
