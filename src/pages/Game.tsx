@@ -9,6 +9,8 @@ import horizontalFireImg from '../assets/fire-h.png'
 import verticalFireImg from '../assets/fire-v.png'
 import fireOriginImg from '../assets/fire-o.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
+import { GameRecordGateWay } from '../dataaccess/gameRecordGateway';
+import { GameRecord } from '../dataaccess/recordType';
 
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
@@ -17,6 +19,8 @@ const Game: React.FC = () => {
   const [player] = useAtom(playerAtom)
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
+  const [isAlive, setIsAlive] = useState(true);
+  const gameRecordGateway = new GameRecordGateWay();
  
   useEffect(() => {
     if(gameCanvasRef != null){
@@ -34,8 +38,11 @@ const Game: React.FC = () => {
     setGameTime(gameTime + 0.05)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
-    if(!player?.isAlive) showResult()
-  }, 50)
+    if(!player?.isAlive){
+      setIsAlive(false);
+      showResult();
+    }
+  }, isAlive ? 50 : null)
 
   const addKeyEvents = (): void => { 
     addEventListener('keydown', playerAction)
@@ -63,7 +70,16 @@ const Game: React.FC = () => {
     setTimeout(() => {
       navigate('/result')
     }, 1000)
-    
+    gameRecordGateway.postGameRecord(getCurrntRecord());
+  }
+
+  const getCurrntRecord = (): GameRecord => {
+    return {
+      name: player.name,
+      score: 100,
+      alivedTime: gameTime,
+      date: new Date()
+    }
   }
 
   return (
