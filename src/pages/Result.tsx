@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import db from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { GameRecordGateWay } from '../dataaccess/gameRecordGateway';
+import { GameRecord } from '../dataaccess/recordType';
 
 const Result: React.FC = () => {
   const navigate = useNavigate()
-  const [players, setPlayers] = useState<any>([])
-
-  const recordsList: any = async () => {
-    const data = await collection(db, "records");
-    await getDocs(data).then((snapshot => {
-      setPlayers(snapshot.docs.map((doc) => (doc.data())))
-    }))
-  }
+  const [recordList, setrecordList] = useState<GameRecord[]>()
+  const gameRecordGateway = new GameRecordGateWay();
   
   useEffect(() => {
-    recordsList();
+    (async() => {
+      return setrecordList(await gameRecordGateway.getGameRecord())
+    })().catch(() => alert("ERORR"));
   }, [])
 
   const navigateHome = (): void => {
@@ -33,16 +29,16 @@ const Result: React.FC = () => {
       </div>
       <div className='flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6'>
         <div className='w-1/3'>
-          {players.map((player: any) => 
-            <div key={player.id}>
-              <p className='text-center my-4 text-2xl'>{player.name}</p>
+          {recordList?.map((record: GameRecord) => 
+            <div key={record.alivedTime}>
+              <p className='text-center my-4 text-2xl'>{record.name}</p>
             </div>
           )}
         </div>
         <div className='w-2/3'>
-          {players.map((player: any) => 
-            <div key={player}>
-              <p className='text-center my-4 text-2xl'>Time: {player.alivedTime}</p>
+          {recordList?.map((record: GameRecord) => 
+            <div key={record.alivedTime}>
+              <p className='text-center my-4 text-2xl'>Time: {record.alivedTime}</p>
             </div>
           )}
         </div>

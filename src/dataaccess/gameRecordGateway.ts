@@ -1,5 +1,5 @@
 import db from "../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { GameRecord, recordConverter } from "./recordType";
 
 export class GameRecordGateWay {
@@ -10,5 +10,10 @@ export class GameRecordGateWay {
             alivedTime: record.alivedTime,
             date: record.date
         }).catch(()=>alert("ERROR"))
+    }
+
+    async getGameRecord(): Promise<GameRecord[]> {
+        const snapShot = await getDocs(collection(db, "records").withConverter(recordConverter))
+        return snapShot.docs.map((doc) => doc.data());
     }
 }
