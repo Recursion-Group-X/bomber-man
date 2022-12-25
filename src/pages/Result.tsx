@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway';
 import { GameRecord } from '../dataaccess/recordType';
 
 const Result: React.FC = () => {
   const navigate = useNavigate()
+  const { state } = useLocation()
   const [recordList, setrecordList] = useState<GameRecord[]>()
   const gameRecordGateway = new GameRecordGateWay();
   
@@ -42,6 +43,12 @@ const Result: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="text-center">
+        <p>{state.name} Result</p>
+        <p>score: {state.score}</p>
+        <p>alivedTime: {state.alivedTime}</p>
       </div>
       <div className='flex justify-end w-2/3 mx-auto'>
         <button className='m-4 border border-2 p-2' onClick={restartGame}>Restart</button>
