@@ -11,10 +11,10 @@ export class Player {
     step: number
     items: Object[] = []
     bombs: number[][] = []
-    numOfBombs: number = 2
-    bombPower: number = 2
+    numOfBombs: number = 1
+    bombPower: number = 1
     isAlive: boolean = true
-    stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13, bombUp: 21}
+    stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13, bombUp: 21, fireUp: 22, speedUp: 23}
 
     canvasSize: number = 510
     numOfBox: number = 17
@@ -29,7 +29,7 @@ export class Player {
         this.width = 32
         this.height = 32
         this.direction = ''
-        this.step = 5
+        this.step = 1
     }
 
     getName(): string {
@@ -268,16 +268,28 @@ export class Player {
         if(itemType === this.stageMap.bombUp){
             this.numOfBombs++
             this.items.push(this.stageMap.bombUp)
+        } else if(itemType === this.stageMap.fireUp){
+            this.bombPower++
+            this.items.push(this.stageMap.fireUp)
+        } else if(itemType === this.stageMap.speedUp){
+            this.step++
+            this.items.push(this.stageMap.speedUp)
         }
     }
 
     breakStone(i: number, j: number, fireNum: number, currentStage: number[][]): void{
         let random = Math.random()
-        if(random < 0.7){
+        if(random < 0.6){
             currentStage[i][j] = fireNum
         } else{
             random = Math.random()
-            currentStage[i][j] = this.stageMap.bombUp
+            if(random > 0.5){
+                currentStage[i][j] = this.stageMap.bombUp
+            } else if(random > 0.1){
+                currentStage[i][j] = this.stageMap.fireUp
+            } else{
+                currentStage[i][j] = this.stageMap.speedUp
+            }
         }
     }
 }

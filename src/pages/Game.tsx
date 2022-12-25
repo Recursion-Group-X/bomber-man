@@ -9,6 +9,8 @@ import horizontalFireImg from '../assets/fire-h.png'
 import verticalFireImg from '../assets/fire-v.png'
 import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
+import fireUpImg from '../assets/fire-up.png'
+import speedUpImg from '../assets/speed-up.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
 
 const Game: React.FC = () => {
@@ -32,11 +34,11 @@ const Game: React.FC = () => {
   },[canvasContext])
 
   useInterval(() => {
-    setGameTime(gameTime + 0.05)
+    setGameTime(gameTime + 0.01)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
     if(!player?.isAlive) showResult()
-  }, 50)
+  }, 10)
 
   const addKeyEvents = (): void => { 
     addEventListener('keydown', playerAction)
@@ -94,7 +96,9 @@ const Game: React.FC = () => {
                  box === 11 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${horizontalFireImg})`}}></td>:
                  box === 12 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${verticalFireImg})`}}></td>:
                  box === 13 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireOriginImg})`}}></td>:
-                 box === 21 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${bombUpImg})`}}></td>: null
+                 box === 21 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${bombUpImg})`}}></td>:
+                 box === 22 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${fireUpImg})`}}></td>:
+                 box === 23 ? <td className={`w-1/${row.length}`} key={box} style={{backgroundImage:`url(${speedUpImg})`}}></td>: null
                 }
                 </>
               )}
