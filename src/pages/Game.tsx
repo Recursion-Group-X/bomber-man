@@ -19,7 +19,6 @@ const Game: React.FC = () => {
   const [player] = useAtom(playerAtom)
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
-  const [isAlive, setIsAlive] = useState(true);
   const gameRecordGateway = new GameRecordGateWay();
  
   useEffect(() => {
@@ -38,11 +37,10 @@ const Game: React.FC = () => {
     setGameTime(gameTime + 0.05)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
-    if(!player?.isAlive){
-      setIsAlive(false);
-      showResult();
+    if(!player.isAlive){
+      showResult().catch(() => alert("kkkk"));
     }
-  }, isAlive ? 50 : null)
+  }, player.isAlive ? 50 : null)
 
   const addKeyEvents = (): void => { 
     addEventListener('keydown', playerAction)
@@ -66,17 +64,22 @@ const Game: React.FC = () => {
     player?.stopPlayer(e)
   }
 
-  const showResult = (): void => {
+  const showResult = async (): Promise<void> => {
     setTimeout(() => {
-      navigate('/result', {state: getCurrntRecord()})
+      navigate('/result', {state: {
+        name: player.name,
+        score: Math.random() * (200 -100) + 100,
+        alivedTime: gameTime,
+      }})
     }, 1000)
-    gameRecordGateway.postGameRecord(getCurrntRecord());
+    gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert("ERORR"));
   }
 
-  const getCurrntRecord = (): GameRecord => {
+  const getCurrntRecord = async (): Promise<GameRecord> => {
     return {
+      id: await gameRecordGateway.getNumOfGameRecords() + 1,
       name: player.name,
-      score: 100,
+      score: Math.random() * (200 - 100) + 100,
       alivedTime: gameTime,
       date: new Date()
     }
