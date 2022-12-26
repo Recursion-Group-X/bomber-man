@@ -11,7 +11,7 @@ const Result: React.FC = () => {
   
   useEffect(() => {
     (async() => {
-      return setrecordList(await gameRecordGateway.getGameRecord())
+      return setrecordList(await gameRecordGateway.getLatestTopFiveGameRecord())
     })().catch(() => alert("ERORR"));
   }, [])
 
@@ -31,14 +31,21 @@ const Result: React.FC = () => {
       <div className='flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6'>
         <div className='w-1/3'>
           {recordList?.map((record: GameRecord) => 
-            <div key={record.alivedTime}>
+            <div key={record.id}>
               <p className='text-center my-4 text-2xl'>{record.name}</p>
             </div>
           )}
         </div>
-        <div className='w-2/3'>
+        <div className='w-1/3'>
           {recordList?.map((record: GameRecord) => 
-            <div key={record.alivedTime}>
+            <div key={record.id}>
+              <p className='text-center my-4 text-2xl'>Score: {record.score}</p>
+            </div>
+          )}
+        </div>
+        <div className='w-1/3'>
+          {recordList?.map((record: GameRecord) => 
+            <div key={record.id}>
               <p className='text-center my-4 text-2xl'>Time: {record.alivedTime}</p>
             </div>
           )}
