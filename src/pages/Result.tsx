@@ -1,9 +1,19 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { GameRecordGateWay } from '../dataaccess/gameRecordGateway';
+import { GameRecord } from '../dataaccess/recordType';
 
 const Result: React.FC = () => {
   const navigate = useNavigate()
-  const [players, setPlayers] = useState<string[]>(['player1', 'player2', 'player3', 'player4'])
+  const { state } = useLocation()
+  const [recordList, setrecordList] = useState<GameRecord[]>()
+  const gameRecordGateway = new GameRecordGateWay();
+  
+  useEffect(() => {
+    (async() => {
+      return setrecordList(await gameRecordGateway.getLatestTopFiveGameRecord())
+    })().catch(() => alert("ERORR"));
+  }, [])
 
   const navigateHome = (): void => {
     navigate('/')
@@ -20,19 +30,32 @@ const Result: React.FC = () => {
       </div>
       <div className='flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6'>
         <div className='w-1/3'>
-          {players.map(player => 
-            <div key={player}>
-              <p className='text-center my-4 text-2xl'>{player}</p>
+          {recordList?.map((record: GameRecord) => 
+            <div key={record.id}>
+              <p className='text-center my-4 text-2xl'>{record.name}</p>
             </div>
           )}
         </div>
-        <div className='w-2/3'>
-          {players.map((player, i) => 
-            <div key={player}>
-              <p className='text-center my-4 text-2xl'>{i+1}. Time: {player}</p>
+        <div className='w-1/3'>
+          {recordList?.map((record: GameRecord) => 
+            <div key={record.id}>
+              <p className='text-center my-4 text-2xl'>Score: {record.score}</p>
             </div>
           )}
         </div>
+        <div className='w-1/3'>
+          {recordList?.map((record: GameRecord) => 
+            <div key={record.id}>
+              <p className='text-center my-4 text-2xl'>Time: {record.alivedTime}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="text-center">
+        <p>{state.name} Result</p>
+        <p>score: {state.score}</p>
+        <p>alivedTime: {state.alivedTime}</p>
       </div>
       <div className='flex justify-end w-2/3 mx-auto'>
         <button className='m-4 border border-2 p-2' onClick={restartGame}>Restart</button>

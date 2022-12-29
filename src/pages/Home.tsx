@@ -10,7 +10,6 @@ const Home: React.FC = () => {
     navigate('/game')
   }
 
-
   return (
     <div className='h-screen text-xl'>
       <div className='h-20 bg-slate-600 flex items-center justify-center'>
