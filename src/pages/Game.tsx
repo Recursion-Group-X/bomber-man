@@ -12,6 +12,8 @@ import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
 import { currentStageAtom, playerAtom } from '../atom/Atom'
+import { GameRecordGateWay } from '../dataaccess/gameRecordGateway';
+import { GameRecord } from '../dataaccess/recordType';
 
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
@@ -20,6 +22,7 @@ const Game: React.FC = () => {
   const [player] = useAtom(playerAtom)
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
+  const gameRecordGateway = new GameRecordGateWay();
  
   useEffect(() => {
     if(gameCanvasRef != null){
@@ -37,8 +40,10 @@ const Game: React.FC = () => {
     setGameTime(gameTime + 0.01)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
-    if(!player?.isAlive) showResult()
-  }, 10)
+    if(!player.isAlive){
+      showResult().catch(() => alert("kkkk"));
+    }
+  }, player.isAlive ? 10 : null)
 
   const addKeyEvents = (): void => { 
     addEventListener('keydown', playerAction)
@@ -62,11 +67,25 @@ const Game: React.FC = () => {
     player?.stopPlayer(e)
   }
 
-  const showResult = (): void => {
+  const showResult = async (): Promise<void> => {
     setTimeout(() => {
-      navigate('/result')
+      navigate('/result', {state: {
+        name: player.name,
+        score: Math.random() * (200 -100) + 100,
+        alivedTime: gameTime,
+      }})
     }, 1000)
-    
+    gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert("ERORR"));
+  }
+
+  const getCurrntRecord = async (): Promise<GameRecord> => {
+    return {
+      id: await gameRecordGateway.getNumOfGameRecords() + 1,
+      name: player.name,
+      score: Math.random() * (200 - 100) + 100,
+      alivedTime: gameTime,
+      date: new Date()
+    }
   }
 
   return (
