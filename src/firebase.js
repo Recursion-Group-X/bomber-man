@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCqiG7em_vvF7cjH_4r4h63TJ0cH-2XJpk",
+  apiKey: process.env.APIKEY,
   authDomain: "bomber-man-5c836.firebaseapp.com",
   projectId: "bomber-man-5c836",
   storageBucket: "bomber-man-5c836.appspot.com",
