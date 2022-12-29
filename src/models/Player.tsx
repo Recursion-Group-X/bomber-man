@@ -1,4 +1,13 @@
-import playerImg from '../assets/player.png'
+import playerFrontImg from '../assets/player-front.png'
+import playerFrontWalk1Img from '../assets/player-front-walk1.png'
+import playerFrontWalk2Img from '../assets/player-front-walk2.png'
+import playerBackImg from '../assets/player-back.png'
+import playerBackWalk1Img from '../assets/player-back-walk1.png'
+import playerBackWalk2Img from '../assets/player-back-walk2.png'
+import playerLeftImg from '../assets/player-left.png'
+import playerLeftWalkImg from '../assets/player-left-walk.png'
+import playerRightImg from '../assets/player-right.png'
+import playerRightWalkImg from '../assets/player-right-walk.png'
 import bombImg from '../assets/bomb.png'
 
 export class Player {
@@ -8,6 +17,8 @@ export class Player {
     width: number
     height: number
     direction: string
+    pastDirection: string
+    playerImg: string
     step: number
     items: Object[] = []
     bombs: number[][] = []
@@ -29,6 +40,8 @@ export class Player {
         this.width = 32
         this.height = 32
         this.direction = ''
+        this.pastDirection = 'down'
+        this.playerImg = playerFrontImg
         this.step = 1
     }
 
@@ -39,7 +52,7 @@ export class Player {
     draw(canvas: CanvasRenderingContext2D | null | undefined): void {
         this.clear(canvas)
         const img = document.createElement('img')
-        img.src = playerImg
+        img.src = this.changePlayerImg()
         canvas?.drawImage(
             img,
             this.x,
@@ -75,6 +88,7 @@ export class Player {
             (this.direction === 'right' && key === 'ArrowRight') || (this.direction === 'left' && key === 'ArrowLeft') ||
             (this.direction === 'up' && key === 'ArrowUp') || (this.direction === 'down' && key === 'ArrowDown')
         ) {
+            this.pastDirection = this.direction
             this.direction = ''
         }
     }
@@ -262,6 +276,31 @@ export class Player {
             this.x = j * this.boxSize
             this.y += this.step * direction
         }
+    }
+
+    changePlayerImg(): string {
+        let src: string = playerFrontImg
+        if(this.direction === ''){
+            if(this.pastDirection === 'up') src = playerBackImg
+            if(this.pastDirection === 'down') src = playerFrontImg
+            else if(this.pastDirection === 'left') src = playerLeftImg
+            else if(this.pastDirection === 'right') src = playerRightImg
+        } else{
+            if(this.direction === 'down'){
+                src = this.playerImg === playerFrontWalk1Img ? playerFrontWalk2Img : playerFrontWalk1Img
+            }
+            else if(this.direction === 'up'){
+                src = this.playerImg === playerBackWalk1Img ? playerBackWalk2Img : playerBackWalk1Img
+            }
+            else if(this.direction === 'left'){
+                src = this.playerImg === playerLeftImg ? playerLeftWalkImg : playerLeftImg
+            }
+            else if(this.direction === 'right'){
+                src = this.playerImg === playerRightImg ? playerRightWalkImg : playerRightImg
+            }
+        }
+        this.playerImg = src
+        return src
     }
 
     getItem(itemType: number): void{
