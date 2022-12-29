@@ -22,10 +22,10 @@ export class Player {
     step: number
     items: Object[] = []
     bombs: number[][] = []
-    numOfBombs: number = 2
-    bombPower: number = 2
+    numOfBombs: number = 1
+    bombPower: number = 1
     isAlive: boolean = true
-    stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13}
+    stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13, bombUp: 21, fireUp: 22, speedUp: 23}
 
     canvasSize: number = 510
     numOfBox: number = 17
@@ -42,7 +42,7 @@ export class Player {
         this.direction = ''
         this.pastDirection = 'down'
         this.playerImg = playerFrontImg
-        this.step = 5
+        this.step = 1
     }
 
     getName(): string {
@@ -111,7 +111,7 @@ export class Player {
         const i: number = this.getIndex(centerY)
         const j: number = this.getIndex(centerX)
         // 爆発のなかで止まっているとき、死亡
-        if(currentStage[i][j] > this.stageMap.player || currentStage[i][j] > this.stageMap.player){
+        if(currentStage[i][j] > this.stageMap.player && currentStage[i][j] < this.stageMap.bombUp){
             this.isAlive = false
             return
         }
@@ -145,8 +145,12 @@ export class Player {
             this.isAlive = false
         }
         else if(!this.canMove(i, j, nextI, nextJ, bound, moveTo, currentStage) || this.isOutOfStage(bound)) return
+        
         else if(nextI !== i || nextJ !== j){
             // currentStageのplayerの位置を更新
+            if(currentStage[nextI][nextJ] >= this.stageMap.bombUp){
+                this.getItem(currentStage[nextI][nextJ])
+            }
             currentStage[i][j] = this.stageMap.grass
             currentStage[nextI][nextJ] = this.stageMap.player
         }
@@ -187,9 +191,9 @@ export class Player {
             if(pos === this.stageMap.wall){
                 break
             } else if(pos === this.stageMap.stone){
-                currentStage[i+k*direction*izero][j+k*direction*jzero] = imgNum
+                this.breakStone(i+k*direction*izero, j+k*direction*jzero, imgNum, currentStage)
                 break
-            } else if(pos === this.stageMap.grass || pos === this.stageMap.player){
+            } else if(pos === this.stageMap.grass || pos === this.stageMap.player || pos >= this.stageMap.bombUp){
                 currentStage[i+k * direction*izero][j+k*direction* jzero] = imgNum
             }
         }
@@ -200,7 +204,7 @@ export class Player {
             for(let j = 0; j < currentStage[i].length; j++){
                 const f = currentStage[i][j]
                 // fire 11 ~
-                if(f > this.stageMap.player){
+                if(f > this.stageMap.player && f < 21){
                     currentStage[i][j] = this.stageMap.grass
                 }
             }
@@ -232,20 +236,36 @@ export class Player {
     }
 
     hitExplosion(i: number, j: number, nextI: number, nextJ: number, bound: number, moveTo: string, currentStage: number[][]): boolean{
+        if(currentStage[nextI][nextJ] >= this.stageMap.bombUp || currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp){
+            return false
+        }
         if(moveTo === 'horizontal'){
-            return currentStage[nextI][nextJ] > this.stageMap.player || currentStage[i][this.getIndex(bound)] > this.stageMap.player
+            if(currentStage[nextI][nextJ] >= this.stageMap.bombUp || currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp){
+                return false
+            } else{
+                return currentStage[nextI][nextJ] > this.stageMap.player || currentStage[i][this.getIndex(bound)] > this.stageMap.player
+            }
         } else{
-            return currentStage[nextI][nextJ] > this.stageMap.player || currentStage[this.getIndex(bound)][j] > this.stageMap.player
+            if(currentStage[nextI][nextJ] >= this.stageMap.bombUp || currentStage[this.getIndex(bound)][j] >= this.stageMap.bombUp){
+                return false
+            } else{
+                return currentStage[nextI][nextJ] > this.stageMap.player || currentStage[this.getIndex(bound)][j] > this.stageMap.player
+            }
         }
     }
 
     canMove(i: number, j: number, nextI: number, nextJ: number, bound: number, moveTo:string, currentStage: number[][]): boolean{
         if(moveTo === 'horizontal'){
+            if(currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp){
+                return true
+            }
             return currentStage[nextI][nextJ] % 10 === 0 && currentStage[i][this.getIndex(bound)] % 10 === 0
         } else {
+            if(currentStage[this.getIndex(bound)][j] >= this.stageMap.bombUp){
+                return true
+            }
             return currentStage[nextI][nextJ] % 10 === 0 && currentStage[this.getIndex(bound)][j] % 10 === 0
         }
-        
     }
 
     moveOneStep(i: number, j: number, moveTo: string, direction: number): void{
@@ -281,5 +301,34 @@ export class Player {
         }
         this.playerImg = src
         return src
+    }
+
+    getItem(itemType: number): void{
+        if(itemType === this.stageMap.bombUp){
+            this.numOfBombs++
+            this.items.push(this.stageMap.bombUp)
+        } else if(itemType === this.stageMap.fireUp){
+            this.bombPower++
+            this.items.push(this.stageMap.fireUp)
+        } else if(itemType === this.stageMap.speedUp){
+            this.step++
+            this.items.push(this.stageMap.speedUp)
+        }
+    }
+
+    breakStone(i: number, j: number, fireNum: number, currentStage: number[][]): void{
+        let random = Math.random()
+        if(random < 0.6){
+            currentStage[i][j] = fireNum
+        } else{
+            random = Math.random()
+            if(random > 0.5){
+                currentStage[i][j] = this.stageMap.bombUp
+            } else if(random > 0.1){
+                currentStage[i][j] = this.stageMap.fireUp
+            } else{
+                currentStage[i][j] = this.stageMap.speedUp
+            }
+        }
     }
 }
