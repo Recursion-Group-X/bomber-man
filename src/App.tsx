@@ -1,23 +1,34 @@
+import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Game from './pages/Game';
-import Home from './pages/Home';
-import Result from './pages/Result';
-import StageList from './pages/StageList';
+import io from 'socket.io-client'
+import { socketAtom } from './atom/Atom'
+import Game from './pages/Game'
+import Home from './pages/Home'
+import Result from './pages/Result'
+import Room from './pages/Room'
+import StageList from './pages/StageList'
+
+const CONNECTION_PORT = 'localhost:3001'
 
 const App: React.FC = () => {
+  const [socket, setSocket] = useAtom(socketAtom)
+  useEffect(() => {
+    setSocket(io(CONNECTION_PORT))
+  }, [CONNECTION_PORT])
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='stage-list/' element={<StageList />} />
-          <Route path='game/' element={<Game />} />
-          <Route path='result/' element={<Result />} />
+          <Route path="/" element={<Home />} />
+          <Route path="stage-list/" element={<StageList />} />
+          <Route path="game/" element={<Game />} />
+          <Route path="result/" element={<Result />} />
+          <Route path="room/" element={<Room />} />
         </Routes>
       </BrowserRouter>
     </>
-    
-  );
+  )
 }
 
-export default App;
+export default App
