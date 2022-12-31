@@ -7,7 +7,7 @@ import Game from './pages/Game'
 import Home from './pages/Home'
 import Result from './pages/Result'
 import Room from './pages/Room'
-import StageList from './pages/StageList'
+import Lobby from './pages/Lobby'
 
 const CONNECTION_PORT = 'localhost:3001'
 
@@ -21,7 +21,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="stage-list/" element={<StageList />} />
+          <Route path="lobby/" element={<Lobby />} />
           <Route path="game/" element={<Game />} />
           <Route path="result/" element={<Result />} />
           <Route path="room/" element={<Room />} />
