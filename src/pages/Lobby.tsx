@@ -1,20 +1,29 @@
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import { socketAtom } from '../atom/Atom'
 
 const Lobby: React.FC = () => {
-
   const [socket] = useAtom(socketAtom)
   const [roomName, setRoomName] = useState("")
   const [inputValue, setInputValue] = useState("")
+  const navigate = useNavigate()
+  const { state } = useLocation()
 
   const createRoom = (): void => {
-    socket.emit('create_room', roomName)
+    socket.emit('create_room', {data: {
+      roomName: {roomName},
+      playerName: state.name
+    }})
     console.log("create")
+    navigate('/room')
   }
 
   const joinRoom = (): void => {
-    socket?.emit('join_room', inputValue)
+    socket?.emit('join_room', {date: {
+      roomName: inputValue,
+      playerName: state.name
+    }})
     console.log('joined')
   }
 
