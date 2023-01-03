@@ -33,7 +33,7 @@ const Room: React.FC = () => {
   const startGame = (): void => {
     console.log('game start')
     socket?.emit('start_game', {
-      roomName: roomName,
+      roomName,
     })
   }
 
