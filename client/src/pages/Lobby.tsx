@@ -11,11 +11,11 @@ const Lobby: React.FC = () => {
 
   const joinRoom = (roomName: string): void => {
     socket?.emit('join_room', {
-      roomName: roomName,
+      roomName,
       playerName: 'takeshi',
     })
 
-    navigate('/room', { state: { roomName: roomName } })
+    navigate('/room')
   }
 
   return (
@@ -33,7 +33,7 @@ const Lobby: React.FC = () => {
           onChange={(e) => {
             setRoomName(e.target.value)
           }}
-          id="room_naem"
+          id="room_name"
           required
         ></input>
         <button
