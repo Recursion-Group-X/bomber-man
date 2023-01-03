@@ -3,55 +3,52 @@ import { useNavigate } from 'react-router-dom'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
-  const chooseStage = (): void => {
-    navigate('/stage-list')
+  const startSoloGame = (): void => {
+    navigate('/game');
   }
-  const startGame = (): void => {
-    navigate('/game')
+  const moveLobby = (playStyle: string): void => {
+      navigate('/lobby', {state: {
+        playStyle: "multi",
+        name: "player"
+      }
+      })
   }
 
   return (
-    <div className='h-screen text-xl'>
-      <div className='h-20 bg-slate-600 flex items-center justify-center'>
-        <p className='text-center text-2xl text-white'>Bomb Game</p>
-        <button className='text-white right-10 absolute p-3'>Login</button>
-      </div>
-      <div className='w-2/3 mx-auto'>
+    <div className='h-screen flex flex-col'>
 
-        <div className='text-center mt-10 flex justify-center'>
-          <span className='mr-10'>Username: </span><span>GUESTUSER</span>
+      <div>
+        <p className='text-center text-6xl pt-20'>Bomb Game</p>
+      </div>
+
+      <div className="flex justify-around">
+        <div className="flex flex-col items-center mt-20">
+          <label htmlFor="player_name" className="block mb-2 text-sm font-medium">Your Name</label>
+          <input type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:text-white" id="player_name" defaultValue="GUESTUSER" required></input>
+
+          <div className="my-10">
+            <button className="px-2 py-1  bg-blue-400 text-lg text-white font-semibold rounded-full hover:bg-blue-500" onClick={startSoloGame}>SOLO PLAY</button>
+          </div>
+          <div className="m-3">
+            <button className="px-2 py-1  bg-green-400 text-lg text-white font-semibold rounded-full hover:bg-green-500" onClick={() => moveLobby("multi")}>MULTI PLAY</button>
+          </div>
         </div>
 
-        <div className='flex justify-center mt-10'>
-            <fieldset className='flex'>
-              <div className='mr-10'>CPU Level:</div>
-              <div>
-                <input type="radio" id="easy" name="level" value="easy" checked />
-                <label className='mr-4' htmlFor="easy">EASY</label>
-              </div>
-
-              <div>
-                <input type="radio" id="hard" name="level" value="hard" />
-                <label htmlFor="hard">HARD</label>
-              </div>
-            </fieldset>
-          </div>
-
-          <div className='flex justify-center mt-10 items-center'>
-            <span className='mr-10'>Stage: </span>
-            <button className='border border-2 border-slate-400 p-2' onClick={chooseStage}>StageName</button>
-          </div>
-          <div className='flex mt-10 justify-center'>
-            <div className='flex justify-center flex-col mx-10'>
-              <div className='mx-auto h-40 w-40 border'></div>
-              <p className='text-center'>Avatar</p>
+        <div className="border-4 p-4 mt-20">
+          <p className="text-3xl">How TO PLAY</p>
+          <div className="flex flex-col space-y-10">
+            <div>
+              <p>Blow up all your enemes.<br/>
+                  Get items and power up!!!</p>
             </div>
-            <div className='flex justify-center items-center mx-10'>
-              <button className='p-3 text-2xl border w-32 h-20 bg-green-600 border-4 rounded' onClick={startGame}>Play</button>
+            <div>
+              <p>MOVEMENT: ⬆ ⬇︎ ➡︎ ⬅︎</p>
+            </div>
+            <div>
+              <p>BOMB: <span className="border-2 p-2">SPACE</span></p>
             </div>
           </div>
-
-
+        </div>
       </div>
     </div>
   )
