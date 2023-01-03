@@ -10,3 +10,4 @@ export const currentStageAtom: PrimitiveAtom<number[][]> = atom(currentStage.get
 
 export const playerAtom = atom<Player>(new Player('player1'))
 export const socketAtom = atom<any>(null)
+export const roomNameAtom: PrimitiveAtom<string> = atom('')
