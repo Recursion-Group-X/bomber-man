@@ -15,15 +15,17 @@ interface Player {
 
 const usePlayerMove = (): [Function, Function] => {
   const stopPlayer = (e: any, player: Player): void => {
-    const key: string = e.key
-    if (
-      (player.direction === 'right' && key === 'ArrowRight') ||
-      (player.direction === 'left' && key === 'ArrowLeft') ||
-      (player.direction === 'up' && key === 'ArrowUp') ||
-      (player.direction === 'down' && key === 'ArrowDown')
-    ) {
-      player.direction = 'stay'
-    }
+    // const key: string = e.key
+    // if (
+    //   (player.direction === 'right' && key === 'ArrowRight') ||
+    //   (player.direction === 'left' && key === 'ArrowLeft') ||
+    //   (player.direction === 'up' && key === 'ArrowUp') ||
+    //   (player.direction === 'down' && key === 'ArrowDown')
+    // ) {
+    //   console.log('stay')
+    //   player.direction = 'stay'
+    // }
+    player.direction = 'stay'
   }
 
   const changeDirection = (e: any, player: Player): void => {

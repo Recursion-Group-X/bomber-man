@@ -66,9 +66,10 @@ const MultiGame: React.FC = () => {
   }
 
   useInterval(() => {
+    console.log(myPlayer?.direction)
     if (players != null) {
       socket?.emit('player_interval', {
-        player: players[location.state.id - 1],
+        player: myPlayer,
         roomName: roomName,
       })
     }
