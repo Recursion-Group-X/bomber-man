@@ -12,7 +12,7 @@ const Lobby: React.FC = () => {
   const joinRoom = (roomName: string): void => {
     socket?.emit('join_room', {
       roomName,
-      playerName: 'takeshi',
+      playerName: 'pimon',
     })
 
     navigate('/room')
