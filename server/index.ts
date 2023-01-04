@@ -78,15 +78,27 @@ io.on("connection", (socket) => {
 
   socket.on("player_bomb", (data) => {
     const room = rooms[data.roomName];
-    const player: Player = room.getPlayer(data.playerId);
+    const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
-    // socket.to(room).emit("send_players", room.players);
-    // socket.to(room).emit("send_stage", room.stage);
+    socket.to(data.roomName).emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
 
     setTimeout(() => {
       room.stage.explodeBomb();
-      // socket.to(room).emit("send_players", room.players);
-      // socket.to(room).emit("send_stage", room.stage);
+      socket.to(data.roomName).emit("send_game_status", {
+        players: room.players,
+        stage: room.stage.board,
+      });
+      socket.emit("send_game_status", {
+        players: room.players,
+        stage: room.stage.board,
+      });
     }, 3000);
   });
 

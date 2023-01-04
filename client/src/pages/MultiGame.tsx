@@ -6,6 +6,7 @@ import { playersLastDirection, roomNameAtom, socketAtom } from '../atom/Atom'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
 import wallImg from '../assets/wall.png'
+import bombImg from '../assets/grass-bomb.png'
 import horizontalFireImg from '../assets/fire-h.png'
 import verticalFireImg from '../assets/fire-v.png'
 import fireOriginImg from '../assets/fire-o.png'
@@ -64,7 +65,15 @@ const MultiGame: React.FC = () => {
   const handleKeyDown = (e: any): void => {
     if (myPlayer != null) {
       changeDirection(e, myPlayer)
+      if (e.key === ' ') putBomb()
     }
+  }
+
+  const putBomb = (): void => {
+    socket?.emit('player_bomb', {
+      player: myPlayer,
+      roomName: roomName,
+    })
   }
 
   useInterval(() => {
@@ -75,7 +84,7 @@ const MultiGame: React.FC = () => {
         roomName: roomName,
       })
     }
-  }, 100)
+  }, 10)
 
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: Player[]; stage: number[][] }) => {
@@ -84,9 +93,9 @@ const MultiGame: React.FC = () => {
       setStage(data.stage)
       drawPlayers(data.players)
     })
-    setStage(location.state.stage)
-    setPlayers(location.state.players)
-    setMyPlayer(location.state.players[location.state.id - 1])
+    if (stage.length === 0) setStage(location.state.stage)
+    if (players.length === 0) setPlayers(location.state.players)
+    if (myPlayer === null) setMyPlayer(location.state.players[location.state.id - 1])
     if (onlineCanvas != null) {
       const context = onlineCanvas.current
       setCavnasContext(context?.getContext('2d'))
@@ -120,7 +129,7 @@ const MultiGame: React.FC = () => {
                 <>
                   {
                     // grass:0, player:10,  bomb:3
-                    box === 0 || box === 10 || box === 3 ? (
+                    box === 0 ? (
                       <td
                         className={`w-1/${row.length}`}
                         key={box}
@@ -134,23 +143,25 @@ const MultiGame: React.FC = () => {
                       ></td>
                     ) : box === 2 ? (
                       <td className={`w-1/${row.length}`} key={box} style={{ backgroundImage: `url(${wallImg})` }}></td>
+                    ) : box === 3 ? (
+                      <td className={`w-1/${row.length}`} key={box} style={{ backgroundImage: `url(${bombImg})` }}></td>
                     ) : box === 11 ? (
                       <td
                         className={`w-1/${row.length}`}
                         key={box}
-                        style={{ backgroundImage: `url(${horizontalFireImg})` }}
+                        style={{ backgroundImage: `url(${fireOriginImg})` }}
                       ></td>
                     ) : box === 12 ? (
                       <td
                         className={`w-1/${row.length}`}
                         key={box}
-                        style={{ backgroundImage: `url(${verticalFireImg})` }}
+                        style={{ backgroundImage: `url(${horizontalFireImg})` }}
                       ></td>
                     ) : box === 13 ? (
                       <td
                         className={`w-1/${row.length}`}
                         key={box}
-                        style={{ backgroundImage: `url(${fireOriginImg})` }}
+                        style={{ backgroundImage: `url(${verticalFireImg})` }}
                       ></td>
                     ) : box === 21 ? (
                       <td

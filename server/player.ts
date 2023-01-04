@@ -18,7 +18,7 @@ export class Player {
   y: number;
   size: number = 32;
   direction: string = "stay";
-  speed: number = 5;
+  speed: number = 2;
   numOfBombs: number = 1;
   bombPower: number = 1;
   isAlive: boolean = true;
@@ -82,10 +82,7 @@ export class Player {
 
   // stageを受け取って移動できるか確認
   canMove(board: number[][]): boolean {
-    return !(
-      (this.collideWithObjects(board) && !this.isOnTheBomb(board)) ||
-      this.isOutOfBound()
-    );
+    return !(this.collideWithObjects(board) || this.isOutOfBound());
   }
 
   // wall or stone or bomb (bound)
@@ -120,7 +117,7 @@ export class Player {
     return (
       stageValue === Stage.stageValues.stone ||
       stageValue === Stage.stageValues.wall ||
-      stageValue === Stage.stageValues.bomb
+      (stageValue === Stage.stageValues.bomb && !this.isOnTheBomb(board))
     );
   }
 
@@ -207,6 +204,7 @@ export class Player {
     playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
 
     const newBomb = new Bomb(playerIndex.i, playerIndex.j, this, stage);
-    stage.setBomb(newBomb);
+    const bombCount = stage.bombs.filter((b: Bomb) => b.player === this).length;
+    if (bombCount < this.numOfBombs) stage.setBomb(newBomb);
   }
 }

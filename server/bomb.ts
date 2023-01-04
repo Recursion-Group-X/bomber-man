@@ -23,7 +23,7 @@ export class Bomb {
 
   explode(): void {
     const board = this.stage.getStage();
-    board[this.i][this.j] = Stage.stageValues.fire;
+    board[this.i][this.j] = Stage.stageValues.fireO;
     this.explodeDirection("up", board);
     this.explodeDirection("down", board);
     this.explodeDirection("left", board);
@@ -32,7 +32,7 @@ export class Bomb {
       for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
           const f = board[i][j];
-          if (Stage.stageValues.fire <= f && f < Stage.stageValues.bombUp) {
+          if (Stage.stageValues.fireO <= f && f < Stage.stageValues.bombUp) {
             board[i][j] = Stage.stageValues.ground;
           }
         }
@@ -48,14 +48,14 @@ export class Bomb {
         if (firePosition === Stage.stageValues.wall) {
           break;
         } else if (firePosition === Stage.stageValues.stone) {
-          board[this.i + k * sign][this.j] = Stage.stageValues.fire;
+          board[this.i + k * sign][this.j] = Stage.stageValues.fireV;
           this.randomItem(this.i + k * sign, this.j, board);
           break;
         } else if (firePosition === Stage.stageValues.bomb) {
-          board[this.i + k * sign][this.j] = Stage.stageValues.fire;
+          board[this.i + k * sign][this.j] = Stage.stageValues.fireV;
           this.hitOtherBomb(this.i + k * sign, this.j);
         } else {
-          board[this.i + k * sign][this.j] = Stage.stageValues.fire;
+          board[this.i + k * sign][this.j] = Stage.stageValues.fireV;
         }
       }
     } else {
@@ -65,14 +65,14 @@ export class Bomb {
         if (firePosition === Stage.stageValues.wall) {
           break;
         } else if (firePosition === Stage.stageValues.stone) {
-          board[this.i][this.j + k * sign] = Stage.stageValues.fire;
+          board[this.i][this.j + k * sign] = Stage.stageValues.fireH;
           this.randomItem(this.i, this.j + k * sign, board);
           break;
         } else if (firePosition === Stage.stageValues.bomb) {
-          board[this.i][this.j + k * sign] = Stage.stageValues.fire;
+          board[this.i][this.j + k * sign] = Stage.stageValues.fireH;
           this.hitOtherBomb(this.i, this.j + k * sign);
         } else {
-          board[this.i][this.j + k * sign] = Stage.stageValues.fire;
+          board[this.i][this.j + k * sign] = Stage.stageValues.fireH;
         }
       }
     }
@@ -93,15 +93,11 @@ export class Bomb {
   }
 
   hitOtherBomb(i: number, j: number): void {
-    let index: number;
-    for (let k: number; k < this.stage.bombs.length; k++) {
-      const bomb = this.stage.bombs[k];
-      if (bomb.i === i && bomb.j === j) {
-        index = k;
-        break;
-      }
-    }
-    const targetBomb = this.stage.bombs.splice(index, 1)[0];
+    const targetBomb: Bomb = this.stage.bombs.filter(
+      (b: Bomb) => b.i === i && b.j === j
+    )[0];
+    const index: number = this.stage.bombs.indexOf(targetBomb);
+    this.stage.bombs.splice(index, 1);
     targetBomb.explode();
   }
 }
