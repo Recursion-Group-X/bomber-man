@@ -1,4 +1,5 @@
-import playerFrontImg from '../assets/player-front.png'
+import { useAtom } from 'jotai'
+import { playersLastDirection } from '../atom/Atom'
 
 interface Player {
   playerId: number
@@ -14,30 +15,31 @@ interface Player {
 }
 
 const usePlayerMove = (): [Function, Function] => {
+  const [lastDirection, setLastDirection] = useAtom(playersLastDirection)
   const stopPlayer = (e: any, player: Player): void => {
-    // const key: string = e.key
-    // if (
-    //   (player.direction === 'right' && key === 'ArrowRight') ||
-    //   (player.direction === 'left' && key === 'ArrowLeft') ||
-    //   (player.direction === 'up' && key === 'ArrowUp') ||
-    //   (player.direction === 'down' && key === 'ArrowDown')
-    // ) {
-    //   console.log('stay')
-    //   player.direction = 'stay'
-    // }
-    player.direction = 'stay'
+    const key: string = e.key
+    if (
+      (lastDirection === 'right' && key === 'ArrowRight') ||
+      (lastDirection === 'left' && key === 'ArrowLeft') ||
+      (lastDirection === 'up' && key === 'ArrowUp') ||
+      (lastDirection === 'down' && key === 'ArrowDown')
+    ) {
+      setLastDirection('stay')
+    }
   }
 
   const changeDirection = (e: any, player: Player): void => {
+    let direction: string = lastDirection
     if (e.key === 'ArrowRight') {
-      player.direction = 'right'
+      direction = 'right'
     } else if (e.key === 'ArrowUp') {
-      player.direction = 'up'
+      direction = 'up'
     } else if (e.key === 'ArrowLeft') {
-      player.direction = 'left'
+      direction = 'left'
     } else if (e.key === 'ArrowDown') {
-      player.direction = 'down'
+      direction = 'down'
     }
+    setLastDirection(direction)
   }
 
   return [stopPlayer, changeDirection]

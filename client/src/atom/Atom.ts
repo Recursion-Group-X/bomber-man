@@ -13,3 +13,4 @@ export const playerAtom = atom<Player>(new Player('player1'))
 // online game
 export const socketAtom = atom<any>(null)
 export const roomNameAtom: PrimitiveAtom<string> = atom('')
+export const playersLastDirection: PrimitiveAtom<string> = atom('stay')

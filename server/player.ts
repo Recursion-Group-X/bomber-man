@@ -18,7 +18,7 @@ export class Player {
   y: number;
   size: number = 32;
   direction: string = "stay";
-  speed: number = 1;
+  speed: number = 5;
   numOfBombs: number = 1;
   bombPower: number = 1;
   isAlive: boolean = true;

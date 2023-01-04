@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import React, { useState, useEffect, useRef } from 'react'
 import useInterval from 'use-interval'
 import { useLocation } from 'react-router-dom'
-import { roomNameAtom, socketAtom } from '../atom/Atom'
+import { playersLastDirection, roomNameAtom, socketAtom } from '../atom/Atom'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
 import wallImg from '../assets/wall.png'
@@ -34,6 +34,7 @@ const MultiGame: React.FC = () => {
   const location = useLocation()
   const [players, setPlayers] = useState<Player[]>([])
   const [myPlayer, setMyPlayer] = useState<Player | null>(null)
+  const [lastDirection] = useAtom(playersLastDirection)
   const [stage, setStage] = useState<number[][]>([])
   const [roomName] = useAtom(roomNameAtom)
   const onlineCanvas = useRef<HTMLCanvasElement>(null)
@@ -59,6 +60,7 @@ const MultiGame: React.FC = () => {
   const handleKeyUp = (e: any): void => {
     if (myPlayer != null) stopPlayer(e, myPlayer)
   }
+
   const handleKeyDown = (e: any): void => {
     if (myPlayer != null) {
       changeDirection(e, myPlayer)
@@ -66,14 +68,14 @@ const MultiGame: React.FC = () => {
   }
 
   useInterval(() => {
-    console.log(myPlayer?.direction)
-    if (players != null) {
+    if (players != null && myPlayer != null) {
+      setMyPlayer({ ...myPlayer, direction: lastDirection })
       socket?.emit('player_interval', {
-        player: myPlayer,
+        player: { ...myPlayer, direction: lastDirection },
         roomName: roomName,
       })
     }
-  }, 10)
+  }, 100)
 
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: Player[]; stage: number[][] }) => {
