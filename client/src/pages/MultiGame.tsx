@@ -72,7 +72,7 @@ const MultiGame: React.FC = () => {
   const putBomb = (): void => {
     socket?.emit('player_bomb', {
       player: myPlayer,
-      roomName: roomName,
+      roomName,
     })
   }
 
@@ -81,7 +81,7 @@ const MultiGame: React.FC = () => {
       setMyPlayer({ ...myPlayer, direction: lastDirection })
       socket?.emit('player_interval', {
         player: { ...myPlayer, direction: lastDirection },
-        roomName: roomName,
+        roomName,
       })
     }
   }, 10)
