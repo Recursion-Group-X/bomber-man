@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import useInterval from 'use-interval'
 import { useLocation } from 'react-router-dom'
 import { roomNameAtom, socketAtom } from '../atom/Atom'
@@ -12,6 +12,8 @@ import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
+import useDrawPlayers from '../hooks/useDrawPlayers'
+import usePlayerMove from '../hooks/usePlayerMove'
 
 interface Player {
   playerId: number
@@ -26,6 +28,7 @@ interface Player {
   isAlive: boolean
 }
 
+const stageSize: number = 510
 const MultiGame: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
@@ -33,29 +36,64 @@ const MultiGame: React.FC = () => {
   const [myPlayer, setMyPlayer] = useState<Player | null>(null)
   const [stage, setStage] = useState<number[][]>([])
   const [roomName] = useAtom(roomNameAtom)
+  const onlineCanvas = useRef<HTMLCanvasElement>(null)
+  const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
+  const [stopPlayer, changeDirection] = usePlayerMove()
 
-  const drawPlayers = (): void => {
-    console.log('draw')
+  const drawPlayers = (plys: Player[]): void => {
+    if (canvasContext != null) {
+      useDrawPlayers(plys, canvasContext, stageSize)
+    }
+  }
+
+  const addKeyEvents = (): void => {
+    addEventListener('keydown', handleKeyDown)
+    addEventListener('keyup', handleKeyUp)
+  }
+
+  const removeKeyEvents = (): void => {
+    removeEventListener('keydown', handleKeyDown)
+    removeEventListener('keyup', handleKeyUp)
+  }
+
+  const handleKeyUp = (e: any): void => {
+    if (myPlayer != null) stopPlayer(e, myPlayer)
+  }
+  const handleKeyDown = (e: any): void => {
+    if (myPlayer != null) {
+      changeDirection(e, myPlayer)
+    }
   }
 
   useInterval(() => {
-    socket?.emit('player_interval', {
-      playerId: myPlayer?.playerId,
-      roomName: roomName,
-    })
-    drawPlayers()
+    if (players != null) {
+      socket?.emit('player_interval', {
+        player: players[location.state.id - 1],
+        roomName: roomName,
+      })
+    }
   }, 10)
 
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: Player[]; stage: number[][] }) => {
       setPlayers(data.players)
+      setMyPlayer(data.players[location.state.id - 1])
       setStage(data.stage)
+      drawPlayers(data.players)
     })
     setStage(location.state.stage)
     setPlayers(location.state.players)
     setMyPlayer(location.state.players[location.state.id - 1])
-    console.log(location.state.id)
-  }, [socket])
+    if (onlineCanvas != null) {
+      const context = onlineCanvas.current
+      setCavnasContext(context?.getContext('2d'))
+    }
+    addKeyEvents()
+    return () => {
+      removeKeyEvents()
+      socket.off('send_game_status')
+    }
+  }, [socket, players])
 
   return (
     <div className="h-screen bg-black text-xl">
@@ -136,7 +174,7 @@ const MultiGame: React.FC = () => {
             </tr>
           ))}
         </table>
-        <canvas width="500px" height="500px" className="z-10 absolute"></canvas>
+        <canvas width="500px" height="500px" className="z-10 absolute" ref={onlineCanvas}></canvas>
       </div>
     </div>
   )
