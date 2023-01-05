@@ -36,37 +36,69 @@ io.on("connection", (socket) => {
       rooms[data.roomName].players.length + 1
     );
     room.addPlayer(newPlayer);
-    socket.to(data.roomName).emit("send_players", room.players);
-    socket.emit("send_players", room.players);
+    socket.to(data.roomName).emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.emit("send_player_id", room.players.length);
     console.log("User Joined Room: " + data.roomName);
   });
 
   socket.on("start_game", (data) => {
     const room: Room = rooms[data.roomName];
-    socket.to(data.roomName).emit("send_players", room.players);
-    socket.to(data.roomName).emit("send_stage", room.stage);
+    console.log("game start: ", room.roomName);
+    socket.emit("initialize_game", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.to(data.roomName).emit("initialize_game", {
+      players: room.players,
+      stage: room.stage.board,
+    });
   });
 
   socket.on("player_interval", (data) => {
-    console.log(data);
     const room: Room = rooms[data.roomName];
     const player: Player = room.getPlayer(data.player.playerId);
+    player.direction = data.player.direction;
     player.move(room.stage);
-    socket.to(room).emit("send_players", room.players);
-    socket.to(room).emit("send_stage", room.stage);
+    socket.to(data.roomName).emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
   });
 
   socket.on("player_bomb", (data) => {
     const room = rooms[data.roomName];
     const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
-    // socket.to(room).emit("send_players", room.players);
-    // socket.to(room).emit("send_stage", room.stage);
+    socket.to(data.roomName).emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.emit("send_game_status", {
+      players: room.players,
+      stage: room.stage.board,
+    });
 
     setTimeout(() => {
       room.stage.explodeBomb();
-      // socket.to(room).emit("send_players", room.players);
-      // socket.to(room).emit("send_stage", room.stage);
+      socket.to(data.roomName).emit("send_game_status", {
+        players: room.players,
+        stage: room.stage.board,
+      });
+      socket.emit("send_game_status", {
+        players: room.players,
+        stage: room.stage.board,
+      });
     }, 3000);
   });
 

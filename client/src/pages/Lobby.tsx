@@ -12,7 +12,7 @@ const Lobby: React.FC = () => {
   const joinRoom = (roomName: string): void => {
     socket?.emit('join_room', {
       roomName,
-      playerName: 'takeshi',
+      playerName: 'pimon',
     })
 
     navigate('/room')
@@ -40,11 +40,11 @@ const Lobby: React.FC = () => {
           className="px-2 py-1  bg-blue-400 text-lg text-white font-semibold rounded-full hover:bg-blue-500"
           onClick={() => joinRoom(roomName)}
         >
-          New ROOM
+          Join ROOM
         </button>
         <p id="create_room_number">{roomName}</p>
       </div>
-      <div className="">
+      {/* <div className="">
         <label htmlFor="room_number" className="block mb-2 text-sm font-medium">
           ROOM NUMBER
         </label>
@@ -64,7 +64,7 @@ const Lobby: React.FC = () => {
         >
           JOIN ROOM
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }

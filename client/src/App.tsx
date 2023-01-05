@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import Result from './pages/Result'
 import Room from './pages/Room'
 import Lobby from './pages/Lobby'
+import MultiGame from './pages/MultiGame'
 
 const CONNECTION_PORT = 'localhost:3001'
 
@@ -25,6 +26,7 @@ const App: React.FC = () => {
           <Route path="game/" element={<Game />} />
           <Route path="result/" element={<Result />} />
           <Route path="room/" element={<Room />} />
+          <Route path="online-game/" element={<MultiGame />} />
         </Routes>
       </BrowserRouter>
     </>

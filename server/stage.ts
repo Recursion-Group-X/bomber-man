@@ -17,7 +17,9 @@ export class Stage {
     stone: 1,
     wall: 2,
     bomb: 3,
-    fire: 11,
+    fireO: 11,
+    fireH: 12,
+    fireV: 13,
     bombUp: 21,
     fireUp: 22,
     speedUp: 23,
@@ -77,6 +79,6 @@ export class Stage {
 
   explodeBomb(): void {
     const bomb = this.bombs.shift();
-    bomb.explode();
+    bomb?.explode();
   }
 }
