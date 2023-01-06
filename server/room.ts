@@ -5,8 +5,16 @@ export interface RoomMap {
   [roomId: string]: Room;
 }
 
+interface DeadPlayer {
+  name: string;
+  playerId: number;
+  deathTime: number;
+  killedBy: number;
+}
+
 export class Room {
   players: Player[] = [];
+  deadPlayers: DeadPlayer[] = [];
   roomName: string;
   stage: Stage;
   time: number;
@@ -27,5 +35,15 @@ export class Room {
 
   addPlayer(player: Player): void {
     this.players.push(player);
+  }
+
+  removePlayer(player: Player): void {
+    this.players = this.players.filter((p) => p.playerId !== player.playerId);
+    this.deadPlayers.push({
+      name: player.name,
+      playerId: player.playerId,
+      deathTime: 0,
+      killedBy: 0,
+    });
   }
 }

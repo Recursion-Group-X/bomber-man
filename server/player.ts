@@ -16,7 +16,7 @@ export class Player {
   name: string;
   x: number;
   y: number;
-  size: number = 32;
+  size: number = 30;
   direction: string = "stay";
   speed: number = 2;
   numOfBombs: number = 1;
@@ -168,8 +168,9 @@ export class Player {
     playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
     playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
     const stageValue = board[playerIndex.i][playerIndex.j];
+
     return (
-      stageValue >= Stage.stageValues.fire &&
+      stageValue >= Stage.stageValues.fireO &&
       stageValue < Stage.stageValues.bombUp
     );
   }
