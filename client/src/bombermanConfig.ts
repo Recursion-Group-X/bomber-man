@@ -14,7 +14,6 @@ export interface DeadPlayer {
   name: string
   playerId: number
   deathTime: number
-  killedBy: number
 }
 
 export interface OnlinePlayer {

@@ -44,6 +44,7 @@ io.on("connection", (socket) => {
   socket.on("start_game", (data) => {
     const room: Room = rooms[data.roomName];
     console.log("game start: ", room.roomName);
+    room.startGame();
     socket.emit("initialize_game", {
       players: room.players,
       stage: room.stage.board,

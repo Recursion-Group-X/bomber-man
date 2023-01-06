@@ -9,7 +9,6 @@ interface DeadPlayer {
   name: string;
   playerId: number;
   deathTime: number;
-  killedBy: number;
 }
 
 export class Room {
@@ -17,11 +16,14 @@ export class Room {
   deadPlayers: DeadPlayer[] = [];
   roomName: string;
   stage: Stage;
-  time: number;
+  gameStartTime: number;
   constructor(roomName: string) {
     this.roomName = roomName;
     this.stage = new Stage();
-    this.time = 0;
+  }
+
+  startGame(): void {
+    this.gameStartTime = new Date().getTime();
   }
 
   getPlayer(playerId: number): Player | null {
@@ -42,8 +44,7 @@ export class Room {
     this.deadPlayers.push({
       name: player.name,
       playerId: player.playerId,
-      deathTime: 0,
-      killedBy: 0,
+      deathTime: (new Date().getTime() - this.gameStartTime) / 1000,
     });
   }
 }

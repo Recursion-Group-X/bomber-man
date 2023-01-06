@@ -22,6 +22,7 @@ export class Player {
   numOfBombs: number = 1;
   bombPower: number = 1;
   isAlive: boolean = true;
+  killedBy: number;
 
   constructor(name: string, id: number) {
     this.name = name;
