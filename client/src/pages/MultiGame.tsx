@@ -18,14 +18,15 @@ import usePlayerMove from '../hooks/usePlayerMove'
 import { DeadPlayer, OnlinePlayer } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
-let interval: number | null = 50
+const INTERVAL_SPAN = 50
+let interval: number | null = INTERVAL_SPAN
 const MultiGame: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [players, setPlayers] = useState<OnlinePlayer[]>([])
   const [myPlayer, setMyPlayer] = useState<OnlinePlayer | null>(null)
-  const [lastDirection] = useAtom(playersLastDirection)
+  const [lastDirection, setLastDirection] = useAtom(playersLastDirection)
   const [stage, setStage] = useState<number[][]>([])
   const [roomName] = useAtom(roomNameAtom)
   const onlineCanvas = useRef<HTMLCanvasElement>(null)
@@ -77,6 +78,7 @@ const MultiGame: React.FC = () => {
   }, interval)
 
   useEffect(() => {
+    interval = INTERVAL_SPAN
     setStage(location.state.stage)
     setPlayers(location.state.players)
     setMyPlayer(location.state.players[location.state.id - 1])
@@ -95,6 +97,7 @@ const MultiGame: React.FC = () => {
     })
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
+      setLastDirection('stay')
       navigate('/online-result', { state: { data } })
     })
 
