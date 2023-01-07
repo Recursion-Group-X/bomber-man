@@ -1,22 +1,10 @@
 import { useAtom } from 'jotai'
 import { playersLastDirection } from '../atom/Atom'
-
-interface Player {
-  playerId: number
-  name: string
-  x: number
-  y: number
-  size: number
-  direction: string
-  speed: number
-  numOfBombs: number
-  bombPower: number
-  isAlive: boolean
-}
+import { OnlinePlayer } from '../bombermanConfig'
 
 const usePlayerMove = (): [Function, Function] => {
   const [lastDirection, setLastDirection] = useAtom(playersLastDirection)
-  const stopPlayer = (e: any, player: Player): void => {
+  const stopPlayer = (e: any, player: OnlinePlayer): void => {
     const key: string = e.key
     if (
       (lastDirection === 'right' && key === 'ArrowRight') ||
@@ -28,7 +16,7 @@ const usePlayerMove = (): [Function, Function] => {
     }
   }
 
-  const changeDirection = (e: any, player: Player): void => {
+  const changeDirection = (e: any, player: OnlinePlayer): void => {
     let direction: string = lastDirection
     if (e.key === 'ArrowRight') {
       direction = 'right'
