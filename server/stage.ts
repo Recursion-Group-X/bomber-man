@@ -77,8 +77,9 @@ export class Stage {
     this.board[bomb.i][bomb.j] = Stage.stageValues.bomb;
   }
 
-  explodeBomb(): void {
-    const bomb = this.bombs.shift();
-    bomb?.explode();
+  explodeBomb(bomb: Bomb): void {
+    if (this.bombs.filter((b) => b.id === bomb.id).length === 0) return;
+    this.bombs = this.bombs.filter((b) => b.id !== bomb.id);
+    bomb.explode();
   }
 }
