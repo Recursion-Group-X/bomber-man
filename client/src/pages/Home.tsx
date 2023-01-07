@@ -1,36 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const Home: React.FC = () => {
+  const [playerName, setPlayerName] = useState('GUESTUSER')
   const navigate = useNavigate()
   const startSoloGame = (): void => {
-    navigate('/game');
+    navigate('/game')
   }
   const moveLobby = (playStyle: string): void => {
-      navigate('/lobby', {state: {
-        playStyle: "multi",
-        name: "player"
-      }
-      })
+    navigate('/lobby', {
+      state: {
+        playStyle: 'multi',
+        name: playerName,
+      },
+    })
   }
 
   return (
-    <div className='h-screen flex flex-col'>
-
+    <div className="h-screen flex flex-col">
       <div>
-        <p className='text-center text-6xl pt-20'>Bomb Game</p>
+        <p className="text-center text-6xl pt-20">Bomb Game</p>
       </div>
 
       <div className="flex justify-around">
         <div className="flex flex-col items-center mt-20">
-          <label htmlFor="player_name" className="block mb-2 text-sm font-medium">Your Name</label>
-          <input type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:text-white" id="player_name" defaultValue="GUESTUSER" required></input>
+          <label htmlFor="player_name" className="block mb-2 text-sm font-medium">
+            Your Name
+          </label>
+          <input
+            type="text"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:text-white"
+            id="player_name"
+            defaultValue="GUESTUSER"
+            required
+            onChange={(e) => setPlayerName(e.target.value)}
+          />
 
           <div className="my-10">
-            <button className="px-2 py-1  bg-blue-400 text-lg text-white font-semibold rounded-full hover:bg-blue-500" onClick={startSoloGame}>SOLO PLAY</button>
+            <button
+              className="px-2 py-1  bg-blue-400 text-lg text-white font-semibold rounded-full hover:bg-blue-500"
+              onClick={startSoloGame}
+            >
+              SOLO PLAY
+            </button>
           </div>
           <div className="m-3">
-            <button className="px-2 py-1  bg-green-400 text-lg text-white font-semibold rounded-full hover:bg-green-500" onClick={() => moveLobby("multi")}>MULTI PLAY</button>
+            <button
+              className="px-2 py-1  bg-green-400 text-lg text-white font-semibold rounded-full hover:bg-green-500"
+              onClick={() => moveLobby('multi')}
+            >
+              MULTI PLAY
+            </button>
           </div>
         </div>
 
@@ -38,14 +58,19 @@ const Home: React.FC = () => {
           <p className="text-3xl">How TO PLAY</p>
           <div className="flex flex-col space-y-10">
             <div>
-              <p>Blow up all your enemes.<br/>
-                  Get items and power up!!!</p>
+              <p>
+                Blow up all your enemes.
+                <br />
+                Get items and power up!!!
+              </p>
             </div>
             <div>
               <p>MOVEMENT: ⬆ ⬇︎ ➡︎ ⬅︎</p>
             </div>
             <div>
-              <p>BOMB: <span className="border-2 p-2">SPACE</span></p>
+              <p>
+                BOMB: <span className="border-2 p-2">SPACE</span>
+              </p>
             </div>
           </div>
         </div>
