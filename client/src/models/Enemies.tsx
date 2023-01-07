@@ -2,11 +2,13 @@ import { Config } from "../bombermanConfig"
 import greenEnemyImg from '../assets/green_enemy.png'
 
 export class Enemies {
-    x: number
-    y: number
+    x: number = 0;
+    y: number = 0;
     width: number
     height: number
     direction: string
+
+    isFirst: boolean =true;
 
     enemiesList: Object[]
 
@@ -17,16 +19,19 @@ export class Enemies {
 
 
     constructor(config: Config, currentStage: number[][]) {
-        // this.x = this.boxSize * this.definePosition(currentStage)[1]
-        // this.y = this.boxSize * this.definePosition(currentStage)[0]
-        this.x = this.boxSize * (Math.floor(Math.random() * (config.x - 2)) + 1)
-        this.y = this.boxSize * (Math.floor(Math.random() * (config.x - 2)) + 1)
+        this.maxBolcks = config.x;
+        if(this.isFirst){
+            console.log(this.isFirst)
+            this.inititalDefinePosition(currentStage);
+        }else{
+            this.definePosition(currentStage);
+        }
+        
         this.width = 32;
         this.height = 32;
         this.direction = '';
-        this.maxBolcks = config.x;
-        this.enemiesList = [];
 
+        this.enemiesList = [];
         setInterval(() => {
             this.changeRandomDirection();
         }, 10000);
@@ -38,20 +43,35 @@ export class Enemies {
 
 
 
-    definePosition(currentStage: number[][]): number[] {
+    inititalDefinePosition(currentStage: number[][]): void{
         const max: number = this.maxBolcks;
 
-        let randomNumY: number = Math.floor(Math.random() * (max - 2)) + 1;
-        let randomNumX: number = Math.floor(Math.random() * (max - 2)) + 1;
+        let randomNumY: number = Math.floor(Math.random() * (max - 5)) + 5;
+        let randomNumX: number = Math.floor(Math.random() * (max - 5)) + 5;
 
-        console.log(currentStage[randomNumY][randomNumX])
         while (currentStage[randomNumY][randomNumX] !== 0) {
-            randomNumX = Math.floor(Math.random() * (max - 2)) + 1;
-            randomNumY = Math.floor(Math.random() * (max - 2)) + 1;
+            randomNumX = Math.floor(Math.random() * (max - 5)) + 5;
+            randomNumY = Math.floor(Math.random() * (max - 5)) + 5;
         }
-        const position: number[] = [randomNumY, randomNumX]
-        return position
+        this.x = this.boxSize * randomNumX
+        this.y = this.boxSize * randomNumY
+        this.isFirst = false;
+        console.log(randomNumX)
+        console.log(randomNumY)
+    }
 
+    definePosition(currentStage: number[][]): void {
+        const max: number = this.maxBolcks;
+
+        let randomNumY: number = Math.floor(Math.random() * (max - 1)) + 1;
+        let randomNumX: number = Math.floor(Math.random() * (max - 1)) + 1;
+
+        while (currentStage[randomNumY][randomNumX] !== 0) {
+            randomNumX = Math.floor(Math.random() * (max - 1)) + 1;
+            randomNumY = Math.floor(Math.random() * (max - 1)) + 1;
+        }
+        this.x = this.boxSize * randomNumX
+        this.y = this.boxSize * randomNumY
     }
 
     drawEnemy(canvas: CanvasRenderingContext2D | null | undefined): void {
