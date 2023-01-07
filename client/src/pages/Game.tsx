@@ -11,7 +11,7 @@ import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
-import { currentStageAtom, playerAtom } from '../atom/Atom'
+import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway';
 import { GameRecord } from '../dataaccess/recordType';
 
@@ -22,6 +22,7 @@ const Game: React.FC = () => {
   const [player] = useAtom(playerAtom)
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
+  const [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay();
  
   useEffect(() => {
@@ -29,6 +30,14 @@ const Game: React.FC = () => {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
+      // enemies[0].drawEnemy(canvasContext)
+      // enemies[1].x = enemies[1].boxSize * 7
+      // enemies[1].y = enemies[1].boxSize * 7
+      // enemies[1].drawEnemy(canvasContext)
+      // enemies[2].x = enemies[1].boxSize * 13
+      // enemies[2].y = enemies[1].boxSize * 13
+      // enemies[2].drawEnemy(canvasContext)
+      
     }
     addKeyEvents()
     return () => removeKeyEvents()
@@ -40,6 +49,9 @@ const Game: React.FC = () => {
     setGameTime(gameTime + 0.01)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
+    enemies[0]?.moveEnemy(canvasContext)
+    enemies[1]?.moveEnemy(canvasContext)
+    enemies[2]?.moveEnemy(canvasContext)
     if(!player.isAlive){
       showResult().catch(() => alert("kkkk"));
     }
