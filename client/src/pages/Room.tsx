@@ -56,7 +56,9 @@ const Room: React.FC = () => {
           <p key={player.name}>{player.name}</p>
         ))}
       </div>
-      <button onClick={handleStartGame}>Start Game</button>
+      <button disabled={players.length <= 1} onClick={handleStartGame}>
+        Start Game
+      </button>
     </div>
   )
 }

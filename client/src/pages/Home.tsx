@@ -1,9 +1,12 @@
+import { useAtom } from 'jotai'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { socketAtom } from '../atom/Atom'
 
 const Home: React.FC = () => {
   const [playerName, setPlayerName] = useState('GUESTUSER')
   const navigate = useNavigate()
+  const [socket] = useAtom(socketAtom)
   const startSoloGame = (): void => {
     navigate('/game')
   }
@@ -14,6 +17,7 @@ const Home: React.FC = () => {
         name: playerName,
       },
     })
+    socket?.emit('enter_lobby')
   }
 
   return (

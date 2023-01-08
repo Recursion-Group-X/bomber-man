@@ -3,9 +3,18 @@ const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
 import { Player } from "./player";
-import { Room, RoomMap } from "./room";
+import { Room } from "./room";
 
-const rooms: RoomMap = {};
+const rooms = [
+  new Room("Room 1"),
+  new Room("Room 2"),
+  new Room("Room 3"),
+  new Room("Room 4"),
+  new Room("Room 5"),
+  new Room("Room 6"),
+  new Room("Room 7"),
+  new Room("Room 8"),
+];
 
 app.use(cors());
 app.use(express.json());
@@ -23,26 +32,22 @@ const io = socket(server, {
 io.on("connection", (socket) => {
   console.log("Connected");
 
+  socket.on("enter_lobby", () => {
+    socket.emit("send_rooms", rooms);
+  });
+
   socket.on("join_room", (data) => {
-    let room: Room;
-    if (rooms[data.roomName] === undefined) {
-      room = new Room(data.roomName);
-      rooms[data.roomName] = room;
-    }
-    room = rooms[data.roomName];
-    socket.join(data.roomName);
-    const newPlayer = new Player(
-      data.playerName,
-      rooms[data.roomName].players.length + 1
-    );
+    let room: Room = getRoom(data.roomName);
+    socket.join(room.roomName);
+    const newPlayer = new Player(data.playerName, room.players.length + 1);
     room.addPlayer(newPlayer);
     sendGameStatus(room, socket);
     socket.emit("send_player_id", room.players.length);
-    console.log("User Joined Room: " + data.roomName);
+    console.log("User Joined Room: " + room.roomName);
   });
 
   socket.on("start_game", (data) => {
-    const room: Room = rooms[data.roomName];
+    const room: Room = getRoom(data.roomName);
     console.log("game start: ", room.roomName);
     room.startGame();
     socket.emit("initialize_game", {
@@ -56,7 +61,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("player_interval", (data) => {
-    const room: Room = rooms[data.roomName];
+    const room: Room = getRoom(data.roomName);
     if (room.getPlayer(data.player.playerId) == null) return;
     const player: Player = room.getPlayer(data.player.playerId);
     player.direction = data.player.direction;
@@ -72,7 +77,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("player_bomb", (data) => {
-    const room = rooms[data.roomName];
+    const room = getRoom(data.roomName);
     const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
     sendGameStatus(room, socket);
@@ -97,4 +102,12 @@ function sendGameStatus(room: Room, socket: any): void {
     players: room.players,
     stage: room.stage.board,
   });
+}
+
+function getRoom(roomName: string): Room {
+  const room: Room[] | null = rooms.filter(
+    (room) => room.roomName === roomName
+  );
+  if (room.length === 0) return null;
+  return room[0];
 }

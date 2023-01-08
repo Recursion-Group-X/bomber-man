@@ -10,6 +10,8 @@ export const config1: Config = {
   breakableBlocks: 30,
 }
 
+/// online
+
 export interface DeadPlayer {
   name: string
   playerId: number
@@ -27,4 +29,25 @@ export interface OnlinePlayer {
   numOfBombs: number
   bombPower: number
   isAlive: boolean
+}
+
+export interface Room {
+  players: OnlinePlayer[]
+  deadPlayers: DeadPlayer[]
+  roomName: string
+  stage: Stage
+  gameStartTime: number
+}
+
+export interface Stage {
+  board: number[][]
+  bombs: Bomb[]
+}
+
+export interface Bomb {
+  player: OnlinePlayer
+  power: number
+  i: number
+  j: number
+  stage: Stage
 }

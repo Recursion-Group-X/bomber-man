@@ -1,10 +1,6 @@
 import { Stage } from "./stage";
 import { Player } from "./player";
 
-export interface RoomMap {
-  [roomId: string]: Room;
-}
-
 interface DeadPlayer {
   name: string;
   playerId: number;
