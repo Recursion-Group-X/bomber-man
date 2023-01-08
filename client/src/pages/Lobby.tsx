@@ -18,7 +18,6 @@ const Lobby: React.FC = () => {
       roomName,
       playerName: state.name,
     })
-
     navigate('/room')
   }
 

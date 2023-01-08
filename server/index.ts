@@ -39,7 +39,11 @@ io.on("connection", (socket) => {
   socket.on("join_room", (data) => {
     let room: Room = getRoom(data.roomName);
     socket.join(room.roomName);
-    const newPlayer = new Player(data.playerName, room.players.length + 1);
+    const newPlayer = new Player(
+      data.playerName,
+      room.players.length + 1,
+      socket.id
+    );
     room.addPlayer(newPlayer);
     sendGameStatus(room, socket);
     socket.emit("send_player_id", room.players.length);
@@ -89,7 +93,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    removeSocketFromRooms(socket);
     console.log("disconnected.");
+    socket.emit("disconnection");
   });
 });
 
@@ -110,4 +116,12 @@ function getRoom(roomName: string): Room {
   );
   if (room.length === 0) return null;
   return room[0];
+}
+
+function removeSocketFromRooms(socket): void {
+  for (let i: number = 0; i < rooms.length; i++) {
+    const room: Room = rooms[i];
+    socket.leave(room.roomName);
+    room.removePlayerFromRoom(socket.id);
+  }
 }

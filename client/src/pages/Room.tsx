@@ -2,24 +2,12 @@ import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { roomNameAtom, socketAtom } from '../atom/Atom'
-
-interface Player {
-  playerId: number
-  name: string
-  x: number
-  y: number
-  size: number
-  direction: string
-  speed: number
-  numOfBombs: number
-  bombPower: number
-  isAlive: boolean
-}
+import { OnlinePlayer } from '../bombermanConfig'
 
 let playerId: number = 0
 const Room: React.FC = () => {
   const [socket] = useAtom(socketAtom)
-  const [players, setPlayers] = useState<Player[]>([])
+  const [players, setPlayers] = useState<OnlinePlayer[]>([])
   const [roomName, setRoomName] = useAtom(roomNameAtom)
   const [stage, setStage] = useState<number[][]>([[]])
   const navigate = useNavigate()
@@ -29,13 +17,14 @@ const Room: React.FC = () => {
       playerId = id
       console.log('your id is ', id)
     })
-    socket?.on('send_game_status', (data: { players: Player[]; stage: number[][] }) => {
+    socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
       setStage(data.stage)
     })
-    socket?.on('initialize_game', (data: { players: Player[]; stage: number[][] }) => {
+    socket?.on('initialize_game', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       initializeGame(data)
     })
+    if (socket != null) console.log(playerId)
   }, [socket])
 
   const handleStartGame = (): void => {
@@ -44,7 +33,7 @@ const Room: React.FC = () => {
     })
   }
 
-  const initializeGame = (data: { players: Player[]; stage: number[][] }): void => {
+  const initializeGame = (data: { players: OnlinePlayer[]; stage: number[][] }): void => {
     navigate('/online-game', { state: { players: data.players, stage: data.stage, id: playerId } })
   }
 

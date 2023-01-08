@@ -29,6 +29,7 @@ export interface OnlinePlayer {
   numOfBombs: number
   bombPower: number
   isAlive: boolean
+  socketId: string
 }
 
 export interface Room {
