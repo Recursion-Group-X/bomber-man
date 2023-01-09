@@ -3,8 +3,7 @@ const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
 import { Player } from "./player";
-import { Bomb } from "./bomb";
-import { Room, RoomMap } from "./room";
+import { Room } from "./room";
 
 const rooms = [
   new Room("Room 1"),
@@ -125,15 +124,15 @@ function removeSocketFromRooms(socket): void {
     socket.leave(room.roomName);
     room.removePlayerFromRoom(socket.id);
   }
+}
 
 function resetRoom(roomName): void {
-  for(let i: number = 0; i < rooms.length; i++){
+  for (let i: number = 0; i < rooms.length; i++) {
     const room: Room = rooms[i];
-    if(room.roomName === roomName){
+    if (room.roomName === roomName) {
       rooms[i] = new Room(roomName);
       return;
     }
   }
   return;
-  
 }
