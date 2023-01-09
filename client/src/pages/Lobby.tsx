@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { roomNameAtom, socketAtom } from '../atom/Atom'
 import { Room } from '../bombermanConfig'
+import { playerNameAtom, roomNameAtom, socketAtom } from '../atom/Atom'
 
 const rooms: string[] = ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5', 'Room 6', 'Room 7', 'Room 8']
 const Lobby: React.FC = () => {
@@ -10,13 +10,13 @@ const Lobby: React.FC = () => {
   const navigate = useNavigate()
   const [rooms, setRooms] = useState<Room[]>([])
   const [roomName, setRoomName] = useAtom(roomNameAtom)
-  const { state } = useLocation()
+  const [playerName] = useAtom(playerNameAtom)
 
   const joinRoom = (roomName: string): void => {
     setRoomName(roomName)
     socket?.emit('join_room', {
       roomName,
-      playerName: state.name,
+      playerName,
     })
     navigate('/room')
   }

@@ -3,7 +3,8 @@ const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
 import { Player } from "./player";
-import { Room } from "./room";
+import { Bomb } from "./bomb";
+import { Room, RoomMap } from "./room";
 
 const rooms = [
   new Room("Room 1"),
@@ -76,6 +77,7 @@ io.on("connection", (socket) => {
     if (room.players.length <= 0) {
       socket.to(data.roomName).emit("send_game_result", room.deadPlayers);
       socket.emit("send_game_result", room.deadPlayers);
+      resetRoom(room.roomName);
     }
     sendGameStatus(room, socket);
   });
@@ -85,11 +87,10 @@ io.on("connection", (socket) => {
     const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
     sendGameStatus(room, socket);
+  });
 
-    setTimeout(() => {
-      room.stage.explodeBomb();
-      sendGameStatus(room, socket);
-    }, 3000);
+  socket.on("leave_room", (roomName) => {
+    socket.leave(roomName);
   });
 
   socket.on("disconnect", () => {
@@ -124,4 +125,15 @@ function removeSocketFromRooms(socket): void {
     socket.leave(room.roomName);
     room.removePlayerFromRoom(socket.id);
   }
+
+function resetRoom(roomName): void {
+  for(let i: number = 0; i < rooms.length; i++){
+    const room: Room = rooms[i];
+    if(room.roomName === roomName){
+      rooms[i] = new Room(roomName);
+      return;
+    }
+  }
+  return;
+  
 }

@@ -1,5 +1,6 @@
 import { Bomb } from "./bomb";
 import { Stage } from "./stage";
+import { v4 as uuidv4 } from "uuid";
 
 class Position {
   x: number;
@@ -203,12 +204,22 @@ export class Player {
   }
 
   putBomb(stage: Stage): void {
+    const bombCount = stage.bombs.filter((b: Bomb) => b.player === this).length;
+    if (bombCount >= this.numOfBombs) return null;
     const playerIndex: Index = new Index();
     playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
     playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
 
-    const newBomb = new Bomb(playerIndex.i, playerIndex.j, this, stage);
-    const bombCount = stage.bombs.filter((b: Bomb) => b.player === this).length;
-    if (bombCount < this.numOfBombs) stage.setBomb(newBomb);
+    const newBomb = new Bomb(
+      playerIndex.i,
+      playerIndex.j,
+      this,
+      stage,
+      uuidv4()
+    );
+    stage.setBomb(newBomb);
+    setTimeout(() => {
+      stage.explodeBomb(newBomb);
+    }, 3000);
   }
 }

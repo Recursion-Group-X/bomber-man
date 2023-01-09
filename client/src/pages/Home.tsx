@@ -2,9 +2,10 @@ import { useAtom } from 'jotai'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { socketAtom } from '../atom/Atom'
+import { playerNameAtom } from '../atom/Atom'
 
 const Home: React.FC = () => {
-  const [playerName, setPlayerName] = useState('GUESTUSER')
+  const [playerName, setPlayerName] = useAtom(playerNameAtom)
   const navigate = useNavigate()
   const [socket] = useAtom(socketAtom)
   const startSoloGame = (): void => {
@@ -14,7 +15,6 @@ const Home: React.FC = () => {
     navigate('/lobby', {
       state: {
         playStyle: 'multi',
-        name: playerName,
       },
     })
     socket?.emit('enter_lobby')
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
             type="text"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:text-white"
             id="player_name"
-            defaultValue="GUESTUSER"
+            value={playerName}
             required
             onChange={(e) => setPlayerName(e.target.value)}
           />
