@@ -53,7 +53,7 @@ const Room: React.FC = () => {
       <h1>Multi Player Game</h1>
       <div>
         {players.map((player) => (
-          <p key={player.name}>{player.name}</p>
+          <p key={player.playerId}>{player.name}</p>
         ))}
       </div>
       <button onClick={handleStartGame}>Start Game</button>

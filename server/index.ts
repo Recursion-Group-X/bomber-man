@@ -68,6 +68,7 @@ io.on("connection", (socket) => {
     if (room.players.length <= 0) {
       socket.to(data.roomName).emit("send_game_result", room.deadPlayers);
       socket.emit("send_game_result", room.deadPlayers);
+      resetRoom(room.roomName);
     }
     sendGameStatus(room, socket);
   });
@@ -77,6 +78,10 @@ io.on("connection", (socket) => {
     const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
     sendGameStatus(room, socket);
+  });
+
+  socket.on("leave_room", (roomName) => {
+    socket.leave(roomName);
   });
 
   socket.on("disconnect", () => {
@@ -93,4 +98,8 @@ function sendGameStatus(room: Room, socket: any): void {
     players: room.players,
     stage: room.stage.board,
   });
+}
+
+function resetRoom(roomName): void {
+  rooms[roomName] = new Room(roomName);
 }
