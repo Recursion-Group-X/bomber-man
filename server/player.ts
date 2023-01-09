@@ -24,12 +24,14 @@ export class Player {
   bombPower: number = 1;
   isAlive: boolean = true;
   killedBy: number;
+  socketId: string;
 
-  constructor(name: string, id: number) {
+  constructor(name: string, id: number, socketId) {
     this.name = name;
     this.playerId = id;
     this.x = this.initializePosition(id).x;
     this.y = this.initializePosition(id).y;
+    this.socketId = socketId;
   }
 
   initializePosition(id: number): Position {

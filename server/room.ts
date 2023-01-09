@@ -1,10 +1,6 @@
 import { Stage } from "./stage";
 import { Player } from "./player";
 
-export interface RoomMap {
-  [roomId: string]: Room;
-}
-
 interface DeadPlayer {
   name: string;
   playerId: number;
@@ -39,6 +35,12 @@ export class Room {
     this.players.push(player);
   }
 
+  // disconnection
+  removePlayerFromRoom(socketId: string): void {
+    this.players = this.players.filter((p) => p.socketId !== socketId);
+  }
+
+  // dead
   removePlayer(player: Player): void {
     this.players = this.players.filter((p) => p.playerId !== player.playerId);
     this.deadPlayers.push({
