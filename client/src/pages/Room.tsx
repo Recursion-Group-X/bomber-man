@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { roomNameAtom, socketAtom } from '../atom/Atom'
 
 interface Player {
@@ -15,26 +16,36 @@ interface Player {
   isAlive: boolean
 }
 
+let playerId: number = 0
 const Room: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const [players, setPlayers] = useState<Player[]>([])
   const [roomName, setRoomName] = useAtom(roomNameAtom)
-  // これをHomeで出来るようHomeの見た目変更などお願いします！
+  const [stage, setStage] = useState<number[][]>([[]])
+  const navigate = useNavigate()
 
   useEffect(() => {
-    socket?.on('send_players', (data: Player[]) => {
-      setPlayers(data)
+    socket?.on('send_player_id', (id: number) => {
+      playerId = id
+      console.log('your id is ', id)
     })
-    socket?.on('send_stage', (data: any) => {
-      console.log(data)
+    socket?.on('send_game_status', (data: { players: Player[]; stage: number[][] }) => {
+      setPlayers(data.players)
+      setStage(data.stage)
+    })
+    socket?.on('initialize_game', (data: { players: Player[]; stage: number[][] }) => {
+      initializeGame(data)
     })
   }, [socket])
 
-  const startGame = (): void => {
-    console.log('game start')
+  const handleStartGame = (): void => {
     socket?.emit('start_game', {
       roomName,
     })
+  }
+
+  const initializeGame = (data: { players: Player[]; stage: number[][] }): void => {
+    navigate('/online-game', { state: { players: data.players, stage: data.stage, id: playerId } })
   }
 
   return (
@@ -42,10 +53,10 @@ const Room: React.FC = () => {
       <h1>Multi Player Game</h1>
       <div>
         {players.map((player) => (
-          <p key={player.name}>{player.name}</p>
+          <p key={player.playerId}>{player.name}</p>
         ))}
       </div>
-      <button onClick={startGame}>Start Game</button>
+      <button onClick={handleStartGame}>Start Game</button>
     </div>
   )
 }

@@ -10,11 +10,15 @@ currentStage.setBreakableBlock()
 export const currentStageAtom: PrimitiveAtom<number[][]> = atom(currentStage.getBoard())
 
 export const playerAtom = atom<Player>(new Player('player1'))
-export const socketAtom = atom<any>(null)
-export const roomNameAtom: PrimitiveAtom<string> = atom('')
 // export const enemiesAtom = atom<Enemies>(new Enemies(config1, currentStage.getBoard()))
 export const enemiesAtom: PrimitiveAtom<Enemies[]>= atom([
     new Enemies(config1, currentStage.getBoard()),
     new Enemies(config1, currentStage.getBoard()),
     new Enemies(config1, currentStage.getBoard())
 ])
+
+// online game
+export const socketAtom = atom<any>(null)
+export const roomNameAtom: PrimitiveAtom<string> = atom('')
+export const playersLastDirection: PrimitiveAtom<string> = atom('stay')
+export const playerNameAtom: PrimitiveAtom<string> = atom('GUESTUSER')

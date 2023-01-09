@@ -17,7 +17,9 @@ export class Stage {
     stone: 1,
     wall: 2,
     bomb: 3,
-    fire: 11,
+    fireO: 11,
+    fireH: 12,
+    fireV: 13,
     bombUp: 21,
     fireUp: 22,
     speedUp: 23,
@@ -75,8 +77,9 @@ export class Stage {
     this.board[bomb.i][bomb.j] = Stage.stageValues.bomb;
   }
 
-  explodeBomb(): void {
-    const bomb = this.bombs.shift();
+  explodeBomb(bomb: Bomb): void {
+    if (this.bombs.filter((b) => b.id === bomb.id).length === 0) return;
+    this.bombs = this.bombs.filter((b) => b.id !== bomb.id);
     bomb.explode();
   }
 }

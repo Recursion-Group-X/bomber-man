@@ -3,6 +3,7 @@ const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
 import { Player } from "./player";
+import { Bomb } from "./bomb";
 import { Room, RoomMap } from "./room";
 
 const rooms: RoomMap = {};
@@ -36,41 +37,69 @@ io.on("connection", (socket) => {
       rooms[data.roomName].players.length + 1
     );
     room.addPlayer(newPlayer);
-    socket.to(data.roomName).emit("send_players", room.players);
-    socket.emit("send_players", room.players);
+    sendGameStatus(room, socket);
+    socket.emit("send_player_id", room.players.length);
     console.log("User Joined Room: " + data.roomName);
   });
 
   socket.on("start_game", (data) => {
     const room: Room = rooms[data.roomName];
-    socket.to(data.roomName).emit("send_players", room.players);
-    socket.to(data.roomName).emit("send_stage", room.stage);
+    console.log("game start: ", room.roomName);
+    room.startGame();
+    socket.emit("initialize_game", {
+      players: room.players,
+      stage: room.stage.board,
+    });
+    socket.to(data.roomName).emit("initialize_game", {
+      players: room.players,
+      stage: room.stage.board,
+    });
   });
 
   socket.on("player_interval", (data) => {
-    console.log(data);
     const room: Room = rooms[data.roomName];
+    if (room.getPlayer(data.player.playerId) == null) return;
     const player: Player = room.getPlayer(data.player.playerId);
+    player.direction = data.player.direction;
     player.move(room.stage);
-    socket.to(room).emit("send_players", room.players);
-    socket.to(room).emit("send_stage", room.stage);
+    if (!player.isAlive) {
+      room.removePlayer(player);
+    }
+    if (room.players.length <= 0) {
+      socket.to(data.roomName).emit("send_game_result", room.deadPlayers);
+      socket.emit("send_game_result", room.deadPlayers);
+      resetRoom(room.roomName);
+    }
+    sendGameStatus(room, socket);
   });
 
   socket.on("player_bomb", (data) => {
     const room = rooms[data.roomName];
     const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
-    // socket.to(room).emit("send_players", room.players);
-    // socket.to(room).emit("send_stage", room.stage);
+    sendGameStatus(room, socket);
+  });
 
-    setTimeout(() => {
-      room.stage.explodeBomb();
-      // socket.to(room).emit("send_players", room.players);
-      // socket.to(room).emit("send_stage", room.stage);
-    }, 3000);
+  socket.on("leave_room", (roomName) => {
+    socket.leave(roomName);
   });
 
   socket.on("disconnect", () => {
     console.log("disconnected.");
   });
 });
+
+function sendGameStatus(room: Room, socket: any): void {
+  socket.to(room.roomName).emit("send_game_status", {
+    players: room.players,
+    stage: room.stage.board,
+  });
+  socket.emit("send_game_status", {
+    players: room.players,
+    stage: room.stage.board,
+  });
+}
+
+function resetRoom(roomName): void {
+  rooms[roomName] = new Room(roomName);
+}
