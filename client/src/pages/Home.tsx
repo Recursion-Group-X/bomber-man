@@ -1,8 +1,7 @@
 import { useAtom } from 'jotai'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { socketAtom } from '../atom/Atom'
-import { playerNameAtom } from '../atom/Atom'
+import { socketAtom, playerNameAtom } from '../atom/Atom'
 
 const Home: React.FC = () => {
   const [playerName, setPlayerName] = useAtom(playerNameAtom)
