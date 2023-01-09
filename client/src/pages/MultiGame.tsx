@@ -81,7 +81,7 @@ const MultiGame: React.FC = () => {
     interval = INTERVAL_SPAN
     setStage(location.state.stage)
     setPlayers(location.state.players)
-    setMyPlayer(location.state.players[location.state.id - 1])
+    setMyPlayer(location.state.players.filter((player: OnlinePlayer) => player.playerId === location.state.id)[0])
     if (onlineCanvas != null) {
       const context = onlineCanvas.current
       setCavnasContext(context?.getContext('2d'))
@@ -91,7 +91,7 @@ const MultiGame: React.FC = () => {
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
-      setMyPlayer(data.players[location.state.id - 1])
+      setMyPlayer(data.players.filter((player) => player.socketId === socket.id)[0])
       setStage(data.stage)
       drawPlayers(data.players)
     })
