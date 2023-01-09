@@ -11,14 +11,16 @@ export class Bomb {
   i: number;
   j: number;
   stage: Stage;
+  id: string;
   static fireTypes: FireType = { origin: 11, horizontail: 12, vertical: 13 };
 
-  constructor(i: number, j: number, player: Player, stage: Stage) {
+  constructor(i: number, j: number, player: Player, stage: Stage, id: string) {
     this.i = i;
     this.j = j;
     this.power = player.bombPower;
     this.player = player;
     this.stage = stage;
+    this.id = id;
   }
 
   explode(): void {

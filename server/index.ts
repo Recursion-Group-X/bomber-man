@@ -3,6 +3,7 @@ const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
 import { Player } from "./player";
+import { Bomb } from "./bomb";
 import { Room, RoomMap } from "./room";
 
 const rooms: RoomMap = {};
@@ -76,11 +77,6 @@ io.on("connection", (socket) => {
     const player: Player = room.getPlayer(data.player.playerId);
     player.putBomb(room.stage);
     sendGameStatus(room, socket);
-
-    setTimeout(() => {
-      room.stage.explodeBomb();
-      sendGameStatus(room, socket);
-    }, 3000);
   });
 
   socket.on("disconnect", () => {
