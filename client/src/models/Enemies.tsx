@@ -1,4 +1,5 @@
 import { Config } from "../bombermanConfig"
+import { v4 as uuidv4 } from 'uuid';
 import enemyFrontImg from '../assets/enemy-front.png'
 import enemyFrontWalk1Img from '../assets/enemy-front-walk1.png'
 import enemyFrontWalk2Img from '../assets/enemy-front-walk2.png'
@@ -13,36 +14,37 @@ import enemyRightWalkImg from '../assets/enemy-right-walk.png'
 export class Enemies {
     x: number = 0;
     y: number = 0;
-    width: number
-    height: number
+    width: number = 32
+    height: number = 32
     direction: string
-    pastDirection: string
+    pastDirection: string = 'down'
     enemyImg: string
+    step:number = 1
     isFirst: boolean =true;
+    id: string
 
     maxBolcks: number
     canvasSize: number = 510
     numOfBox: number = 17
     boxSize: number = this.canvasSize / this.numOfBox
+    stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13, bombUp: 21, fireUp: 22, speedUp: 23}
 
 
     constructor(config: Config, currentStage: number[][]) {
         this.maxBolcks = config.x;
+        this.id = uuidv4()
         if(this.isFirst){
             this.inititalDefinePosition(currentStage);
         }else{
             this.definePosition(currentStage);
         }
         
-        this.width = 32;
-        this.height = 32;
-        this.direction = '';
-        this.pastDirection = 'down';
+        this.direction = this.changeRandomDirection();
         this.enemyImg = enemyFrontImg;
 
         setInterval(() => {
-            this.changeRandomDirection();
-        }, 10000);
+            this.changeDirection(currentStage);
+        }, 300);
     }
 
     inititalDefinePosition(currentStage: number[][]): void{
@@ -86,21 +88,110 @@ export class Enemies {
         );
     }
 
-    moveEnemy(canvas: CanvasRenderingContext2D | null | undefined): void {
-        this.drawEnemy(canvas)
+    moveEnemy(canvas: CanvasRenderingContext2D | null | undefined, currentStage: number[][], enemies: Enemies[]): void {
+
+        const centerX = this.x + this.width / 2
+        const centerY = this.y + this.height / 2
+        const i: number = this.getIndex(centerY)
+        const j: number = this.getIndex(centerX)
+
+        if(this.direction === 'up'){
+            this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * -1), j, -1, 'vertical', currentStage)
+        }
+        else if(this.direction === 'down'){
+            this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * 1), j, 1, 'vertical', currentStage)
+        }
+        else if(this.direction === 'left'){
+            this.checkEnemyMove(i, j, i, this.getIndex(centerX + this.step * -1), -1, 'horizontal', currentStage)
+        }
+        else if(this.direction === 'right'){
+            this.checkEnemyMove(i, j, i, this.getIndex(centerX + this.step * 1), 1, 'horizontal', currentStage)
+        }
+    }
+
+    changeDirection(currentStage: number[][]): void{
+        const directions: string[] = this.checkDirections(currentStage)
+        const randomDirection: string = directions[Math.floor(Math.random() * directions.length)]
+        this.direction = randomDirection
+    }
+
+    checkDirections(currentStage: number[][]): string[]{
+        const i: number = this.getIndex(this.y + this.width / 2)
+        const j: number = this.getIndex(this.x + this.height / 2)
+        const up: number = currentStage[i-1][j]
+        const down: number = currentStage[i+1][j]
+        const left: number = currentStage[i][j-1]
+        const right: number = currentStage[i][j+1]
+    
+        let directions: string[] = []
+        if(up !== this.stageMap.stone && up !== this.stageMap.wall && up !== this.stageMap.bomb){
+            directions.push('up')
+        }
+        if(down !== this.stageMap.stone && down !== this.stageMap.wall && down !== this.stageMap.bomb){
+            directions.push('down')
+        }
+        if(left !== this.stageMap.stone && left !== this.stageMap.wall && left !== this.stageMap.bomb){
+            directions.push('left')
+        }
+        if(right !== this.stageMap.stone && right !== this.stageMap.wall && right !== this.stageMap.bomb){
+            directions.push('right')
+        }
+        // きた方向以外も動けるとき
+        if(directions.length > 1){
+            const opposite = this.getOppositeDirection()
+            console.log("direction:", this.direction, "opp:", opposite)
+            directions = directions.filter(direction => direction !== opposite)
+        }
+        return directions
+    }
+
+    getOppositeDirection(): string{
+        let opposite: string = ""
+        if(this.direction === 'up'){
+            opposite = "down"
+        } else if(this.direction === 'down'){
+            opposite = "up"
+        } else if(this.direction === 'left'){
+            opposite = "right"
+        } else if(this.direction === 'right'){
+            opposite = "left"
+        }
+        return opposite
+    }
+    
+
+    getBound(moveTo: string, direction: number) : number{
+        let bound: number = 0
+        if(moveTo === 'horizontal'){
+            bound = this.x + this.step * direction
+            if(direction >= 0) bound += this.width
+        } else{
+            bound = this.y + this.step * direction
+            if(direction >= 0) bound += this.height
+        }
+        return bound
+    }
+
+    moveOneStep(i: number, j: number, moveTo: string, direction: number): void{
+        if(moveTo === 'horizontal'){
+            this.y = i * this.boxSize
+            this.x += this.step * direction
+        } else {
+            this.x = j * this.boxSize
+            this.y += this.step * direction
+        }
     }
 
     getIndex(position: number): number{
         return Math.floor(position / this.boxSize)
     }
 
-    changeRandomDirection(): void {
+    changeRandomDirection(): string {
         const Directon: string[] = ['up','down','left','right']
-        const randomNum: number = Math.floor(Math.random() * (3 - 0)) + 0;
-
+        const randomNum: number = Math.floor(Math.random() * (4 - 0)) + 0;
 
         this.pastDirection = this.direction
-        this.direction = Directon[randomNum]
+        return Directon[randomNum]
     }
 
     changeEnemyImg(): string{
@@ -126,6 +217,49 @@ export class Enemies {
         }
         this.enemyImg = src
         return src
+    }
+
+    checkEnemyMove(i: number, j: number, nextI: number, nextJ: number, direction: number, moveTo: string,  currentStage: number[][]): void{
+        // if(this.isOnTheBomb(i, j, direction, moveTo, currentStage)){
+        //     this.moveOneStep(i, j, moveTo, direction)
+        //     return
+        // }
+        const bound = this.getBound(moveTo, direction)
+        // Playerまるパクり
+        // if(this.hitExplosion(i, j, nextI, nextJ, bound, moveTo, currentStage)){
+        //     enemies.filter(enemy -> id)
+        // 
+
+        // hitPlayer(){
+            // player.isAlive = false
+        //}
+        if(!this.canMove(i, j, nextI, nextJ, bound, moveTo, currentStage)) return
+        
+        else if(nextI !== i || nextJ !== j){
+            // this.changeDirection(currentStage)
+            // currentStageのplayerの位置を更新
+            // if(currentStage[nextI][nextJ] >= this.stageMap.bombUp){
+            //     this.getItem(currentStage[nextI][nextJ])
+            // }
+            // currentStage[i][j] = this.stageMap.grass
+            // currentStage[nextI][nextJ] = this.stageMap.player
+        }
+        this.moveOneStep(i, j, moveTo, direction)
+    }
+
+    canMove(i: number, j: number, nextI: number, nextJ: number, bound: number, moveTo:string, currentStage: number[][]): boolean{
+        if(moveTo === 'horizontal'){
+            // itemのとき
+            if(currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp){
+                return true
+            }
+            return currentStage[nextI][nextJ] % 10 === 0 && currentStage[i][this.getIndex(bound)] % 10 === 0
+        } else {
+            if(currentStage[this.getIndex(bound)][j] >= this.stageMap.bombUp){
+                return true
+            }
+            return currentStage[nextI][nextJ] % 10 === 0 && currentStage[this.getIndex(bound)][j] % 10 === 0
+        }
     }
 
 }
