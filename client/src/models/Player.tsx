@@ -156,6 +156,7 @@ export class Player {
         }
         this.moveOneStep(i, j, moveTo, direction)
     }
+    
 
     putBomb(e: any, currentStage: number[][]): void {
         if(e.key === ' '){

@@ -30,13 +30,6 @@ const Game: React.FC = () => {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
-      // enemies[0].drawEnemy(canvasContext)
-      // enemies[1].x = enemies[1].boxSize * 7
-      // enemies[1].y = enemies[1].boxSize * 7
-      // enemies[1].drawEnemy(canvasContext)
-      // enemies[2].x = enemies[1].boxSize * 13
-      // enemies[2].y = enemies[1].boxSize * 13
-      // enemies[2].drawEnemy(canvasContext)
       
     }
     addKeyEvents()
@@ -49,9 +42,13 @@ const Game: React.FC = () => {
     setGameTime(gameTime + 0.01)
     player?.move(canvasContext, currentStage)
     player?.drawBombs(canvasContext)
-    enemies[0]?.moveEnemy(canvasContext)
-    enemies[1]?.moveEnemy(canvasContext)
-    enemies[2]?.moveEnemy(canvasContext)
+    for(let i: number = 0; i < enemies.length; i++){
+      enemies[i].moveEnemy(canvasContext, currentStage, enemies);
+      enemies[i].drawEnemy(canvasContext);
+    }
+    // enemies[0]?.moveEnemy(canvasContext, currentStage)
+    // enemies[1]?.moveEnemy(canvasContext, currentStage)
+    // enemies[2]?.moveEnemy(canvasContext, currentStage)
     if(!player.isAlive){
       showResult().catch(() => alert("kkkk"));
     }
