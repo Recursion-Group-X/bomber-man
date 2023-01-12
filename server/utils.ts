@@ -52,6 +52,12 @@ export const playerBomb = (socket, data) => {
   sendGameStatus(room, socket);
 };
 
+export const leaveRoom = (socket, roomName) => {
+  socket.leave(roomName);
+  const room: Room = getRoom(roomName);
+  room.players = room.players.filter((player) => player.socketId !== socket.id);
+};
+
 function getRoom(roomName: string): Room {
   const room: Room[] | null = rooms.filter(
     (room) => room.roomName === roomName

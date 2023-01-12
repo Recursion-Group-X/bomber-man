@@ -3,7 +3,13 @@ const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
 import { Room } from "./room";
-import { joinRoom, playerBomb, playerInterval, startGame } from "./utils";
+import {
+  joinRoom,
+  leaveRoom,
+  playerBomb,
+  playerInterval,
+  startGame,
+} from "./utils";
 
 export const rooms = [
   new Room("Room 1"),
@@ -53,27 +59,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave_room", (roomName) => {
-    socket.leave(roomName);
-    const room: Room = getRoom(roomName);
-    room.players = room.players.filter(
-      (player) => player.socketId !== socket.id
-    );
+    leaveRoom(socket, roomName);
   });
 
   socket.on("disconnect", () => {
     removeSocketFromRooms(socket);
     console.log("disconnected.");
-    socket.emit("disconnection");
   });
 });
-
-function getRoom(roomName: string): Room {
-  const room: Room[] | null = rooms.filter(
-    (room) => room.roomName === roomName
-  );
-  if (room.length === 0) return null;
-  return room[0];
-}
 
 function removeSocketFromRooms(socket): void {
   for (let i: number = 0; i < rooms.length; i++) {
