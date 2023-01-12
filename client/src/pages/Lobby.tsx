@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router'
 import { Room } from '../bombermanConfig'
 import { playerNameAtom, roomNameAtom, socketAtom } from '../atom/Atom'
 
-const rooms: string[] = ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5', 'Room 6', 'Room 7', 'Room 8']
 const Lobby: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const navigate = useNavigate()
@@ -22,6 +21,7 @@ const Lobby: React.FC = () => {
   }
 
   useEffect(() => {
+    socket?.emit('enter_lobby')
     socket?.on('send_rooms', (data: Room[]) => {
       setRooms(data)
     })
@@ -30,6 +30,12 @@ const Lobby: React.FC = () => {
   return (
     <div className="h-screen">
       <div className="h-20 bg-slate-600 flex items-center justify-center text-white text-4xl">Lobby</div>
+      <button
+        className="px-3 py-2 bg-gray-400 text-lg text-white ml-20 mt-8 font-semibold rounded-full hover:bg-gray-500"
+        onClick={() => navigate('/')}
+      >
+        Home
+      </button>
 
       <div className="my-10 flex flex-wrap justify-center items-center">
         {rooms.map((room) => (

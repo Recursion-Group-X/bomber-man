@@ -37,6 +37,11 @@ const Room: React.FC = () => {
     navigate('/online-game', { state: { players: data.players, stage: data.stage, id: playerId } })
   }
 
+  const backLobby = (): void => {
+    socket.emit('leave_room', roomName)
+    navigate('/lobby')
+  }
+
   return (
     <div>
       <h1>Multi Player Game</h1>
@@ -47,6 +52,9 @@ const Room: React.FC = () => {
       </div>
       <button disabled={players.length <= 1} onClick={handleStartGame}>
         Start Game
+      </button>
+      <button className="m-5" onClick={backLobby}>
+        Lobby
       </button>
     </div>
   )
