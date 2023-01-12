@@ -70,13 +70,15 @@ const MultiGame: React.FC = () => {
   }
 
   useInterval(async () => {
-    if (players != null && myPlayer != null && players.length > 0) {
+    if (players != null && players.length > 0) {
       await drawPlayers(players)
-      setMyPlayer({ ...myPlayer, direction: lastDirection })
-      socket?.emit('player_interval', {
-        player: { ...myPlayer, direction: lastDirection },
-        roomName,
-      })
+      if (myPlayer != null) {
+        setMyPlayer({ ...myPlayer, direction: lastDirection })
+        socket?.emit('player_interval', {
+          player: { ...myPlayer, direction: lastDirection },
+          roomName,
+        })
+      }
     }
   }, interval)
 
@@ -89,14 +91,13 @@ const MultiGame: React.FC = () => {
       const context = onlineCanvas.current
       setCavnasContext(context?.getContext('2d'))
     }
-  }, [onlineCanvas])
+  }, [onlineCanvas, canvasContext])
 
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
       setMyPlayer(data.players.filter((player) => player.socketId === socket.id)[0])
       setStage(data.stage)
-      // drawPlayers(data.players)
     })
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null

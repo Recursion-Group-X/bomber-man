@@ -44,6 +44,9 @@ const useDrawPlayers = (): [
     canvasSize: number
   ): Promise<void> => {
     context.clearRect(0, 0, canvasSize, canvasSize)
+    context.font = '10px serif'
+    context.textAlign = 'center'
+    context.fillStyle = 'white'
     const img = document.createElement('img')
     for (let i: number = 0; i < players.length; i++) {
       const player = players[i]
@@ -51,7 +54,10 @@ const useDrawPlayers = (): [
         img.src = src
         console.log(src)
       })
-      if (player.isAlive) context.drawImage(img, player.x, player.y, player.size, player.size)
+      if (player.isAlive) {
+        context.drawImage(img, player.x, player.y, player.size, player.size)
+        context.fillText(player.name, player.x + player.size / 2, player.y)
+      }
     }
   }
 
