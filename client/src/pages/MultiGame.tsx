@@ -32,11 +32,13 @@ const MultiGame: React.FC = () => {
   const onlineCanvas = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [stopPlayer, changeDirection] = usePlayerMove()
+  const [drawPlayersOnCanvas] = useDrawPlayers()
 
-  const drawPlayers = (plys: OnlinePlayer[]): void => {
+  const drawPlayers = async (plys: OnlinePlayer[]): Promise<void> => {
     if (canvasContext != null) {
-      useDrawPlayers(plys, canvasContext, STAGESIZE)
+      await drawPlayersOnCanvas(plys, canvasContext, STAGESIZE)
     }
+    return await new Promise((resolve) => resolve())
   }
 
   const addKeyEvents = (): void => {
@@ -67,8 +69,9 @@ const MultiGame: React.FC = () => {
     })
   }
 
-  useInterval(() => {
+  useInterval(async () => {
     if (players != null && myPlayer != null && players.length > 0) {
+      await drawPlayers(players)
       setMyPlayer({ ...myPlayer, direction: lastDirection })
       socket?.emit('player_interval', {
         player: { ...myPlayer, direction: lastDirection },
@@ -93,7 +96,7 @@ const MultiGame: React.FC = () => {
       setPlayers(data.players)
       setMyPlayer(data.players.filter((player) => player.socketId === socket.id)[0])
       setStage(data.stage)
-      drawPlayers(data.players)
+      // drawPlayers(data.players)
     })
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null

@@ -1,61 +1,53 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "plugin:react/recommended",
-        "standard-with-typescript",
-        'prettier',
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  extends: ['plugin:react/recommended', 'standard-with-typescript', 'prettier'],
+  overrides: [],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    tsconfigRootDir: __dirname,
+    project: ['./tsconfig.json'],
+  },
+  plugins: ['react'],
+  ignorePatterns: ['.eslintrc.js'],
+  rules: {
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/no-misused-promises': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'import/prefer-default-export': 'off',
+    'import/extensions': [
+      'error',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
     ],
-    "overrides": [
+    'react/jsx-filename-extension': [
+      'error',
+      {
+        extensions: ['.jsx', '.tsx'],
+      },
     ],
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module",
-        'tsconfigRootDir': __dirname,
-        'project': ['./tsconfig.json'],
-    },
-    "plugins": [
-        "react"
+    'react/react-in-jsx-scope': 'off',
+    'no-void': [
+      'error',
+      {
+        allowAsStatement: true,
+      },
     ],
-    "ignorePatterns": [
-        ".eslintrc.js"
-    ],
-    "rules": {
-        'no-use-before-define': "off",
-        "@typescript-eslint/no-use-before-define": "off",
-        '@typescript-eslint/no-unused-vars': 'off',
-        'import/prefer-default-export': "off",
-        'import/extensions': [
-            'error',
-            {
-                js: 'never',
-                jsx: 'never',
-                ts: 'never',
-                tsx: 'never',
-            },
-        ],
-        'react/jsx-filename-extension': [
-        'error',
-        {
-            extensions: ['.jsx', '.tsx'],
-        },
-        ],
-        'react/react-in-jsx-scope': 'off',
-        'no-void': [
-        'error',
-        {
-            allowAsStatement: true,
-        },
-        ],
-    },
-    settings: {
+  },
+  settings: {
     'import/resolver': {
-        node: {
+      node: {
         paths: ['src'],
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
-        },
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
     },
-    },
+  },
 }
