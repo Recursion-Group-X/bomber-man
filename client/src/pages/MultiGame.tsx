@@ -15,7 +15,7 @@ import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
 import useDrawPlayers from '../hooks/useDrawPlayers'
 import usePlayerMove from '../hooks/usePlayerMove'
-import { DeadPlayer, OnlinePlayer } from '../bombermanConfig'
+import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
 const INTERVAL_SPAN = 50
@@ -125,22 +125,22 @@ const MultiGame: React.FC = () => {
 
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>
         <table className="h-full w-full">
-          {stage.map((row) => (
-            <tr className={`h-1/${stage.length} w-full`} key={row[0]}>
-              {row.map((box) => (
+          {stage.map((row, i) => (
+            <tr className={`h-1/${stage.length} w-full`} key={i * config1.x}>
+              {row.map((box, j) => (
                 <>
                   {
                     // grass:0, player:10,  bomb:3
                     box === 0 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${grassImg})` }}
                       ></td>
                     ) : box === 1 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${stoneImg})` }}
                       ></td>
                     ) : box === 2 ? (
@@ -150,37 +150,37 @@ const MultiGame: React.FC = () => {
                     ) : box === 11 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${fireOriginImg})` }}
                       ></td>
                     ) : box === 12 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${horizontalFireImg})` }}
                       ></td>
                     ) : box === 13 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${verticalFireImg})` }}
                       ></td>
                     ) : box === 21 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${bombUpImg})` }}
                       ></td>
                     ) : box === 22 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${fireUpImg})` }}
                       ></td>
                     ) : box === 23 ? (
                       <td
                         className={`w-1/${row.length}`}
-                        key={box}
+                        key={i * config1.x + j}
                         style={{ backgroundImage: `url(${speedUpImg})` }}
                       ></td>
                     ) : null

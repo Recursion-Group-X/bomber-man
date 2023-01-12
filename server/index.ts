@@ -73,7 +73,9 @@ io.on("connection", (socket) => {
     if (!player.isAlive) {
       room.removePlayer(player);
     }
-    if (room.players.length <= 0) {
+    if (room.players.length <= 1) {
+      for (let i = 0; i < room.players.length; i++)
+        room.removePlayer(room.players[i]);
       socket.to(data.roomName).emit("send_game_result", room.deadPlayers);
       socket.emit("send_game_result", room.deadPlayers);
       resetRoom(room.roomName);
