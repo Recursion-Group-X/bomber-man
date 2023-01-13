@@ -11,11 +11,16 @@ export const currentStageAtom: PrimitiveAtom<number[][]> = atom(currentStage.get
 
 export const playerAtom = atom<Player>(new Player('player1'))
 // export const enemiesAtom = atom<Enemies>(new Enemies(config1, currentStage.getBoard()))
+
+
+
 export const enemiesAtom: PrimitiveAtom<Enemies[]>= atom([
     new Enemies(config1, currentStage.getBoard()),
     new Enemies(config1, currentStage.getBoard()),
     new Enemies(config1, currentStage.getBoard())
 ])
+
+
 
 // online game
 export const socketAtom = atom<any>(null)
