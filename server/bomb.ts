@@ -12,6 +12,7 @@ export class Bomb {
   j: number;
   stage: Stage;
   id: string;
+  isExploding: boolean;
   static fireTypes: FireType = { origin: 11, horizontail: 12, vertical: 13 };
 
   constructor(i: number, j: number, player: Player, stage: Stage, id: string) {
@@ -21,11 +22,13 @@ export class Bomb {
     this.player = player;
     this.stage = stage;
     this.id = id;
+    this.isExploding = false;
   }
 
   explode(): void {
     const board = this.stage.getStage();
     board[this.i][this.j] = Stage.stageValues.fireO;
+    this.isExploding = true;
     this.explodeDirection("up", board);
     this.explodeDirection("down", board);
     this.explodeDirection("left", board);
@@ -39,6 +42,7 @@ export class Bomb {
           }
         }
       }
+      this.stage.bombs = this.stage.bombs.filter((bomb) => bomb.id !== this.id);
     }, 1000);
   }
 

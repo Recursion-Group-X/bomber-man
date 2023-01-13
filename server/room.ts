@@ -5,6 +5,7 @@ interface DeadPlayer {
   name: string;
   playerId: number;
   deathTime: number;
+  killedBy: string;
 }
 
 export class Room {
@@ -47,6 +48,7 @@ export class Room {
       name: player.name,
       playerId: player.playerId,
       deathTime: (new Date().getTime() - this.gameStartTime) / 1000,
+      killedBy: player.killedBy,
     });
   }
 }
