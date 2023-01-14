@@ -127,7 +127,8 @@ export class Player {
     return (
       stageValue === Stage.stageValues.stone ||
       stageValue === Stage.stageValues.wall ||
-      (stageValue === Stage.stageValues.bomb && !this.isOnTheBomb(board))
+      stageValue === Stage.stageValues.bomb
+      //&& !this.isOnTheBomb(board))
     );
   }
 
@@ -154,24 +155,24 @@ export class Player {
     );
   }
 
-  isOnTheBomb(board: number[][]): boolean {
-    const playerIndex: Index = new Index();
-    playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
-    playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
+  // isOnTheBomb(board: number[][]): boolean {
+  //   const playerIndex: Index = new Index();
+  //   playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
+  //   playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
 
-    const top = Math.floor(this.y / Stage.boxSize);
-    const bottom = Math.floor((this.y + this.size) / Stage.boxSize);
-    const left = Math.floor(this.x / Stage.boxSize);
-    const right = Math.floor((this.x + this.size) / Stage.boxSize);
+  //   const top = Math.floor(this.y / Stage.boxSize);
+  //   const bottom = Math.floor((this.y + this.size) / Stage.boxSize);
+  //   const left = Math.floor(this.x / Stage.boxSize);
+  //   const right = Math.floor((this.x + this.size) / Stage.boxSize);
 
-    const bomb = Stage.stageValues.bomb;
-    return (
-      board[top][playerIndex.j] === bomb ||
-      board[bottom][playerIndex.j] === bomb ||
-      board[playerIndex.i][left] === bomb ||
-      board[playerIndex.i][right] === bomb
-    );
-  }
+  //   const bomb = Stage.stageValues.bomb;
+  //   return (
+  //     board[top][playerIndex.j] === bomb ||
+  //     board[bottom][playerIndex.j] === bomb ||
+  //     board[playerIndex.i][left] === bomb ||
+  //     board[playerIndex.i][right] === bomb
+  //   );
+  // }
 
   hitExplosion(board: number[][]): boolean {
     const playerIndex: Index = new Index();
