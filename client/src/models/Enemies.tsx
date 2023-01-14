@@ -232,7 +232,6 @@ export class Enemies {
 
         // エネミーとプレイヤーが当たった時の処理
         if (this.hitPlayer(i, j, nextI, nextJ, bound, moveTo, currentStage)) {
-            console.log('koko')
             player.isAlive = false
         }
 
