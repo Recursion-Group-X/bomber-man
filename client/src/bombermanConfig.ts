@@ -16,6 +16,7 @@ export interface DeadPlayer {
   name: string
   playerId: number
   deathTime: number
+  killedBy: string
 }
 
 export interface OnlinePlayer {
@@ -53,4 +54,5 @@ export interface Bomb {
   i: number
   j: number
   stage: Stage
+  isExploding: boolean
 }

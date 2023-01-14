@@ -79,7 +79,7 @@ export class Stage {
 
   explodeBomb(bomb: Bomb): void {
     if (this.bombs.filter((b) => b.id === bomb.id).length === 0) return;
-    this.bombs = this.bombs.filter((b) => b.id !== bomb.id);
+    // this.bombs = this.bombs.filter((b) => b.id !== bomb.id);
     bomb.explode();
   }
 }

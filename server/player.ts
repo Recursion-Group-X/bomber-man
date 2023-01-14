@@ -25,7 +25,7 @@ export class Player {
   numOfBombs: number = 1;
   bombPower: number = 1;
   isAlive: boolean = true;
-  killedBy: number;
+  killedBy: string;
   socketId: string;
 
   constructor(name: string, id: number, socketId) {
@@ -61,6 +61,7 @@ export class Player {
     }
     if (this.hitExplosion(board)) {
       this.isAlive = false;
+      this.killedBy = this.getKilledBy(stage)?.name;
     }
     if (this.collideWithItem(board)) {
       this.getItem(board);
@@ -226,5 +227,28 @@ export class Player {
     setTimeout(() => {
       stage.explodeBomb(newBomb);
     }, 3000);
+  }
+
+  getKilledBy(stage: Stage): Player {
+    const playerI: number = Math.floor(
+      (this.y + this.size / 2) / Stage.boxSize
+    );
+    const playerJ: number = Math.floor(
+      (this.x + this.size / 2) / Stage.boxSize
+    );
+    const explodingBombs: Bomb[] = stage.bombs.filter(
+      (bomb) => bomb.isExploding
+    );
+
+    for (let i: number = 0; i < explodingBombs.length; i++) {
+      const bomb: Bomb = explodingBombs[i];
+      const hitHorizontally: boolean =
+        bomb.power >= Math.abs(bomb.j - playerJ) && bomb.i === playerI;
+      const hitVertically: boolean =
+        bomb.power >= Math.abs(bomb.i - playerI) && bomb.j === playerJ;
+
+      if (hitHorizontally || hitVertically) return bomb.player;
+    }
+    return stage.bombs[0].player;
   }
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { playerNameAtom, roomNameAtom, socketAtom } from '../atom/Atom'
 import { DeadPlayer } from '../bombermanConfig'
+import crownImg from '../assets/crown.png'
 
 const MultiResult: React.FC = () => {
   const [deadPlayers, setDeadPlayers] = useState<DeadPlayer[]>([])
@@ -41,22 +42,32 @@ const MultiResult: React.FC = () => {
       <div className="w-1/2 my-auto mx-auto border border-black rounded">
         <p className="text-center text-2xl my-5">GAME RESULT</p>
         <div className="flex text-2xl">
-          <div className="w-1/2 text-right">
+          <div className="w-full justify-center mx-auto">
             {deadPlayers.map((p, index) => (
-              <p key={p.playerId} className="my-3">
-                {index === 0 && <span>Winner: </span>}
-                {index === 1 && <span>2nd: </span>}
-                {index === 2 && <span>3rd: </span>}
-                {index === 3 && <span>4th: </span>}
-              </p>
-            ))}
-          </div>
-          <div className="w-1/2 text-left ml-10">
-            {deadPlayers.map((p, index) => (
-              <p key={p.playerId} className="my-3">
-                <span className="font-bold">{p.name}</span>{' '}
-                {index !== 0 && <span className="text-lg"> ({p.deathTime} sec)</span>}
-              </p>
+              <div key={p.playerId} className="w-full flex items-center justify-between">
+                <div className="w-1/3 text-right">
+                  <p className="my-3">
+                    {index === 0 && <span>Winner: </span>}
+                    {index === 1 && <span>2nd: </span>}
+                    {index === 2 && <span>3rd: </span>}
+                    {index === 3 && <span>4th: </span>}
+                  </p>
+                </div>
+                <div className="w-2/3 text-center">
+                  <div className="flex items-center justify-center" key={p.playerId}>
+                    {index === 0 && <img src={crownImg} className="mr-2 mt-3" alt="crown" />}
+                    <div className="">
+                      <p className="mt-3 font-bold">{p.name}</p>
+                      {index !== 0 && (
+                        <p className="text-sm ml-40">
+                          killed by {p.killedBy} ({p.deathTime} sec)
+                        </p>
+                      )}
+                    </div>
+                    {index === 0 && <img src={crownImg} className="ml-2 mt-3" alt="crown" />}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -75,13 +86,6 @@ const MultiResult: React.FC = () => {
           </button>
         </div>
       </div>
-      {/* {deadPlayers.map((p) => (
-        <p key={p.playerId}>
-          {p.name}: {p.deathTime}
-        </p>
-      ))}
-      <button onClick={handleBackRoom}>Back to Room {roomName}</button>
-      <button onClick={handleBackHome}>Home</button> */}
     </div>
   )
 }
