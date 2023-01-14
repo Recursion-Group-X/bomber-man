@@ -24,7 +24,6 @@ export class Enemies {
   step: number = 1
   isFirst: boolean = true
   enemyImg: string
-
   maxBolcks: number
   canvasSize: number = 510
   numOfBox: number = 17
@@ -100,6 +99,7 @@ export class Enemies {
     const centerY = this.y + this.height / 2
     const i: number = this.getIndex(centerY)
     const j: number = this.getIndex(centerX)
+
     if (this.direction === 'up') {
       this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * -1), j, -1, 'vertical', currentStage, player)
     } else if (this.direction === 'down') {
