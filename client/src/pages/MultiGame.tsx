@@ -32,11 +32,13 @@ const MultiGame: React.FC = () => {
   const onlineCanvas = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [stopPlayer, changeDirection] = usePlayerMove()
+  const [drawPlayersOnCanvas] = useDrawPlayers()
 
-  const drawPlayers = (plys: OnlinePlayer[]): void => {
+  const drawPlayers = async (plys: OnlinePlayer[]): Promise<void> => {
     if (canvasContext != null) {
-      useDrawPlayers(plys, canvasContext, STAGESIZE)
+      await drawPlayersOnCanvas(plys, canvasContext, STAGESIZE)
     }
+    return await new Promise((resolve) => resolve())
   }
 
   const addKeyEvents = (): void => {
@@ -67,13 +69,16 @@ const MultiGame: React.FC = () => {
     })
   }
 
-  useInterval(() => {
-    if (players != null && myPlayer != null && players.length > 0) {
-      setMyPlayer({ ...myPlayer, direction: lastDirection })
-      socket?.emit('player_interval', {
-        player: { ...myPlayer, direction: lastDirection },
-        roomName,
-      })
+  useInterval(async () => {
+    if (players != null && players.length > 0) {
+      await drawPlayers(players)
+      if (myPlayer != null) {
+        setMyPlayer({ ...myPlayer, direction: lastDirection })
+        socket?.emit('player_interval', {
+          player: { ...myPlayer, direction: lastDirection },
+          roomName,
+        })
+      }
     }
   }, interval)
 
@@ -86,14 +91,13 @@ const MultiGame: React.FC = () => {
       const context = onlineCanvas.current
       setCavnasContext(context?.getContext('2d'))
     }
-  }, [onlineCanvas])
+  }, [onlineCanvas, canvasContext])
 
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
       setMyPlayer(data.players.filter((player) => player.socketId === socket.id)[0])
       setStage(data.stage)
-      drawPlayers(data.players)
     })
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
