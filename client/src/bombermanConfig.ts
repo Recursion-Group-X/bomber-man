@@ -25,6 +25,8 @@ export interface OnlinePlayer {
   y: number
   size: number
   direction: string
+  pastDirection: string
+  imageType: number
   speed: number
   numOfBombs: number
   bombPower: number

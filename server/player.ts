@@ -19,6 +19,8 @@ export class Player {
   y: number;
   size: number = 30;
   direction: string = "stay";
+  pastDirection: string = "down";
+  imageType: number = 1;
   speed: number = 5;
   numOfBombs: number = 1;
   bombPower: number = 1;
@@ -63,6 +65,9 @@ export class Player {
     if (this.collideWithItem(board)) {
       this.getItem(board);
     }
+    // 表示する画像を変えるため
+    if (this.direction !== "stay") this.pastDirection = this.direction;
+    this.imageType = this.imageType === 1 ? 2 : 1;
   }
 
   // indexに応じて滑らかな動き
