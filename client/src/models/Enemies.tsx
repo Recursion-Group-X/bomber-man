@@ -10,18 +10,20 @@ import enemyLeftImg from '../assets/enemy-left.png'
 import enemyLeftWalkImg from '../assets/enemy-left-walk.png'
 import enemyRightImg from '../assets/enemy-right.png'
 import enemyRightWalkImg from '../assets/enemy-right-walk.png'
+import { Player } from './Player'
 
 export class Enemies {
+  id: string
+  isAlive: boolean = true
   x: number = 0
   y: number = 0
   width: number = 32
   height: number = 32
   direction: string
   pastDirection: string = 'down'
-  enemyImg: string
   step: number = 1
   isFirst: boolean = true
-  id: string
+  enemyImg: string
 
   maxBolcks: number
   canvasSize: number = 510
@@ -93,20 +95,19 @@ export class Enemies {
     canvas?.drawImage(img, this.x, this.y, this.width, this.height)
   }
 
-  moveEnemy(canvas: CanvasRenderingContext2D | null | undefined, currentStage: number[][], enemies: Enemies[]): void {
+  moveEnemy(canvas: CanvasRenderingContext2D | null | undefined, currentStage: number[][], player: Player): void {
     const centerX = this.x + this.width / 2
     const centerY = this.y + this.height / 2
     const i: number = this.getIndex(centerY)
     const j: number = this.getIndex(centerX)
-
     if (this.direction === 'up') {
-      this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * -1), j, -1, 'vertical', currentStage)
+      this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * -1), j, -1, 'vertical', currentStage, player)
     } else if (this.direction === 'down') {
-      this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * 1), j, 1, 'vertical', currentStage)
+      this.checkEnemyMove(i, j, this.getIndex(centerY + this.step * 1), j, 1, 'vertical', currentStage, player)
     } else if (this.direction === 'left') {
-      this.checkEnemyMove(i, j, i, this.getIndex(centerX + this.step * -1), -1, 'horizontal', currentStage)
+      this.checkEnemyMove(i, j, i, this.getIndex(centerX + this.step * -1), -1, 'horizontal', currentStage, player)
     } else if (this.direction === 'right') {
-      this.checkEnemyMove(i, j, i, this.getIndex(centerX + this.step * 1), 1, 'horizontal', currentStage)
+      this.checkEnemyMove(i, j, i, this.getIndex(centerX + this.step * 1), 1, 'horizontal', currentStage, player)
     }
   }
 
@@ -222,21 +223,21 @@ export class Enemies {
     nextJ: number,
     direction: number,
     moveTo: string,
-    currentStage: number[][]
+    currentStage: number[][],
+    player: Player
   ): void {
-    // if(this.isOnTheBomb(i, j, direction, moveTo, currentStage)){
-    //     this.moveOneStep(i, j, moveTo, direction)
-    //     return
-    // }
     const bound = this.getBound(moveTo, direction)
-    // Playerまるパクり
-    // if(this.hitExplosion(i, j, nextI, nextJ, bound, moveTo, currentStage)){
-    //     enemies.filter(enemy -> id)
-    //
 
-    // hitPlayer(){
-    // player.isAlive = false
-    // }
+    // エネミーと爆弾が当たった時の処理
+    if (this.hitExplosion(i, j, nextI, nextJ, bound, moveTo, currentStage)) {
+      this.isAlive = false
+    }
+
+    // エネミーとプレイヤーが当たった時の処理
+    if (this.hitPlayer(i, j, nextI, nextJ, bound, moveTo, currentStage)) {
+      player.isAlive = false
+    }
+
     if (!this.canMove(i, j, nextI, nextJ, bound, moveTo, currentStage)) return
     else if (nextI !== i || nextJ !== j) {
       // this.changeDirection(currentStage)
@@ -248,6 +249,60 @@ export class Enemies {
       // currentStage[nextI][nextJ] = this.stageMap.player
     }
     this.moveOneStep(i, j, moveTo, direction)
+  }
+
+  hitExplosion(
+    i: number,
+    j: number,
+    nextI: number,
+    nextJ: number,
+    bound: number,
+    moveTo: string,
+    currentStage: number[][]
+  ): boolean {
+    if (
+      currentStage[nextI][nextJ] >= this.stageMap.bombUp ||
+      currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp
+    ) {
+      return false
+    }
+    if (moveTo === 'horizontal') {
+      if (
+        currentStage[nextI][nextJ] >= this.stageMap.bombUp ||
+        currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp
+      ) {
+        return false
+      } else {
+        return (
+          currentStage[nextI][nextJ] > this.stageMap.player ||
+          currentStage[i][this.getIndex(bound)] > this.stageMap.player
+        )
+      }
+    } else {
+      if (
+        currentStage[nextI][nextJ] >= this.stageMap.bombUp ||
+        currentStage[this.getIndex(bound)][j] >= this.stageMap.bombUp
+      ) {
+        return false
+      } else {
+        return (
+          currentStage[nextI][nextJ] > this.stageMap.player ||
+          currentStage[this.getIndex(bound)][j] > this.stageMap.player
+        )
+      }
+    }
+  }
+
+  hitPlayer(
+    i: number,
+    j: number,
+    nextI: number,
+    nextJ: number,
+    bound: number,
+    moveTo: string,
+    currentStage: number[][]
+  ): boolean {
+    return currentStage[nextI][nextJ] === this.stageMap.player
   }
 
   canMove(
@@ -264,12 +319,18 @@ export class Enemies {
       if (currentStage[i][this.getIndex(bound)] >= this.stageMap.bombUp) {
         return true
       }
-      return currentStage[nextI][nextJ] % 10 === 0 && currentStage[i][this.getIndex(bound)] % 10 === 0
+      return (
+        (currentStage[nextI][nextJ] % 10 === 0 && currentStage[i][this.getIndex(bound)] % 10 === 0) ||
+        currentStage[nextI][nextJ] >= this.stageMap.bombUp
+      )
     } else {
       if (currentStage[this.getIndex(bound)][j] >= this.stageMap.bombUp) {
         return true
       }
-      return currentStage[nextI][nextJ] % 10 === 0 && currentStage[this.getIndex(bound)][j] % 10 === 0
+      return (
+        (currentStage[nextI][nextJ] % 10 === 0 && currentStage[this.getIndex(bound)][j] % 10 === 0) ||
+        currentStage[nextI][nextJ] >= this.stageMap.bombUp
+      )
     }
   }
 }
