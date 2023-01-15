@@ -7,6 +7,7 @@ const Home: React.FC = () => {
   const [playerName, setPlayerName] = useAtom(playerNameAtom)
   const navigate = useNavigate()
   const [socket] = useAtom(socketAtom)
+
   const startSoloGame = (): void => {
     navigate('/game')
   }
