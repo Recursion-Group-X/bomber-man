@@ -11,7 +11,7 @@ import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
-import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
+import { currentStageAtom, playerAtom, enemiesAtom, playerNameAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
@@ -20,7 +20,11 @@ const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
+  // Todo 状態を統一したい
   const [player] = useAtom(playerAtom)
+  const [playerName] = useAtom(playerNameAtom)
+  player.name = playerName
+
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
