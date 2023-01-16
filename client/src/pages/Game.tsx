@@ -85,8 +85,7 @@ const Game: React.FC = () => {
       navigate('/result', {
         state: {
           name: player.name,
-          score: gameTime,
-          alivedTime: gameTime,
+          score: convertTimeToScore(gameTime),
         },
       })
     }, 1000)
@@ -97,10 +96,19 @@ const Game: React.FC = () => {
     return {
       id: (await gameRecordGateway.getNumOfGameRecords()) + 1,
       name: player.name,
-      score: gameTime,
-      alivedTime: gameTime,
+      score: convertTimeToScore(gameTime),
       date: new Date(),
     }
+  }
+
+  const convertTimeToScore = (time: number): string => {
+    const min: string =
+      Math.floor((time % 3600) / 60) <= 9
+        ? `0${Math.floor((time % 3600) / 60)}`
+        : Math.floor((time % 3600) / 60).toString()
+    const sec = time % 60 <= 9 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
+    const msec = (time % 60).toFixed(2).split('.')[1]
+    return `${min}:${sec}:${msec}`
   }
 
   return (

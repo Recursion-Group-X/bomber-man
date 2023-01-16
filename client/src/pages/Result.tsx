@@ -36,17 +36,13 @@ const Result: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="w-1/3">
+        <div className="w-2/3">
           {recordList?.map((record: GameRecord) => (
             <div key={record.id}>
-              <p className="text-center my-4 text-2xl">Score: {record.score}</p>
-            </div>
-          ))}
-        </div>
-        <div className="w-1/3">
-          {recordList?.map((record: GameRecord) => (
-            <div key={record.id}>
-              <p className="text-center my-4 text-2xl">Time: {record.alivedTime}</p>
+              <p className="text-center my-4 text-2xl">
+                Score: {record.score.slice(0, 6)}
+                <span className="text-lg">{record.score.slice(-2)}</span>
+              </p>
             </div>
           ))}
         </div>
@@ -54,8 +50,10 @@ const Result: React.FC = () => {
 
       <div className="text-center">
         <p>{state.name} Result</p>
-        <p>score: {state.score}</p>
-        <p>alivedTime: {state.alivedTime}</p>
+        <p>
+          score: {state.score.slice(0, 6)}
+          <span className="text-lg">{state.score.slice(-2)}</span>
+        </p>
       </div>
       <div className="flex justify-end w-2/3 mx-auto">
         <button className="m-4 border border-2 p-2" onClick={restartGame}>

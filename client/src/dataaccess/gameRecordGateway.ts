@@ -7,8 +7,7 @@ export class GameRecordGateWay {
     addDoc(collection(db, 'records').withConverter(recordConverter), {
       id: record.id,
       name: record.name,
-      score: Math.floor(record.score),
-      alivedTime: Math.floor(record.alivedTime),
+      score: record.score,
       date: record.date,
     }).catch(() => alert('ERROR'))
   }
