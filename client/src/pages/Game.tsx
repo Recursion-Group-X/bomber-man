@@ -81,9 +81,10 @@ const Game: React.FC = () => {
   }
 
   const showResult = async (): Promise<void> => {
-    setTimeout(() => {
+    setTimeout(async () => {
       navigate('/result', {
         state: {
+          id: await gameRecordGateway.getNumOfGameRecords(),
           name: player.name,
           score: convertTimeToScore(gameTime),
         },

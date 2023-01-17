@@ -3,6 +3,7 @@ import { config1 } from '../bombermanConfig'
 import { Player } from '../models/Player'
 import { Stage } from '../models/Stage'
 import { Enemies } from '../models/Enemies'
+import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 
 export const canvasRefAtom: any = atom(null)
 const currentStage = new Stage(config1)

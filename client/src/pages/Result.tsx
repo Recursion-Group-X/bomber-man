@@ -11,7 +11,7 @@ const Result: React.FC = () => {
 
   useEffect(() => {
     ;(async () => {
-      return setrecordList(await gameRecordGateway.getLatestTopFiveGameRecord())
+      return setrecordList(await gameRecordGateway.getLatestGameTopFiftyRecord())
     })().catch(() => alert('ERORR'))
   }, [])
 
@@ -23,6 +23,18 @@ const Result: React.FC = () => {
     navigate('/game')
   }
 
+  const getDisplayRecords = (recordList: GameRecord[]): GameRecord[] => {
+    let rank = -1
+    recordList.forEach((value, index) => {
+      if (value.id === state.id) {
+        rank = index
+      }
+    })
+    return rank !== -1 ? recordList.slice(rank - 2, rank + 3) : []
+  }
+
+  const displayList = recordList !== undefined ? getDisplayRecords(recordList) : recordList
+
   return (
     <div className="h-screen text-xl">
       <div className="h-20 bg-slate-600 flex items-center justify-center">
@@ -30,14 +42,14 @@ const Result: React.FC = () => {
       </div>
       <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
         <div className="w-1/3">
-          {recordList?.map((record: GameRecord) => (
+          {displayList?.map((record: GameRecord) => (
             <div key={record.id}>
               <p className="text-center my-4 text-2xl">{record.name}</p>
             </div>
           ))}
         </div>
         <div className="w-2/3">
-          {recordList?.map((record: GameRecord) => (
+          {displayList?.map((record: GameRecord) => (
             <div key={record.id}>
               <p className="text-center my-4 text-2xl">
                 Score: {record.score.slice(0, 6)}
