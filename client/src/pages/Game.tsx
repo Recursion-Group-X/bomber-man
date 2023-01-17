@@ -11,13 +11,10 @@ import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
-import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
+import { currentStageAtom, playerAtom, enemiesAtom, addEnemy} from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
-
-
-
 
 
 const Game: React.FC = () => {
@@ -52,12 +49,20 @@ const Game: React.FC = () => {
       // if(enemies[i].isAlive){
       enemies[i].moveEnemy(canvasContext, currentStage, player);
       enemies[i].drawEnemy(canvasContext);
+      
       // }
     }
     if (!player.isAlive) {
       showResult().catch(() => alert("kkkk"));
     }
   }, player.isAlive ? 10 : null)
+
+  useInterval(() => {
+    // console.log('before',enemies.length)
+    addEnemy();
+    // console.log('after',enemies.length)
+    
+  }, 8000)
 
   const addKeyEvents = (): void => {
     addEventListener('keydown', playerAction)
