@@ -33,6 +33,8 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
 
+
+
     }
     addKeyEvents()
     return () => removeKeyEvents()
@@ -46,11 +48,8 @@ const Game: React.FC = () => {
     player?.drawBombs(canvasContext)
     enemies = enemies.filter(enemy => enemy.isAlive)
     for (let i: number = 0; i < enemies.length; i++) {
-      // if(enemies[i].isAlive){
       enemies[i].moveEnemy(canvasContext, currentStage, player);
       enemies[i].drawEnemy(canvasContext);
-      
-      // }
     }
     if (!player.isAlive) {
       showResult().catch(() => alert("kkkk"));
@@ -58,10 +57,7 @@ const Game: React.FC = () => {
   }, player.isAlive ? 10 : null)
 
   useInterval(() => {
-    // console.log('before',enemies.length)
     addEnemy();
-    // console.log('after',enemies.length)
-    
   }, 8000)
 
   const addKeyEvents = (): void => {

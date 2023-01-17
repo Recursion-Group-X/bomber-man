@@ -20,7 +20,6 @@ export const enemiesAtom = atom<Enemies[]>([
 
 export function addEnemy(): void{
     enemiesAtom.init.push(
-        // new Enemies(config1, currentStage.getBoard()),
         new Enemies(config1, currentStage.getBoard(),false ,playerAtom.init.x, playerAtom.init.y),
         new Enemies(config1, currentStage.getBoard(),false ,playerAtom.init.x, playerAtom.init.y)
         )
