@@ -21,7 +21,7 @@ export class Player {
   direction: string = "stay";
   pastDirection: string = "down";
   imageType: number = 1;
-  speed: number = 5;
+  speed: number = 1;
   numOfBombs: number = 1;
   bombPower: number = 1;
   isAlive: boolean = true;
@@ -204,7 +204,7 @@ export class Player {
     } else if (itemType === Stage.stageValues.fireUp) {
       this.bombPower++;
     } else if (itemType === Stage.stageValues.speedUp) {
-      this.speed += 2;
+      this.speed += 0.5;
     }
 
     board[playerIndex.i][playerIndex.j] = Stage.stageValues.ground;
