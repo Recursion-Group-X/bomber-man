@@ -88,13 +88,14 @@ export class Bomb {
     let random = Math.random();
     if (random > 0.5) {
       random = Math.random();
-      if (random > 0.6) {
+      if (random > 0.7) {
         board[i][j] = Stage.stageValues.bombUp;
-      } else if (random > 0.2) {
+      } else if (random > 0.4) {
         board[i][j] = Stage.stageValues.fireUp;
-      } else {
+      } else if (random > 0.2) {
         board[i][j] = Stage.stageValues.speedUp;
       }
+      // bombDown 1.5-2.0, fireDown 1.0-1.5, speedDown 0.0-1.0
     }
   }
 

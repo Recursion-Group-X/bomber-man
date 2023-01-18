@@ -43,11 +43,14 @@ export class Room {
 
   // dead
   removePlayer(player: Player): void {
+    let deathTime = (new Date().getTime() - this.gameStartTime) / 1000;
     this.players = this.players.filter((p) => p.playerId !== player.playerId);
+    if (this.players.length === 0)
+      deathTime = (new Date().getTime() - this.gameStartTime) / 100;
     this.deadPlayers.push({
       name: player.name,
       playerId: player.playerId,
-      deathTime: (new Date().getTime() - this.gameStartTime) / 1000,
+      deathTime,
       killedBy: player.killedBy,
     });
   }

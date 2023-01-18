@@ -15,10 +15,8 @@ import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
-
-
-
-
+// import { useAddEnemies } from '../hooks/useAddEnemies'
+import useAddEnemies from '../hooks/useAddEnemies'
 
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
@@ -29,12 +27,15 @@ const Game: React.FC = () => {
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay();
+  const[putNewEnemies] = useAddEnemies()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
+
+
 
     }
     addKeyEvents()
@@ -49,15 +50,18 @@ const Game: React.FC = () => {
     player?.drawBombs(canvasContext)
     enemies = enemies.filter(enemy => enemy.isAlive)
     for (let i: number = 0; i < enemies.length; i++) {
-      // if(enemies[i].isAlive){
       enemies[i].moveEnemy(canvasContext, currentStage, player);
       enemies[i].drawEnemy(canvasContext);
-      // }
     }
     if (!player.isAlive) {
       showResult().catch(() => alert("kkkk"));
     }
   }, player.isAlive ? 10 : null)
+
+  useInterval(() => {
+    putNewEnemies(2)
+    // addEnemy();
+  }, 8000)
 
   const addKeyEvents = (): void => {
     addEventListener('keydown', playerAction)
