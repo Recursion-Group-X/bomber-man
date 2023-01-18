@@ -22,7 +22,7 @@ export class Player {
     step: number
     items: Object[] = []
     bombs: number[][] = []
-    numOfBombs: number = 1
+    numOfBombs: number = 2
     bombPower: number = 1
     isAlive: boolean = true
     stageMap = { grass: 0, stone: 1, wall: 2, bomb: 3, player: 10, fireH: 11, fireV: 12, fireO: 13, bombUp: 21, fireUp: 22, speedUp: 23}
@@ -312,7 +312,7 @@ export class Player {
             this.bombPower++
             this.items.push(this.stageMap.fireUp)
         } else if(itemType === this.stageMap.speedUp){
-            this.step++
+            this.step += 0.5
             this.items.push(this.stageMap.speedUp)
         }
     }
