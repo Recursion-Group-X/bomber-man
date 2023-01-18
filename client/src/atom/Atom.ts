@@ -17,14 +17,6 @@ export const enemiesAtom = atom<Enemies[]>([
     new Enemies(config1, currentStage.getBoard(), true, playerAtom.init.x, playerAtom.init.y)
 ])
 
-// export function addEnemy(): void{
-//     enemiesAtom.init.push(
-//         new Enemies(config1, currentStage.getBoard(),false ,playerAtom.init.x, playerAtom.init.y),
-//         new Enemies(config1, currentStage.getBoard(),false ,playerAtom.init.x, playerAtom.init.y)
-//         )
-// }
-
-
 // online game
 export const socketAtom = atom<any>(null)
 export const roomNameAtom: PrimitiveAtom<string> = atom('')
