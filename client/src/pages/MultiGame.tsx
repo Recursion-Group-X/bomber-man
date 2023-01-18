@@ -18,7 +18,7 @@ import usePlayerMove from '../hooks/usePlayerMove'
 import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
-const INTERVAL_SPAN = 50
+const INTERVAL_SPAN = 10
 let interval: number | null = INTERVAL_SPAN
 const MultiGame: React.FC = () => {
   const [socket] = useAtom(socketAtom)
