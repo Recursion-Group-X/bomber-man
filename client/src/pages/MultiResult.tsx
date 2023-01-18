@@ -24,7 +24,7 @@ const MultiResult: React.FC = () => {
     navigate('/')
   }
 
-  const sortByDeathTime = (a: DeadPlayer, b: DeadPlayer): number => {
+  const sortDeadPlayers = (a: DeadPlayer, b: DeadPlayer): number => {
     if (a.deathTime > b.deathTime) {
       return -1
     } else {
@@ -33,9 +33,8 @@ const MultiResult: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log(location.state.data)
-    setDeadPlayers(location.state.data.sort(sortByDeathTime))
-  }, [])
+    setDeadPlayers(location.state.data.sort(sortDeadPlayers))
+  })
 
   return (
     <div className="flex justify-center items-center w-full h-screen">

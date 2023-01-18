@@ -11,7 +11,7 @@ export class Stage {
   static numOfRow: number = 17;
   static size: number = 510;
   static boxSize: number = Stage.size / Stage.numOfRow;
-  static numOfBlocks: number = 30;
+  static numOfBlocks: number = 70;
   static stageValues: StageMap = {
     ground: 0,
     stone: 1,

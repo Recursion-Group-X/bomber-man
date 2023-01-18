@@ -52,7 +52,6 @@ const useDrawPlayers = (): [
       const player = players[i]
       await changePlayerImg(player).then((src) => {
         img.src = src
-        console.log(src)
       })
       if (player.isAlive) {
         context.drawImage(img, player.x, player.y, player.size, player.size)
