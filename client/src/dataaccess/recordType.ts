@@ -3,7 +3,7 @@ import { FirestoreDataConverter, QueryDocumentSnapshot, serverTimestamp, Snapsho
 export interface GameRecord {
   id: number
   name: string
-  score: string
+  score: number
   date: Date
 }
 
