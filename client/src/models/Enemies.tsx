@@ -66,13 +66,14 @@ export class Enemies {
 
   inititalDefinePosition(currentStage: number[][]): void {
     const max: number = this.maxBolcks
+    const playerAround = 7;
 
-    let randomNumY: number = Math.floor(Math.random() * (max - 5)) + 5
-    let randomNumX: number = Math.floor(Math.random() * (max - 5)) + 5
+    let randomNumY: number = Math.floor(Math.random() * (max - playerAround)) + playerAround
+    let randomNumX: number = Math.floor(Math.random() * (max - playerAround)) + playerAround
 
     while (currentStage[randomNumY][randomNumX] !== 0) {
-      randomNumX = Math.floor(Math.random() * (max - 5)) + 5
-      randomNumY = Math.floor(Math.random() * (max - 5)) + 5
+      randomNumX = Math.floor(Math.random() * (max - playerAround)) + playerAround
+      randomNumY = Math.floor(Math.random() * (max - playerAround)) + playerAround
     }
     this.x = this.boxSize * randomNumX
     this.y = this.boxSize * randomNumY
@@ -84,7 +85,6 @@ export class Enemies {
     let randomNumX: number = Math.floor(Math.random() * (max - 1)) + 1
     
     while (this.checkEnemyPosition(currentStage[randomNumY][randomNumX], playerY, playerX, randomNumY, randomNumX)){
-      // console.log(this.checkEnemyPosition(currentStage[randomNumY][randomNumX], playerY, playerX, randomNumY, randomNumX))
       randomNumX = Math.floor(Math.random() * (max - 1)) + 1
       randomNumY = Math.floor(Math.random() * (max - 1)) + 1
     }
@@ -93,14 +93,17 @@ export class Enemies {
   }
 
   checkEnemyPosition(currentStageNum: number, playerY: number, playerX:number ,randomNumY:number, randomNumX:number,):boolean{
-    
-    const thisPosition: boolean = playerY === randomNumY * this.boxSize && playerX === randomNumX * this.boxSize
-    const upPosition: boolean = (playerY + this.boxSize) ===  randomNumY * this.boxSize && playerX === randomNumX * this.boxSize
-    const downPosition: boolean = (playerY - this.boxSize) ===  randomNumY * this.boxSize && playerX === randomNumX * this.boxSize
-    const leftPosition: boolean = playerY ===  randomNumY * this.boxSize && (playerX + this.boxSize) === randomNumX * this.boxSize
-    const rightPosition: boolean = playerY ===  randomNumY * this.boxSize && (playerX - this.boxSize) === randomNumX * this.boxSize
+    const playerI: number = playerY / this.boxSize
+    const playerJ: number = playerX / this.boxSize
+    return currentStageNum !== 0 || Math.abs(playerI - randomNumY) < 3 || Math.abs(playerJ - randomNumX) < 3;
+
+    // const thisPosition: boolean = playerY / this.boxSize === randomNumY && playerX === randomNumX * this.boxSize
+    // const upPosition: boolean = (playerY + this.boxSize) ===  randomNumY * this.boxSize && playerX === randomNumX * this.boxSize
+    // const downPosition: boolean = (playerY - this.boxSize) ===  randomNumY * this.boxSize && playerX === randomNumX * this.boxSize
+    // const leftPosition: boolean = playerY ===  randomNumY * this.boxSize && (playerX + this.boxSize) === randomNumX * this.boxSize
+    // const rightPosition: boolean = playerY ===  randomNumY * this.boxSize && (playerX - this.boxSize) === randomNumX * this.boxSize
   
-    return currentStageNum !== 0 || thisPosition || upPosition || downPosition || leftPosition || rightPosition
+    // return currentStageNum !== 0 || thisPosition || upPosition || downPosition || leftPosition || rightPosition
   }
 
   drawEnemy(canvas: CanvasRenderingContext2D | null | undefined): void {

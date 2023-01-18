@@ -11,11 +11,12 @@ import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
-import { currentStageAtom, playerAtom, enemiesAtom, addEnemy} from '../atom/Atom'
+import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
-
+// import { useAddEnemies } from '../hooks/useAddEnemies'
+import useAddEnemies from '../hooks/useAddEnemies'
 
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
@@ -26,6 +27,7 @@ const Game: React.FC = () => {
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay();
+  const[putNewEnemies] = useAddEnemies()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
@@ -57,7 +59,8 @@ const Game: React.FC = () => {
   }, player.isAlive ? 10 : null)
 
   useInterval(() => {
-    addEnemy();
+    putNewEnemies(2)
+    // addEnemy();
   }, 8000)
 
   const addKeyEvents = (): void => {
