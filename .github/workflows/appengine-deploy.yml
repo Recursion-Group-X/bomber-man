@@ -1,7 +1,8 @@
 name: Onpull request
+
 on:
   pull_request:
-  branch: [develop]
+    branch: [develop]
 
 jobs:
   deplay-staging:
