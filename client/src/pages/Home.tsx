@@ -1,14 +1,16 @@
 import { useAtom } from 'jotai'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { socketAtom, playerNameAtom } from '../atom/Atom'
+import { socketAtom, playerNameAtom, playerAtom } from '../atom/Atom'
 import { useSaveUserName } from '../hooks/useSaveUsername'
 
 const Home: React.FC = () => {
   const [playerName, setPlayerName] = useAtom(playerNameAtom)
   const navigate = useNavigate()
   const [socket] = useAtom(socketAtom)
+  const [player] = useAtom(playerAtom)
   const startSoloGame = (): void => {
+    player.name = playerName
     navigate('/game')
   }
   const moveLobby = (playStyle: string): void => {

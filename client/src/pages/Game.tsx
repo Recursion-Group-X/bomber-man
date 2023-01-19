@@ -124,6 +124,9 @@ const Game: React.FC = () => {
             <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
             <p className="text-2xl text-white ml-2">×{(player.step - 1) / Player.SPEED_UP_ITEM}</p>
           </div>
+          <div className="w-1/3 items-center">
+            <p className="ml-10 text-xl text-white mt-2">{player.name}</p>
+          </div>
         </div>
       </div>
 
