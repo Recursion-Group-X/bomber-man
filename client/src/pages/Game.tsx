@@ -15,7 +15,7 @@ import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
-// import { useAddEnemies } from '../hooks/useAddEnemies'
+import { Player } from '../models/Player'
 import useAddEnemies from '../hooks/useAddEnemies'
 
 const Game: React.FC = () => {
@@ -26,37 +26,35 @@ const Game: React.FC = () => {
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
-  const gameRecordGateway = new GameRecordGateWay();
-  const[putNewEnemies] = useAddEnemies()
+  const gameRecordGateway = new GameRecordGateWay()
+  const [putNewEnemies] = useAddEnemies()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
-
-
-
     }
     addKeyEvents()
     return () => removeKeyEvents()
-
-
   }, [canvasContext])
 
-  useInterval(() => {
-    setGameTime(gameTime + 0.01)
-    player?.move(canvasContext, currentStage)
-    player?.drawBombs(canvasContext)
-    enemies = enemies.filter(enemy => enemy.isAlive)
-    for (let i: number = 0; i < enemies.length; i++) {
-      enemies[i].moveEnemy(canvasContext, currentStage, player);
-      enemies[i].drawEnemy(canvasContext);
-    }
-    if (!player.isAlive) {
-      showResult().catch(() => alert("kkkk"));
-    }
-  }, player.isAlive ? 10 : null)
+  useInterval(
+    () => {
+      setGameTime(gameTime + 0.01)
+      player?.move(canvasContext, currentStage)
+      player?.drawBombs(canvasContext)
+      enemies = enemies.filter((enemy) => enemy.isAlive)
+      for (let i: number = 0; i < enemies.length; i++) {
+        enemies[i].moveEnemy(canvasContext, currentStage, player)
+        enemies[i].drawEnemy(canvasContext)
+      }
+      if (!player.isAlive) {
+        showResult().catch(() => alert('kkkk'))
+      }
+    },
+    player.isAlive ? 10 : null
+  )
 
   useInterval(() => {
     putNewEnemies(2)
@@ -91,7 +89,7 @@ const Game: React.FC = () => {
           name: player.name,
           score: Math.random() * (200 - 100) + 100,
           alivedTime: gameTime,
-        }
+        },
       })
     }, 1000)
     gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert('ERORR'))
@@ -114,9 +112,18 @@ const Game: React.FC = () => {
           <p className="ml-10 text-xl text-white">00:00</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
-          <div>Item1: </div>
-          <div>Item2:</div>
-          <div>Item3:</div>
+          <div className="flex items-center">
+            <img src={bombUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{player.numOfBombs - 2}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={fireUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{player.bombPower - 1}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{(player.step - 1) / Player.SPEED_UP_ITEM}</p>
+          </div>
         </div>
       </div>
 
