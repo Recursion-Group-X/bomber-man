@@ -17,6 +17,7 @@ import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
 // import { useAddEnemies } from '../hooks/useAddEnemies'
 import useAddEnemies from '../hooks/useAddEnemies'
+import useResetSingleGame from '../hooks/useResetSingleGame'
 
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
@@ -26,37 +27,36 @@ const Game: React.FC = () => {
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
-  const gameRecordGateway = new GameRecordGateWay();
-  const[putNewEnemies] = useAddEnemies()
+  const gameRecordGateway = new GameRecordGateWay()
+  const [putNewEnemies] = useAddEnemies()
+  const [resetAll] = useResetSingleGame()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
-
-
-
     }
     addKeyEvents()
     return () => removeKeyEvents()
-
-
   }, [canvasContext])
 
-  useInterval(() => {
-    setGameTime(gameTime + 0.01)
-    player?.move(canvasContext, currentStage)
-    player?.drawBombs(canvasContext)
-    enemies = enemies.filter(enemy => enemy.isAlive)
-    for (let i: number = 0; i < enemies.length; i++) {
-      enemies[i].moveEnemy(canvasContext, currentStage, player);
-      enemies[i].drawEnemy(canvasContext);
-    }
-    if (!player.isAlive) {
-      showResult().catch(() => alert("kkkk"));
-    }
-  }, player.isAlive ? 10 : null)
+  useInterval(
+    () => {
+      setGameTime(gameTime + 0.01)
+      player?.move(canvasContext, currentStage)
+      player?.drawBombs(canvasContext)
+      enemies = enemies.filter((enemy) => enemy.isAlive)
+      for (let i: number = 0; i < enemies.length; i++) {
+        enemies[i].moveEnemy(canvasContext, currentStage, player)
+        enemies[i].drawEnemy(canvasContext)
+      }
+      if (!player.isAlive) {
+        showResult().catch(() => alert('kkkk'))
+      }
+    },
+    player.isAlive ? 10 : null
+  )
 
   useInterval(() => {
     putNewEnemies(2)
@@ -91,8 +91,9 @@ const Game: React.FC = () => {
           name: player.name,
           score: Math.random() * (200 - 100) + 100,
           alivedTime: gameTime,
-        }
+        },
       })
+      resetAll()
     }, 1000)
     gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert('ERORR'))
   }
