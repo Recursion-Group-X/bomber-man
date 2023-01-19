@@ -13,6 +13,6 @@ jobs:
         uses: google-github-actions/deploy-appengine@v0.3.1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          deliverables: app.yaml
+          deliverables: ./server/app.yaml
           credentials: ${{ secrets.GCP_SA_KEY }}
           version: v1
