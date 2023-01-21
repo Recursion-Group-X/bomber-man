@@ -28,8 +28,8 @@ const Lobby: React.FC = () => {
   }, [socket])
 
   return (
-    <div className="h-screen">
-      <div className="h-20 bg-slate-600 flex items-center justify-center text-white text-4xl">Lobby</div>
+    <div className="h-screen bg-black">
+      <div className="h-20 flex items-center justify-center text-white text-4xl">Lobby</div>
       <button
         className="px-3 py-2 bg-gray-400 text-lg text-white ml-20 mt-8 font-semibold rounded-full hover:bg-gray-500"
         onClick={() => navigate('/')}
@@ -37,28 +37,37 @@ const Lobby: React.FC = () => {
         Home
       </button>
 
-      <div className="my-10 flex flex-wrap justify-center items-center">
+      <div className="my-10 flex flex-wrap justify-center">
         {rooms.map((room) => (
-          <div className="w-1/5 my-10 mx-5 h-40 p-3 border border-black rounded" key={room.roomName}>
-            <p className="text-xl">
-              {room.roomName}
-              <span className="text-md ml-2">({room.players.length}/4)</span>
-            </p>
-            <div className="flex w-full h-full">
-              <div className="w-1/2 flex flex-col justify-end items-center mb-10">
-                <button
-                  className="py-2 w-2/3 bg-sky-500 hover:bg-sky-600 text-xl text-white rounded disabled:bg-sky-300"
-                  disabled={room.players.length >= 4 || room.gameStartTime !== undefined}
-                  onClick={() => joinRoom(room.roomName)}
-                >
-                  Join
-                </button>
+          <div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
+            <div>
+              <p className="text-base text-left text-black">
+                {room.roomName}
+                <span className="text-base">({room.players.length}/4)</span>
+              </p>
+            </div>
+            
+            <div className="pt-6 flex w-full h-auto">
+              <div className="">
+                  <div className='text-left text-base pb-3'>participant</div>
+                  {room.players.map((player) => (
+                    <p className='text-xs pb-2' key={player.playerId}> {player.name}</p>
+                  ))} 
               </div>
-              <div className="w-1/2 text-right mr-5 text-xl">
-                {room.players.map((player) => (
-                  <p key={player.playerId}>{player.name}</p>
-                ))}
-              </div>
+            </div>
+            <div className="mt-5 mb-3 absolute bottom-0 right-0">
+              {room.players.length >= 5 || room.gameStartTime !== undefined ?
+              <button
+                className="nes-btn is-disabled text-xs text-white"
+              >
+              Join
+              </button> : 
+              <button
+                className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
+                onClick={() => joinRoom(room.roomName)}
+              >
+                Join
+              </button>} 
             </div>
           </div>
         ))}
