@@ -1,4 +1,4 @@
-import { atom, PrimitiveAtom } from 'jotai'
+import { atom, PrimitiveAtom, useAtom } from 'jotai'
 import { config1 } from '../bombermanConfig'
 import { Player } from '../models/Player'
 import { Stage } from '../models/Stage'
@@ -10,13 +10,12 @@ const currentStage = new Stage(config1)
 currentStage.setBreakableBlock()
 export const currentStageAtom: PrimitiveAtom<number[][]> = atom(currentStage.getBoard())
 
-export const playerAtom = atom<Player>(new Player('GUESTUSER'))
-// export const enemiesAtom = atom<Enemies>(new Enemies(config1, currentStage.getBoard()))
+export const playerAtom = atom<Player>(new Player('player1'))
 
-export const enemiesAtom: PrimitiveAtom<Enemies[]> = atom([
-  new Enemies(config1, currentStage.getBoard()),
-  new Enemies(config1, currentStage.getBoard()),
-  new Enemies(config1, currentStage.getBoard()),
+export const enemiesAtom = atom<Enemies[]>([
+  new Enemies(config1, currentStage.getBoard(), true, playerAtom.init.x, playerAtom.init.y),
+  new Enemies(config1, currentStage.getBoard(), true, playerAtom.init.x, playerAtom.init.y),
+  new Enemies(config1, currentStage.getBoard(), true, playerAtom.init.x, playerAtom.init.y),
 ])
 
 // online game

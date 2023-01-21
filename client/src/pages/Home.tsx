@@ -1,7 +1,8 @@
 import { useAtom } from 'jotai'
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { socketAtom, playerNameAtom } from '../atom/Atom'
+import { useSaveUserName } from '../hooks/useSaveUsername'
 
 const Home: React.FC = () => {
   const [playerName, setPlayerName] = useAtom(playerNameAtom)
@@ -23,6 +24,11 @@ const Home: React.FC = () => {
     navigate('/ranking')
   }
 
+  useEffect(() => {
+    const name: string | null = localStorage.getItem('username')
+    if (name != null) setPlayerName(name)
+  }, [])
+
   return (
     <div className="h-screen flex flex-col">
       <div>
@@ -40,7 +46,10 @@ const Home: React.FC = () => {
             id="player_name"
             value={playerName}
             required
-            onChange={(e) => setPlayerName(e.target.value)}
+            onChange={(e) => {
+              setPlayerName(e.target.value)
+              useSaveUserName(e.target.value)
+            }}
           />
 
           <div className="my-10">
