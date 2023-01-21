@@ -45,7 +45,7 @@ const Room: React.FC = () => {
   return (
     <div className="h-screen bg-black">
       <div className='mb-10 pt-10'>
-        <p className='text-center text-white text-8xl'>Multi Player Game</p>
+        <p className='text-center text-white text-4xl'>Multi Player Game</p>
       </div>
       <div className='flex justify-center'>
         <div className='w-1/3 h-60 nes-container with-title is-centered is-dark '>
