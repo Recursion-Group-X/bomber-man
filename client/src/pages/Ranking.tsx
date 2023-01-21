@@ -23,9 +23,9 @@ const Ranking: React.FC = () => {
       Math.floor((time % 3600) / 60) <= 9
         ? `0${Math.floor((time % 3600) / 60)}`
         : Math.floor((time % 3600) / 60).toString()
-    const sec = time % 60 <= 9 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
+    const sec = time % 60 <= 10 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
     const msec = (time % 60).toFixed(2).split('.')[1]
-    return `${min}:${sec}:${msec}`
+    return `${min}:${sec}.${msec}`
   }
 
   return (

@@ -34,15 +34,15 @@ const Result: React.FC = () => {
   }
 
   const createRankingList = (currRank: number): any => {
-    if (currRank < 3) {
-      const displayList = recordList?.slice(5)
+    if (recordList !== undefined && recordList?.length < 5) {
+      const displayList = recordList
       return (
         <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
           <div className="w-1/3">
             {displayList?.map((record: GameRecord, index) => (
               <div key={record.id}>
                 <p className="text-start my-4 text-2xl">
-                  {convertTimeToScore(index + 1)} {record.name}
+                  {convertToOdinalNumber(index + 1)} {record.name}
                 </p>
               </div>
             ))}
@@ -50,9 +50,32 @@ const Result: React.FC = () => {
           <div className="w-2/3">
             {displayList?.map((record: GameRecord, index) => (
               <div key={record.id}>
+                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    if (currRank < 3) {
+      const displayList = recordList?.slice(5)
+      console.log(recordList)
+      return (
+        <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
+          <div className="w-1/3">
+            {displayList?.map((record: GameRecord, index) => (
+              <div key={record.id}>
                 <p className="text-start my-4 text-2xl">
-                  <span className="text-lg">{convertTimeToScore(record.score)}</span>
+                  {convertToOdinalNumber(index + 1)} {record.name}
                 </p>
+              </div>
+            ))}
+          </div>
+          <div className="w-2/3">
+            {displayList?.map((record: GameRecord, index) => (
+              <div key={record.id}>
+                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
               </div>
             ))}
           </div>
@@ -66,7 +89,7 @@ const Result: React.FC = () => {
             {displayList?.map((record: GameRecord, index) => (
               <div key={record.id}>
                 <p className="text-start my-4 text-2xl">
-                  {converToOdinalNumber(recordList.length - 4 + index)} {record.name}
+                  {convertToOdinalNumber(recordList.length - 4 + index)} {record.name}
                 </p>
               </div>
             ))}
@@ -75,9 +98,7 @@ const Result: React.FC = () => {
             {displayList?.map((record: GameRecord, index) => (
               <div key={record.id}>
                 <p className="text-start my-4 text-2xl">
-                  <span className="text-lg">
-                    {converToOdinalNumber(recordList.length + index - 1)} {convertTimeToScore(record.score)}
-                  </span>
+                  {convertToOdinalNumber(recordList.length + index - 1)} {convertTimeToScore(record.score)}
                 </p>
               </div>
             ))}
@@ -94,9 +115,9 @@ const Result: React.FC = () => {
                 <p className="text-start my-4 text-2xl">
                   {index !== 2
                     ? index < 2
-                      ? converToOdinalNumber(currRank + index - 2)
-                      : converToOdinalNumber(currRank + Math.floor(index / 2))
-                    : converToOdinalNumber(currRank)}{' '}
+                      ? convertToOdinalNumber(currRank + index - 2)
+                      : convertToOdinalNumber(currRank + Math.floor(index / 2))
+                    : convertToOdinalNumber(currRank)}{' '}
                   {record.name}{' '}
                 </p>
               </div>
@@ -105,9 +126,7 @@ const Result: React.FC = () => {
           <div className="w-2/3">
             {displayList?.map((record: GameRecord, index) => (
               <div key={record.id}>
-                <p className="text-start my-4 text-2xl">
-                  <span className="text-lg">{convertTimeToScore(record.score)}</span>
-                </p>
+                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
               </div>
             ))}
           </div>
@@ -116,17 +135,23 @@ const Result: React.FC = () => {
     }
   }
 
-  const convertTimeToScore = (time: number): string => {
+  const convertTimeToScore = (time: number): any => {
     const min: string =
       Math.floor((time % 3600) / 60) <= 9
         ? `0${Math.floor((time % 3600) / 60)}`
         : Math.floor((time % 3600) / 60).toString()
-    const sec = time % 60 <= 9 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
+    const sec = time % 60 <= 10 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
     const msec = (time % 60).toFixed(2).split('.')[1]
-    return `${min}:${sec}:${msec}`
+    return (
+      <div>
+        <p>
+          {min}:{sec}.<span className="text-lg">{msec}</span>
+        </p>
+      </div>
+    )
   }
 
-  const converToOdinalNumber = (rank: number): string => {
+  const convertToOdinalNumber = (rank: number): string => {
     if (rank !== 11 && rank !== 12 && rank !== 13 && rank % 10 === 1) {
       return `${rank}st`
     } else if (rank !== 11 && rank !== 12 && rank !== 13 && rank % 10 === 2) {
@@ -145,9 +170,9 @@ const Result: React.FC = () => {
       </div>
       {createRankingList(getCurrRnak())}
 
-      <div className="text-center">
+      <div className="text-center text-2xl">
         <p>{state.name} Result</p>
-        <p>Your Ranking is: {converToOdinalNumber(getCurrRnak())}</p>
+        <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(state.score)}</p>
       </div>
       <div className="flex justify-end w-2/3 mx-auto">
