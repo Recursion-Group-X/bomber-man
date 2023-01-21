@@ -26,37 +26,53 @@ const Game: React.FC = () => {
   const [gameTime, setGameTime] = useState<number>(0)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
-  const gameRecordGateway = new GameRecordGateWay();
-  const[putNewEnemies] = useAddEnemies()
+  const gameRecordGateway = new GameRecordGateWay()
+  const [putNewEnemies] = useAddEnemies()
+
+  const [count, setCount] = useState<any>(3)
 
   useEffect(() => {
     if (gameCanvasRef != null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
-
-
-
     }
-    addKeyEvents()
+
     return () => removeKeyEvents()
-
-
   }, [canvasContext])
 
-  useInterval(() => {
-    setGameTime(gameTime + 0.01)
-    player?.move(canvasContext, currentStage)
-    player?.drawBombs(canvasContext)
-    enemies = enemies.filter(enemy => enemy.isAlive)
-    for (let i: number = 0; i < enemies.length; i++) {
-      enemies[i].moveEnemy(canvasContext, currentStage, player);
-      enemies[i].drawEnemy(canvasContext);
-    }
-    if (!player.isAlive) {
-      showResult().catch(() => alert("kkkk"));
-    }
-  }, player.isAlive ? 10 : null)
+  useInterval(
+    () => {
+      setCount(count - 1)
+      removeKeyEvents()
+      if (count === 1) {
+        setCount('GAME START')
+        setTimeout(() => {
+          document.querySelectorAll('.overlay')[0].classList.remove('overlay')
+          setCount('')
+          addKeyEvents()
+        }, 1000)
+      }
+    },
+    count > 0 ? 1000 : null
+  )
+
+  useInterval(
+    () => {
+      setGameTime(gameTime + 0.01)
+      player?.move(canvasContext, currentStage)
+      player?.drawBombs(canvasContext)
+      enemies = enemies.filter((enemy) => enemy.isAlive)
+      for (let i: number = 0; i < enemies.length; i++) {
+        enemies[i].moveEnemy(canvasContext, currentStage, player)
+        enemies[i].drawEnemy(canvasContext)
+      }
+      if (!player.isAlive) {
+        showResult().catch(() => alert('kkkk'))
+      }
+    },
+    player.isAlive ? 10 : null
+  )
 
   useInterval(() => {
     putNewEnemies(2)
@@ -91,7 +107,7 @@ const Game: React.FC = () => {
           name: player.name,
           score: Math.random() * (200 - 100) + 100,
           alivedTime: gameTime,
-        }
+        },
       })
     }, 1000)
     gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert('ERORR'))
@@ -108,7 +124,7 @@ const Game: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-black text-xl">
+    <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
           <p className="ml-10 text-xl text-white">00:00</p>
@@ -118,6 +134,9 @@ const Game: React.FC = () => {
           <div>Item2:</div>
           <div>Item3:</div>
         </div>
+      </div>
+      <div className="text-white">
+        <div className="text">{count}</div>
       </div>
 
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>
