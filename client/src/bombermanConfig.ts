@@ -7,7 +7,7 @@ export interface Config {
 export const config1: Config = {
   x: 17,
   y: 17,
-  breakableBlocks: 50,
+  breakableBlocks: 25,
 }
 
 /// online

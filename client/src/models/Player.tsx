@@ -356,7 +356,7 @@ export class Player {
 
   breakStone(i: number, j: number, fireNum: number, currentStage: number[][]): void {
     let random = Math.random()
-    if (random < 0.6) {
+    if (random < 0.3) {
       currentStage[i][j] = fireNum
     } else {
       random = Math.random()
