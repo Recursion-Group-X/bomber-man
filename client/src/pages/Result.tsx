@@ -34,7 +34,7 @@ const Result: React.FC = () => {
             <div key={record.id}>
               <p className="text-center my-4 text-2xl">{record.name}</p>
             </div>
-          ))}
+          )}
         </div>
         <div className="w-1/3">
           {recordList?.map((record: GameRecord) => (
