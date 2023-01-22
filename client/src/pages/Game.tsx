@@ -17,6 +17,7 @@ import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
 // import { useAddEnemies } from '../hooks/useAddEnemies'
 import useAddEnemies from '../hooks/useAddEnemies'
+import useResetSingleGame from '../hooks/useResetSingleGame'
 
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
@@ -28,6 +29,7 @@ const Game: React.FC = () => {
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay()
   const [putNewEnemies] = useAddEnemies()
+  const [resetAll] = useResetSingleGame()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
@@ -91,6 +93,7 @@ const Game: React.FC = () => {
           alivedTime: gameTime,
         },
       })
+      resetAll()
     }, 1000)
     gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert('ERORR'))
   }
@@ -109,13 +112,17 @@ const Game: React.FC = () => {
     <div className="h-screen bg-black text-xl">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">00:00</p>
+          <p className="ml-10 text-xl text-white">PlayerName:</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
           <div>Item1: </div>
           <div>Item2:</div>
           <div>Item3:</div>
         </div>
+        <div className="w-1/6">
+          <p className="ml-10 text-xl text-white">00:00</p>
+        </div>
+        
       </div>
 
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>
