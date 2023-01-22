@@ -53,9 +53,9 @@ const Result: React.FC = () => {
       </div>
 
       <div className="pt-10 text-center text-white">
-        <p>{state.name} Result</p>
-        <p className='pt-3'>score: {state.score}</p>
-        <p>alivedTime: {state.alivedTime}</p>
+        <p>{name} Result</p>
+        <p className='pt-3'>score: {score}</p>
+        <p>alivedTime: {alivedTime}</p>
       </div>
       <div className='flex justify-end w-2/3 mx-auto'>
         <button className='m-4 border border-2 p-2 text-white' onClick={restartGame}>Restart</button>
