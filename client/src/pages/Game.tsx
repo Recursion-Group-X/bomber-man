@@ -112,13 +112,17 @@ const Game: React.FC = () => {
     <div className="h-screen bg-black text-xl">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">00:00</p>
+          <p className="ml-10 text-xl text-white">PlayerName:</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
           <div>Item1: </div>
           <div>Item2:</div>
           <div>Item3:</div>
         </div>
+        <div className="w-1/6">
+          <p className="ml-10 text-xl text-white">00:00</p>
+        </div>
+        
       </div>
 
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>

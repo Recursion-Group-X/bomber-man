@@ -24,11 +24,11 @@ const Result: React.FC = () => {
   }
 
   return (
-    <div className='h-screen text-xl'>
-      <div className='h-20 bg-slate-600 flex items-center justify-center'>
-        <p className='text-center text-2xl text-white'>RESULT</p>
+    <div className='h-screen text-xl bg-black'>
+      <div className='h-20 flex items-center justify-center'>
+        <p className='pt-10 text-center text-4xl text-white'>RESULT</p>
       </div>
-      <div className='flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6'>
+      <div className='flex h-1/2 w-1/2 mx-auto mt-10 bg-white pt-6'>
         <div className='w-1/3'>
           {recordList?.map((record: GameRecord) => 
             <div key={record.id}>
@@ -52,14 +52,14 @@ const Result: React.FC = () => {
         </div>
       </div>
 
-      <div className="text-center">
+      <div className="pt-10 text-center text-white">
         <p>{state.name} Result</p>
-        <p>score: {state.score}</p>
+        <p className='pt-3'>score: {state.score}</p>
         <p>alivedTime: {state.alivedTime}</p>
       </div>
       <div className='flex justify-end w-2/3 mx-auto'>
-        <button className='m-4 border border-2 p-2' onClick={restartGame}>Restart</button>
-        <button className='m-4 border border-2 p-2' onClick={navigateHome}>Home</button>
+        <button className='m-4 border border-2 p-2 text-white' onClick={restartGame}>Restart</button>
+        <button className='m-4 border border-2 p-2 text-white' onClick={navigateHome}>Home</button>
       </div>
     </div>
   )
