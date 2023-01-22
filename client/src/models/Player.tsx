@@ -19,7 +19,7 @@ export class Player {
   direction: string
   pastDirection: string
   playerImg: string
-  step: number = 1
+  step: number
   items: Object[] = []
   bombs: number[][] = []
   numOfBombs: number = 2
@@ -52,6 +52,7 @@ export class Player {
     this.direction = ''
     this.pastDirection = 'down'
     this.playerImg = playerFrontImg
+    this.step = 1
   }
 
   getName(): string {
@@ -359,9 +360,9 @@ export class Player {
       currentStage[i][j] = fireNum
     } else {
       random = Math.random()
-      if (random > 0.5) {
+      if (random > 0.6) {
         currentStage[i][j] = this.stageMap.bombUp
-      } else if (random > 0.1) {
+      } else if (random > 0.2) {
         currentStage[i][j] = this.stageMap.fireUp
       } else {
         currentStage[i][j] = this.stageMap.speedUp

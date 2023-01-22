@@ -43,19 +43,29 @@ const Room: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>Multi Player Game</h1>
-      <div>
-        {players.map((player) => (
-          <p key={player.playerId}>{player.name}</p>
-        ))}
+    <div className="h-screen bg-black">
+      <div className='mb-10 pt-10'>
+        <p className='text-center text-white text-4xl'>Multi Player Game</p>
       </div>
-      <button disabled={players.length <= 1} onClick={handleStartGame}>
-        Start Game
-      </button>
-      <button className="m-5" onClick={backLobby}>
-        Lobby
-      </button>
+      <div className='flex justify-center'>
+        <div className='w-1/3 h-60 nes-container with-title is-centered is-dark '>
+          <p className='title text-base'> Room </p>
+          <p className='pt-5'>
+            {players.map((player) => (
+              <p className='pt-2' key={player.playerId}>{player.name}</p>
+            ))}
+          </p>
+        </div>
+      </div>
+      <div className='flex justify-center pt-5'>
+        <button className="nes-btn is-error" onClick={backLobby}>
+          Leave Room
+        </button>
+        <button className='nes-btn is-success ml-6' disabled={players.length <= 1} onClick={handleStartGame}>
+          Start Game
+        </button>
+      </div>
+      
     </div>
   )
 }
