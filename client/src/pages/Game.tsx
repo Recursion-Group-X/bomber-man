@@ -29,6 +29,7 @@ const Game: React.FC = () => {
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay()
   const [putNewEnemies] = useAddEnemies()
+  const [count, setCount] = useState<any>(3)
   const [resetAll] = useResetSingleGame()
 
   useEffect(() => {
@@ -37,9 +38,24 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
     }
-    addKeyEvents()
     return () => removeKeyEvents()
   }, [canvasContext])
+
+  useInterval(
+    () => {
+      setCount(count - 1)
+      removeKeyEvents()
+      if (count === 1) {
+        setCount('GAME START')
+        setTimeout(() => {
+          document.querySelectorAll('.overlay')[0].classList.remove('overlay')
+          setCount('')
+          addKeyEvents()
+        }, 1000)
+      }
+    },
+    count > 0 ? 1000 : null
+  )
 
   useInterval(
     () => {
@@ -109,7 +125,7 @@ const Game: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-black text-xl">
+    <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
           <p className="ml-10 text-xl text-white">PlayerName:</p>
@@ -135,6 +151,9 @@ const Game: React.FC = () => {
           <p className="ml-10 text-xl text-white">00:00</p>
         </div>
         
+      </div>
+      <div className="text-white">
+        <div className="text">{count}</div>
       </div>
 
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>
