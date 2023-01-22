@@ -18,6 +18,7 @@ import { config1 } from '../bombermanConfig'
 // import { useAddEnemies } from '../hooks/useAddEnemies'
 import useAddEnemies from '../hooks/useAddEnemies'
 
+let interval: number | null = 10
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -43,22 +44,20 @@ const Game: React.FC = () => {
     return () => removeKeyEvents()
   }, [canvasContext])
 
-  useInterval(
-    () => {
-      setGameTime(gameTime + 0.01)
-      player?.move(canvasContext, currentStage)
-      player?.drawBombs(canvasContext)
-      enemies = enemies.filter((enemy) => enemy.isAlive)
-      for (let i: number = 0; i < enemies.length; i++) {
-        enemies[i].moveEnemy(canvasContext, currentStage, player)
-        enemies[i].drawEnemy(canvasContext)
-      }
-      if (!player.isAlive) {
-        showResult().catch(() => alert('kkkk'))
-      }
-    },
-    player.isAlive ? 10 : null
-  )
+  useInterval(() => {
+    setGameTime(gameTime + 0.01)
+    player?.move(canvasContext, currentStage)
+    player?.drawBombs(canvasContext)
+    enemies = enemies.filter((enemy) => enemy.isAlive)
+    for (let i: number = 0; i < enemies.length; i++) {
+      enemies[i].moveEnemy(canvasContext, currentStage, player)
+      enemies[i].drawEnemy(canvasContext)
+    }
+    if (!player.isAlive) {
+      interval = null
+      showResult().catch(() => alert('kkkk'))
+    }
+  }, interval)
 
   useInterval(() => {
     putNewEnemies(2)

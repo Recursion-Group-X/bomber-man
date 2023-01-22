@@ -97,9 +97,7 @@ const Result: React.FC = () => {
           <div className="w-2/3">
             {displayList?.map((record: GameRecord, index) => (
               <div key={record.id}>
-                <p className="text-start my-4 text-2xl">
-                  {convertToOdinalNumber(recordList.length + index - 1)} {convertTimeToScore(record.score)}
-                </p>
+                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
               </div>
             ))}
           </div>
