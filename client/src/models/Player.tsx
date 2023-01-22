@@ -25,6 +25,7 @@ export class Player {
   numOfBombs: number = 2
   bombPower: number = 1
   isAlive: boolean = true
+  static SPEED_UP_ITEM: number = 0.5
   stageMap = {
     grass: 0,
     stone: 1,
@@ -348,7 +349,7 @@ export class Player {
       this.bombPower++
       this.items.push(this.stageMap.fireUp)
     } else if (itemType === this.stageMap.speedUp) {
-      this.step += 0.5
+      this.step += Player.SPEED_UP_ITEM
       this.items.push(this.stageMap.speedUp)
     }
   }

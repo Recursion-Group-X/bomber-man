@@ -15,7 +15,7 @@ import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
-// import { useAddEnemies } from '../hooks/useAddEnemies'
+import { Player } from '../models/Player'
 import useAddEnemies from '../hooks/useAddEnemies'
 import useResetSingleGame from '../hooks/useResetSingleGame'
 
@@ -115,9 +115,21 @@ const Game: React.FC = () => {
           <p className="ml-10 text-xl text-white">PlayerName:</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
-          <div>Item1: </div>
-          <div>Item2:</div>
-          <div>Item3:</div>
+          <div className="flex items-center">
+            <img src={bombUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{player.numOfBombs - 2}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={fireUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{player.bombPower - 1}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{(player.step - 1) / Player.SPEED_UP_ITEM}</p>
+          </div>
+          <div className="w-1/3 items-center">
+            <p className="ml-10 text-xl text-white mt-2">{player.name}</p>
+          </div>
         </div>
         <div className="w-1/6">
           <p className="ml-10 text-xl text-white">00:00</p>
