@@ -20,6 +20,8 @@ import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 const STAGESIZE: number = 510
 const INTERVAL_SPAN = 30
 let interval: number | null = INTERVAL_SPAN
+
+let gameStartFlag = false
 const MultiGame: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
@@ -98,13 +100,12 @@ const MultiGame: React.FC = () => {
   useInterval(
     () => {
       setCount(count - 1)
-      removeKeyEvents()
       if (count === 1) {
         setCount('GAME START')
         setTimeout(() => {
           document.querySelectorAll('.overlay')[0].classList.remove('overlay')
           setCount('')
-          addKeyEvents()
+          gameStartFlag = true
         }, 1000)
       }
     },
@@ -122,11 +123,13 @@ const MultiGame: React.FC = () => {
       setLastDirection('stay')
       navigate('/online-result', { state: { data } })
     })
-
-    return () => {
-      removeKeyEvents()
-      socket.off('send_game_status')
-      socket.off('send_game_result')
+    if (gameStartFlag) {
+      addKeyEvents()
+      return () => {
+        removeKeyEvents()
+        socket.off('send_game_status')
+        socket.off('send_game_result')
+      }
     }
   }, [socket, players])
 

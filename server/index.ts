@@ -26,13 +26,9 @@ export const rooms = [
 app.use(cors());
 app.use(express.json());
 
-//const server = app.listen(process.env.PORT || 8080, () => {
-// const server = app.listen("3001", () => {
-//console.log("Server is Running");
-//});
-
-const server = app.listen("3001", () => {
-  console.log("server is running");
+const server = app.listen(process.env.PORT || 8080, () => {
+  // const server = app.listen("3001", () => {
+  console.log("Server is Running");
 });
 
 const io = socket(server, {
