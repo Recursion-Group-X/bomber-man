@@ -59,8 +59,7 @@ const Result: React.FC = () => {
     }
 
     if (currRank < 3) {
-      const displayList = recordList?.slice(5)
-      console.log(recordList)
+      const displayList = recordList?.slice(0, 5)
       return (
         <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
           <div className="w-1/3">
