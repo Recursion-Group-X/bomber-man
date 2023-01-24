@@ -15,6 +15,7 @@ import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
 import useDrawPlayers from '../hooks/useDrawPlayers'
 import usePlayerMove from '../hooks/usePlayerMove'
+import useTimeFormat from '../hooks/useTImeFormat'
 import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
@@ -28,6 +29,8 @@ const MultiGame: React.FC = () => {
   const [myPlayer, setMyPlayer] = useState<OnlinePlayer | null>(null)
   const [lastDirection, setLastDirection] = useAtom(playersLastDirection)
   const [stage, setStage] = useState<number[][]>([])
+  const [gameTime, setGameTime] = useState<number>(0)
+  const [getOnlineGameTime] = useTimeFormat()
   const [roomName] = useAtom(roomNameAtom)
   const onlineCanvas = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
@@ -94,10 +97,11 @@ const MultiGame: React.FC = () => {
   }, [onlineCanvas, canvasContext])
 
   useEffect(() => {
-    socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
+    socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][]; gameTime: number }) => {
       setPlayers(data.players)
       setMyPlayer(data.players.filter((player) => player.socketId === socket.id)[0])
       setStage(data.stage)
+      setGameTime(data.gameTime)
     })
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
@@ -117,7 +121,7 @@ const MultiGame: React.FC = () => {
     <div className="h-screen bg-black text-xl">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">00:00</p>
+          <p className="ml-10 text-xl text-white">{getOnlineGameTime(gameTime)}</p>
           <p>{myPlayer?.name}</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
