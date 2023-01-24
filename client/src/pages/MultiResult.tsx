@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { playerNameAtom, roomNameAtom, socketAtom } from '../atom/Atom'
 import { DeadPlayer } from '../bombermanConfig'
 import crownImg from '../assets/crown.png'
+import useTwitterMessage from '../hooks/useTwitterMessage'
 
 const MultiResult: React.FC = () => {
   const [deadPlayers, setDeadPlayers] = useState<DeadPlayer[]>([])
@@ -12,6 +13,7 @@ const MultiResult: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
   const navigate = useNavigate()
+  const [deadPlayerInfo] = useTwitterMessage()
 
   const handleBackRoom = (): void => {
     socket?.emit('join_room', { roomName, playerName })
@@ -72,13 +74,12 @@ const MultiResult: React.FC = () => {
         </div>
         {deadPlayers.length > 0 && (
           <div className="text-center">
-            <a
+            {/* <a
               href={`https://twitter.com/intent/tweet?text=Played with ${
                 deadPlayers.filter((p) => p.name !== playerName)[0].name
               }...`}
-            >
-              Tweet
-            </a>
+            > */}
+            <a href={`https://twitter.com/intent/tweet?text=${deadPlayerInfo(deadPlayers)}`}>Tweet</a>
           </div>
         )}
         <div className="w-1/2 mx-auto flex justify-around my-10">

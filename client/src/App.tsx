@@ -11,8 +11,8 @@ import Lobby from './pages/Lobby'
 import MultiGame from './pages/MultiGame'
 import MultiResult from './pages/MultiResult'
 
-// const CONNECTION_PORT = 'localhost:3001'
-const CONNECTION_PORT = 'https://bomberman-server-2023.an.r.appspot.com'
+const CONNECTION_PORT = 'localhost:3001'
+// const CONNECTION_PORT = 'https://bomberman-server-2023.an.r.appspot.com'
 
 const App: React.FC = () => {
   const [socket, setSocket] = useAtom(socketAtom)

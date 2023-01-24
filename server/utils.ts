@@ -35,7 +35,7 @@ export const playerInterval = (socket, data) => {
   if (room.getPlayer(data.player.playerId) == null) return;
   const player: Player = room.getPlayer(data.player.playerId);
   player.direction = data.player.direction;
-  player.move(room.stage);
+  player.move(room.stage); 
   if (!player.isAlive) {
     room.removePlayer(player);
   }
