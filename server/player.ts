@@ -56,6 +56,10 @@ export class Player {
 
   move(stage: Stage): void {
     const board = stage.getStage();
+    if (this.isInBlock(board)) {
+      this.isAlive = false;
+      this.killedBy = "Wall";
+    }
     if (this.canMove(board) && this.direction !== "stay") {
       this.moveOneStep();
     }
@@ -192,6 +196,13 @@ export class Player {
     playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
     const stageValue = board[playerIndex.i][playerIndex.j];
     return stageValue >= Stage.stageValues.bombUp;
+  }
+
+  isInBlock(board: number[][]): boolean {
+    const playerIndex: Index = new Index();
+    playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
+    playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
+    return board[playerIndex.i][playerIndex.j] === Stage.stageValues.wall;
   }
 
   getItem(board: number[][]): void {
