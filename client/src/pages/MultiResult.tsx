@@ -72,13 +72,7 @@ const MultiResult: React.FC = () => {
         </div>
         {deadPlayers.length > 0 && (
           <div className="text-center">
-            <a
-              href={`https://twitter.com/intent/tweet?text=Played with ${
-                deadPlayers.filter((p) => p.name !== playerName)[0].name
-              }...`}
-            >
-              Tweet
-            </a>
+            <a href={`https://twitter.com/intent/tweet?text=Played with ${deadPlayers[0].name}...`}>Tweet</a>
           </div>
         )}
         <div className="w-1/2 mx-auto flex justify-around my-10">
