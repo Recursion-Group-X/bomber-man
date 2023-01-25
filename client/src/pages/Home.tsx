@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { socketAtom, playerNameAtom, playerAtom } from '../atom/Atom'
 import { useSaveUserName } from '../hooks/useSaveUsername'
@@ -22,10 +22,17 @@ const Home: React.FC = () => {
     socket?.emit('enter_lobby')
   }
 
+  useEffect(() => {
+    const name: string | null = localStorage.getItem('username')
+    if (name != null) setPlayerName(name)
+  }, [])
+
   return (
     <div className="h-screen flex flex-col bg-black">
       <div>
-        <p className="text-center text-6xl pt-20 text-white" >B<span style={{'color':'orange'}}>o</span>mb Game</p>
+        <p className="text-center text-6xl pt-20 text-white">
+          B<span style={{ color: 'orange' }}>o</span>mb Game
+        </p>
       </div>
 
       <div className="flex justify-around">
@@ -39,7 +46,10 @@ const Home: React.FC = () => {
             id="player_name"
             value={playerName}
             required
-            onChange={(e) => setPlayerName(e.target.value)}
+            onChange={(e) => {
+              setPlayerName(e.target.value)
+              localStorage.setItem('username', e.target.value)
+            }}
           />
 
           <div className="my-10">
@@ -61,32 +71,37 @@ const Home: React.FC = () => {
         </div>
 
         <div className="p-4 mt-20 ">
-
-        
-        <div className="nes-container is-dark is-centered with-title">
-          <p className="title text-white text-5xl ">How To Play</p>
-          <div className="flex flex-col space-y-10">
-            <div>
-              <p className="text-white">
-                Blow up all your enemies.
-                <br />
-                Get items and power up!!!
-              </p>
-            </div>
-            <div>
-              <p className="text-white">MOVEMENT: ↑
-              <span className='transform rotate-90' style={{ writingMode: 'vertical-rl' }}>↑</span> 
-              <span className='transform rotate-180' style={{ writingMode: 'vertical-rl' }}>↑</span>
-              <span className='transform rotate-180' style={{ writingMode: 'vertical-rl' }}>↓</span> 
-              </p>
-            </div>
-            <div>
-              <p className="text-white">
-                BOMB: <span className="border-2 p-2">SPACE</span>
-              </p>
+          <div className="nes-container is-dark is-centered with-title">
+            <p className="title text-white text-5xl ">How To Play</p>
+            <div className="flex flex-col space-y-10">
+              <div>
+                <p className="text-white">
+                  Blow up all your enemies.
+                  <br />
+                  Get items and power up!!!
+                </p>
+              </div>
+              <div>
+                <p className="text-white">
+                  MOVEMENT: ↑
+                  <span className="transform rotate-90" style={{ writingMode: 'vertical-rl' }}>
+                    ↑
+                  </span>
+                  <span className="transform rotate-180" style={{ writingMode: 'vertical-rl' }}>
+                    ↑
+                  </span>
+                  <span className="transform rotate-180" style={{ writingMode: 'vertical-rl' }}>
+                    ↓
+                  </span>
+                </p>
+              </div>
+              <div>
+                <p className="text-white">
+                  BOMB: <span className="border-2 p-2">SPACE</span>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
@@ -94,4 +109,3 @@ const Home: React.FC = () => {
 }
 
 export default Home
-

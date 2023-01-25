@@ -92,7 +92,7 @@ export class Bomb {
         board[i][j] = Stage.stageValues.bombUp;
       } else if (random > 0.4) {
         board[i][j] = Stage.stageValues.fireUp;
-      } else if (random > 0.2) {
+      } else if (random > 0.1) {
         board[i][j] = Stage.stageValues.speedUp;
       }
       // bombDown 1.5-2.0, fireDown 1.0-1.5, speedDown 0.0-1.0

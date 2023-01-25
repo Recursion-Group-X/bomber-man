@@ -14,6 +14,7 @@ export class Room {
   roomName: string;
   stage: Stage;
   gameStartTime: number;
+  isShrinking: boolean = false;
   constructor(roomName: string) {
     this.roomName = roomName;
     this.stage = new Stage();
@@ -21,6 +22,10 @@ export class Room {
 
   startGame(): void {
     this.gameStartTime = new Date().getTime();
+  }
+
+  getGameTime(): number {
+    return (new Date().getTime() - this.gameStartTime) / 1000;
   }
 
   getPlayer(playerId: number): Player | null {
@@ -43,15 +48,25 @@ export class Room {
 
   // dead
   removePlayer(player: Player): void {
-    let deathTime = (new Date().getTime() - this.gameStartTime) / 1000;
+    let deathTime = this.getGameTime();
     this.players = this.players.filter((p) => p.playerId !== player.playerId);
-    if (this.players.length === 0)
-      deathTime = (new Date().getTime() - this.gameStartTime) / 100;
+    if (this.players.length === 0) deathTime = this.getGameTime() + 10;
     this.deadPlayers.push({
       name: player.name,
       playerId: player.playerId,
       deathTime,
       killedBy: player.killedBy,
     });
+  }
+
+  async startShrink(): Promise<void> {
+    this.isShrinking = true;
+    let sideLen: number = 15;
+    let start: number = 1;
+    while (sideLen > 8) {
+      await this.stage.shrinkAround(sideLen, start);
+      sideLen -= 2;
+      start += 1;
+    }
   }
 }

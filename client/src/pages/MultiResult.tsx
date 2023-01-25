@@ -74,11 +74,6 @@ const MultiResult: React.FC = () => {
         </div>
         {deadPlayers.length > 0 && (
           <div className="text-center">
-            {/* <a
-              href={`https://twitter.com/intent/tweet?text=Played with ${
-                deadPlayers.filter((p) => p.name !== playerName)[0].name
-              }...`}
-            > */}
             <a href={`https://twitter.com/intent/tweet?text=${deadPlayerInfo(deadPlayers)}`}>Tweet</a>
           </div>
         )}

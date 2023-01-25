@@ -24,7 +24,7 @@ const Game: React.FC = () => {
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [player] = useAtom(playerAtom)
-  const [gameTime, setGameTime] = useState<number>(0)
+  const [gameTime, setGameTime] = useState<number>(-3)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay()
@@ -59,7 +59,7 @@ const Game: React.FC = () => {
 
   useInterval(
     () => {
-      setGameTime(gameTime + 0.01)
+      setGameTime(gameTime+ 0.01)
       player?.move(canvasContext, currentStage)
       player?.drawBombs(canvasContext)
       enemies = enemies.filter((enemy) => enemy.isAlive)
@@ -75,7 +75,13 @@ const Game: React.FC = () => {
   )
 
   useInterval(() => {
-    putNewEnemies(2)
+    if(gameTime >= 100){
+      putNewEnemies(4)
+    }else if(gameTime >= 60){
+      putNewEnemies(3)
+    }else{
+      putNewEnemies(2)
+    }
     // addEnemy();
   }, 8000)
 
@@ -128,7 +134,7 @@ const Game: React.FC = () => {
     <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">PlayerName:</p>
+          <p className="ml-10 text-xl text-white">PlayerName:{player.name}</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
           <div className="flex items-center">
@@ -143,12 +149,19 @@ const Game: React.FC = () => {
             <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
             <p className="text-2xl text-white ml-2">×{(player.step - 1) / Player.SPEED_UP_ITEM}</p>
           </div>
-          <div className="w-1/3 items-center">
+          {/* <div className="w-1/3 items-center">
             <p className="ml-10 text-xl text-white mt-2">{player.name}</p>
-          </div>
+          </div> */}
         </div>
         <div className="w-1/6">
-          <p className="ml-10 text-xl text-white">00:00</p>
+          {gameTime > 0 ?
+          <p className="ml-10 text-xl text-white">
+            {'0' + (Math.floor(gameTime/60).toString()).slice(-2)}:{('00' + (Math.floor(gameTime)%60).toString()).slice(-2)}
+          </p>:
+          <p className="ml-10 text-xl text-white">
+            00:00
+          </p>
+          }
         </div>
         
       </div>

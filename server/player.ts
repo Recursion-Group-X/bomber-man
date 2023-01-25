@@ -17,11 +17,11 @@ export class Player {
   name: string;
   x: number;
   y: number;
-  size: number = 30;
+  size: number = 28;
   direction: string = "stay";
   pastDirection: string = "down";
   imageType: number = 1;
-  speed: number = 3;
+  speed: number = 2;
   numOfBombs: number = 1;
   bombPower: number = 1;
   isAlive: boolean = true;
@@ -56,6 +56,10 @@ export class Player {
 
   move(stage: Stage): void {
     const board = stage.getStage();
+    if (this.isInBlock(board)) {
+      this.isAlive = false;
+      this.killedBy = "Wall";
+    }
     if (this.canMove(board) && this.direction !== "stay") {
       this.moveOneStep();
     }
@@ -92,6 +96,7 @@ export class Player {
 
   // stageを受け取って移動できるか確認
   canMove(board: number[][]): boolean {
+    if (this.isOnTheBomb(board) && this.moveInSameIndex()) return true;
     return !(this.collideWithObjects(board) || this.isOutOfBound());
   }
 
@@ -155,24 +160,51 @@ export class Player {
     );
   }
 
-  // isOnTheBomb(board: number[][]): boolean {
-  //   const playerIndex: Index = new Index();
-  //   playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
-  //   playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
+  isOnTheBomb(board: number[][]): boolean {
+    const playerIndex: Index = new Index();
+    playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
+    playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
 
-  //   const top = Math.floor(this.y / Stage.boxSize);
-  //   const bottom = Math.floor((this.y + this.size) / Stage.boxSize);
-  //   const left = Math.floor(this.x / Stage.boxSize);
-  //   const right = Math.floor((this.x + this.size) / Stage.boxSize);
+    const top = Math.floor(this.y / Stage.boxSize);
+    const bottom = Math.floor((this.y + this.size) / Stage.boxSize);
+    const left = Math.floor(this.x / Stage.boxSize);
+    const right = Math.floor((this.x + this.size) / Stage.boxSize);
 
-  //   const bomb = Stage.stageValues.bomb;
-  //   return (
-  //     board[top][playerIndex.j] === bomb ||
-  //     board[bottom][playerIndex.j] === bomb ||
-  //     board[playerIndex.i][left] === bomb ||
-  //     board[playerIndex.i][right] === bomb
-  //   );
-  // }
+    const bomb = Stage.stageValues.bomb;
+    return (
+      board[playerIndex.i][playerIndex.j] === bomb
+      // board[top][playerIndex.j] === bomb ||
+      // board[bottom][playerIndex.j] === bomb ||
+      // board[playerIndex.i][left] === bomb ||
+      // board[playerIndex.i][right] === bomb
+    );
+  }
+
+  moveInSameIndex(): boolean {
+    let currentBound: Index = new Index();
+    let nextBound: Index = new Index();
+    nextBound.i = Math.floor(this.y / Stage.boxSize);
+    nextBound.j = Math.floor(this.x / Stage.boxSize);
+    currentBound.i = Math.floor(this.y / Stage.boxSize);
+    currentBound.j = Math.floor(this.x / Stage.boxSize);
+    if (this.direction === "up") {
+      nextBound.i = Math.floor((this.y - this.speed) / Stage.boxSize);
+    } else if (this.direction === "down") {
+      currentBound.i = Math.floor((this.y + this.size) / Stage.boxSize);
+      nextBound.i = Math.floor(
+        (this.y + this.size + this.speed) / Stage.boxSize
+      );
+    } else if (this.direction === "left") {
+      nextBound.j = Math.floor((this.x - this.speed) / Stage.boxSize);
+    } else if (this.direction === "right") {
+      currentBound.j = Math.floor((this.x + this.size) / Stage.boxSize);
+      nextBound.j = Math.floor(
+        (this.x + this.size + this.speed) / Stage.boxSize
+      );
+    }
+
+    return currentBound.i === nextBound.i && currentBound.j === nextBound.j;
+  }
 
   hitExplosion(board: number[][]): boolean {
     const playerIndex: Index = new Index();
@@ -194,6 +226,13 @@ export class Player {
     return stageValue >= Stage.stageValues.bombUp;
   }
 
+  isInBlock(board: number[][]): boolean {
+    const playerIndex: Index = new Index();
+    playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
+    playerIndex.j = Math.floor((this.x + this.size / 2) / Stage.boxSize);
+    return board[playerIndex.i][playerIndex.j] === Stage.stageValues.wall;
+  }
+
   getItem(board: number[][]): void {
     const playerIndex: Index = new Index();
     playerIndex.i = Math.floor((this.y + this.size / 2) / Stage.boxSize);
@@ -204,7 +243,7 @@ export class Player {
     } else if (itemType === Stage.stageValues.fireUp) {
       this.bombPower++;
     } else if (itemType === Stage.stageValues.speedUp) {
-      this.speed += 1;
+      this.speed += 0.5;
     }
 
     board[playerIndex.i][playerIndex.j] = Stage.stageValues.ground;
