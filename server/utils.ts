@@ -77,6 +77,7 @@ function sendGameStatus(room: Room, socket: any): void {
   socket.emit("send_game_status", {
     players: room.players,
     stage: room.stage.board,
+    gameTime: room.getGameTime(),
   });
 }
 
