@@ -20,6 +20,8 @@ import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 const STAGESIZE: number = 510
 const INTERVAL_SPAN = 30
 let interval: number | null = INTERVAL_SPAN
+
+let gameStartFlag = false
 const MultiGame: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
@@ -33,6 +35,8 @@ const MultiGame: React.FC = () => {
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [stopPlayer, changeDirection] = usePlayerMove()
   const [drawPlayersOnCanvas] = useDrawPlayers()
+
+  const [count, setCount] = useState<any>(3)
 
   const drawPlayers = async (plys: OnlinePlayer[]): Promise<void> => {
     if (canvasContext != null) {
@@ -93,6 +97,21 @@ const MultiGame: React.FC = () => {
     }
   }, [onlineCanvas, canvasContext])
 
+  useInterval(
+    () => {
+      setCount(count - 1)
+      if (count === 1) {
+        setCount('GAME START')
+        setTimeout(() => {
+          document.querySelectorAll('.overlay')[0].classList.remove('overlay')
+          setCount('')
+          gameStartFlag = true
+        }, 1000)
+      }
+    },
+    count > 0 ? 1000 : null
+  )
+
   useEffect(() => {
     socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
@@ -104,17 +123,18 @@ const MultiGame: React.FC = () => {
       setLastDirection('stay')
       navigate('/online-result', { state: { data } })
     })
-
-    addKeyEvents()
-    return () => {
-      removeKeyEvents()
-      socket.off('send_game_status')
-      socket.off('send_game_result')
+    if (gameStartFlag) {
+      addKeyEvents()
+      return () => {
+        removeKeyEvents()
+        socket.off('send_game_status')
+        socket.off('send_game_result')
+      }
     }
   }, [socket, players])
 
   return (
-    <div className="h-screen bg-black text-xl">
+    <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
           <p className="ml-10 text-xl text-white">00:00</p>
@@ -127,6 +147,9 @@ const MultiGame: React.FC = () => {
         </div>
       </div>
 
+      <div className="text-white">
+        <div className="text">{count}</div>
+      </div>
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>
         <table className="h-full w-full">
           {stage.map((row, i) => (
