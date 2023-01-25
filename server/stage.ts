@@ -82,4 +82,28 @@ export class Stage {
     // this.bombs = this.bombs.filter((b) => b.id !== bomb.id);
     bomb.explode();
   }
+
+  async shrinkAround(sideLen: number, start: number): Promise<void> {
+    for (let j = start; j < start + sideLen; j++) {
+      await this.changeBlock(start, j);
+    }
+    for (let i = start + 1; i < start + sideLen; i++) {
+      await this.changeBlock(i, start + sideLen - 1);
+    }
+    for (let j = start + sideLen - 2; j >= start; j--) {
+      await this.changeBlock(start + sideLen - 1, j);
+    }
+    for (let i = start + sideLen - 2; i > start; i--) {
+      await this.changeBlock(i, start);
+    }
+  }
+
+  async changeBlock(i: number, j: number): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.board[i][j] = Stage.stageValues.wall;
+        resolve();
+      }, 200);
+    });
+  }
 }
