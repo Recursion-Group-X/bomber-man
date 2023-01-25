@@ -141,9 +141,18 @@ const MultiGame: React.FC = () => {
           <p>{myPlayer?.name}</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
-          <div>Item1: </div>
-          <div>Item2:</div>
-          <div>Item3:</div>
+          <div className="flex items-center">
+            <img src={bombUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.numOfBombs - 1 : 0}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={fireUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.bombPower - 1 : 0}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.speed - 3 : 0}</p>
+          </div>
         </div>
       </div>
 
