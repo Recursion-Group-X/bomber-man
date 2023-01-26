@@ -1,7 +1,7 @@
 import { FirestoreDataConverter, QueryDocumentSnapshot, serverTimestamp, SnapshotOptions } from '@firebase/firestore'
 
 export interface GameRecord {
-  id: number
+  id: string
   name: string
   score: number
   date: Date

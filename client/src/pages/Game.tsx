@@ -17,6 +17,7 @@ import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
 // import { useAddEnemies } from '../hooks/useAddEnemies'
 import useAddEnemies from '../hooks/useAddEnemies'
+import { v4 as uuidv4 } from 'uuid'
 
 let interval: number | null = 10
 const Game: React.FC = () => {
@@ -33,6 +34,7 @@ const Game: React.FC = () => {
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay()
   const [putNewEnemies] = useAddEnemies()
+  const currId = uuidv4()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
@@ -89,18 +91,18 @@ const Game: React.FC = () => {
     setTimeout(async () => {
       navigate('/result', {
         state: {
-          id: await gameRecordGateway.getNumOfGameRecords(),
+          id: currId,
           name: player.name,
           score: gameTime,
         },
       })
     }, 1000)
-    gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert('ERORR'))
+    gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
   }
 
-  const getCurrntRecord = async (): Promise<GameRecord> => {
+  const getCurrntRecord = (): GameRecord => {
     return {
-      id: (await gameRecordGateway.getNumOfGameRecords()) + 1,
+      id: currId,
       name: player.name,
       score: gameTime,
       date: new Date(),
