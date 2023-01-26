@@ -57,6 +57,7 @@ const Game: React.FC = () => {
     }
     if (!player.isAlive) {
       interval = null
+      gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
       showResult().catch(() => alert('kkkk'))
     }
   }, interval)
@@ -97,7 +98,6 @@ const Game: React.FC = () => {
         },
       })
     }, 1000)
-    gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
   }
 
   const getCurrntRecord = (): GameRecord => {
