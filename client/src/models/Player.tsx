@@ -153,10 +153,14 @@ export class Player {
       if (currentStage[nextI][nextJ] >= this.stageMap.bombUp) {
         this.getItem(currentStage[nextI][nextJ])
       }
-      currentStage[i][j] = this.stageMap.grass
-      currentStage[nextI][nextJ] = this.stageMap.player
+      this.changePlayerIndex(i, j, nextI, nextJ, currentStage)
     }
     this.moveOneStep(i, j, moveTo, direction)
+  }
+
+  changePlayerIndex(i: number, j: number, nextI: number, nextJ: number, currentStage: number[][]): void {
+    currentStage[i][j] = this.stageMap.grass
+    currentStage[nextI][nextJ] = this.stageMap.player
   }
 
   putBomb(e: any, currentStage: number[][]): void {

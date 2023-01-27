@@ -70,6 +70,7 @@ const Game: React.FC = () => {
       removeKeyEvents()
       if (count === 1) {
         setCount('GAME START')
+        player.changePlayerIndex(1, 1, 1, 1, currentStage)
         setTimeout(() => {
           document.querySelectorAll('.overlay')[0].classList.remove('overlay')
           setCount('')
