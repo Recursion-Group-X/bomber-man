@@ -12,6 +12,7 @@ const Result: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       setrecordList(await gameRecordGateway.getLatestGameTopFiftyRecord())
+      setBestRnak(getCurrRnak())
     })().catch(() => alert('ERORR'))
   }, [])
 
@@ -31,6 +32,18 @@ const Result: React.FC = () => {
       }
     })
     return rank
+  }
+
+  const setBestRnak = (rank: number): void => {
+    console.log(rank)
+    if (rank === 0 || rank > 50) {
+      return
+    }
+    if (localStorage.getItem('bestRank') === null) {
+      localStorage.bestRank = rank
+    } else if (localStorage.bestRank < rank) {
+      localStorage.bestRnak = rank
+    }
   }
 
   const createRankingList = (currRank: number): any => {
@@ -171,6 +184,9 @@ const Result: React.FC = () => {
         <p>{name} Result</p>
         <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(score)}</p>
+        {localStorage.bestRank !== undefined && (
+          <p>Your Best Ranking is {convertToOdinalNumber(localStorage.bestRank)}</p>
+        )}
       </div>
       <div className="flex justify-end w-2/3 mx-auto">
         <button className="m-4 border border-2 p-2 text-white" onClick={restartGame}>
