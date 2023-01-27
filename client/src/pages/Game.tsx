@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import useInterval from 'use-interval'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid'
 import useResetSingleGame from '../hooks/useResetSingleGame'
 
 let interval: number | null = 10
+let gameStartFlag = false
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -45,8 +46,17 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
     }
-    return () => removeKeyEvents()
   }, [canvasContext])
+
+  useEffect(() => {
+    if (gameStartFlag) {
+      addKeyEvents()
+      console.log('add')
+    } else {
+      removeKeyEvents()
+      console.log('remove')
+    }
+  }, [gameStartFlag])
 
   useInterval(() => {
     setGameTime(gameTime + 0.01)
@@ -58,23 +68,23 @@ const Game: React.FC = () => {
       enemies[i].drawEnemy(canvasContext)
     }
     if (!player.isAlive) {
-      interval = null
-      gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
-      showResult().catch(() => alert('kkkk'))
+      gameStartFlag = false
+      // interval = null
+      // gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
+      // showResult().catch(() => alert('kkkk'))
     }
   }, interval)
 
   useInterval(
     () => {
       setCount(count - 1)
-      removeKeyEvents()
       if (count === 1) {
         setCount('GAME START')
         setTimeout(() => {
           document.querySelectorAll('.overlay')[0].classList.remove('overlay')
           setCount('')
-          addKeyEvents()
         }, 1000)
+        gameStartFlag = true
       }
     },
     count > 0 ? 1000 : null
@@ -91,15 +101,15 @@ const Game: React.FC = () => {
     // addEnemy();
   }, 8000)
 
-  const addKeyEvents = (): void => {
+  const addKeyEvents = useCallback((): void => {
     addEventListener('keydown', playerAction)
     addEventListener('keyup', stopPlayer)
-  }
+  }, [])
 
-  const removeKeyEvents = (): void => {
+  const removeKeyEvents = useCallback((): void => {
     removeEventListener('keydown', playerAction)
     removeEventListener('keyup', stopPlayer)
-  }
+  }, [])
 
   // Playerの移動方向を変える
   const playerAction = (e: any): void => {
