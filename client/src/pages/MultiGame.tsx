@@ -125,7 +125,9 @@ const MultiGame: React.FC = () => {
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
       setLastDirection('stay')
-      navigate('/online-result', { state: { data } })
+      setTimeout(() => {
+        navigate('/online-result', { state: { data } })
+      }, 1000)
     })
     if (gameStartFlag) {
       addKeyEvents()
