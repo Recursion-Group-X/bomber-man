@@ -39,6 +39,7 @@ const Game: React.FC = () => {
   const [resetAll] = useResetSingleGame()
 
   useEffect(() => {
+    interval = 10
     if (gameCanvasRef != null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
