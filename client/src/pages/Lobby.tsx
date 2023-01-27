@@ -17,6 +17,10 @@ const Lobby: React.FC = () => {
       roomName,
       playerName,
     })
+    socket.emit('send_message', {
+      message: { sender: playerName, content: `${playerName} entered ${roomName}` },
+      roomName,
+    })
     navigate('/room')
   }
 
@@ -46,28 +50,29 @@ const Lobby: React.FC = () => {
                 <span className="text-base">({room.players.length}/4)</span>
               </p>
             </div>
-            
+
             <div className="pt-6 flex w-full h-auto">
               <div className="">
-                  <div className='text-left text-base pb-3'>participant</div>
-                  {room.players.map((player) => (
-                    <p className='text-xs pb-2' key={player.playerId}> {player.name}</p>
-                  ))} 
+                <div className="text-left text-base pb-3">participant</div>
+                {room.players.map((player) => (
+                  <p className="text-xs pb-2" key={player.playerId}>
+                    {' '}
+                    {player.name}
+                  </p>
+                ))}
               </div>
             </div>
             <div className="mt-5 mb-3 absolute bottom-0 right-0">
-              {room.players.length >= 5 || room.gameStartTime !== undefined ?
-              <button
-                className="nes-btn is-disabled text-xs text-white"
-              >
-              Join
-              </button> : 
-              <button
-                className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
-                onClick={() => joinRoom(room.roomName)}
-              >
-                Join
-              </button>} 
+              {room.players.length >= 5 || room.gameStartTime !== undefined ? (
+                <button className="nes-btn is-disabled text-xs text-white">Join</button>
+              ) : (
+                <button
+                  className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
+                  onClick={() => joinRoom(room.roomName)}
+                >
+                  Join
+                </button>
+              )}
             </div>
           </div>
         ))}

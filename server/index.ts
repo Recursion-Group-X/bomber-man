@@ -9,6 +9,7 @@ import {
   leaveRoom,
   playerBomb,
   playerInterval,
+  recieveMessage,
   startGame,
 } from "./utils";
 
@@ -26,8 +27,8 @@ export const rooms = [
 app.use(cors());
 app.use(express.json());
 
-const server = app.listen(process.env.PORT || 8080, () => {
-  // const server = app.listen("3001", () => {
+// const server = app.listen(process.env.PORT || 8080, () => {
+const server = app.listen("3001", () => {
   console.log("Server is Running");
 });
 
@@ -46,6 +47,10 @@ io.on("connection", (socket) => {
 
   socket.on("join_room", (data) => {
     joinRoom(socket, data);
+  });
+
+  socket.on("send_message", (data) => {
+    recieveMessage(socket, data);
   });
 
   socket.on("start_game", (data) => {

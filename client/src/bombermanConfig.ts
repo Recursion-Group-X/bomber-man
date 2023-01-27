@@ -41,6 +41,7 @@ export interface Room {
   roomName: string
   stage: Stage
   gameStartTime: number
+  messages: Message[]
 }
 
 export interface Stage {
@@ -55,4 +56,9 @@ export interface Bomb {
   j: number
   stage: Stage
   isExploding: boolean
+}
+
+export interface Message {
+  sender: string
+  content: string
 }

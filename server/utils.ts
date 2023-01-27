@@ -16,6 +16,13 @@ export const joinRoom = (socket, data) => {
   console.log("User Joined Room: " + room.roomName);
 };
 
+export const recieveMessage = (socket, data) => {
+  const room: Room = getRoom(data.roomName);
+  room.messages.push(data.message);
+  socket.emit("send_message_list", room.messages);
+  socket.to(room.roomName).emit("send_message_list", room.messages);
+};
+
 export const startGame = (socket, data) => {
   const room: Room = getRoom(data.roomName);
   console.log("game start: ", room.roomName);

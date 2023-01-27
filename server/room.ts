@@ -8,6 +8,11 @@ interface DeadPlayer {
   killedBy: string;
 }
 
+export interface Message {
+  sender: string;
+  content: string;
+}
+
 export class Room {
   players: Player[] = [];
   deadPlayers: DeadPlayer[] = [];
@@ -15,6 +20,7 @@ export class Room {
   stage: Stage;
   gameStartTime: number;
   isShrinking: boolean = false;
+  messages: Message[] = [];
   constructor(roomName: string) {
     this.roomName = roomName;
     this.stage = new Stage();
