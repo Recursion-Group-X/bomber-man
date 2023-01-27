@@ -41,6 +41,7 @@ export interface Room {
   roomName: string
   stage: Stage
   gameStartTime: number
+  messages: Message[]
 }
 
 export interface Stage {

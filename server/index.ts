@@ -9,6 +9,7 @@ import {
   leaveRoom,
   playerBomb,
   playerInterval,
+  recieveMessage,
   startGame,
 } from "./utils";
 
@@ -46,6 +47,10 @@ io.on("connection", (socket) => {
 
   socket.on("join_room", (data) => {
     joinRoom(socket, data);
+  });
+
+  socket.on("send_message", (data) => {
+    recieveMessage(socket, data);
   });
 
   socket.on("start_game", (data) => {

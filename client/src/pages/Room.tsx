@@ -19,6 +19,9 @@ const Room: React.FC = () => {
       playerId = id
       console.log('your id is ', id)
     })
+    socket?.on('send_message_list', (data: Message[]) => {
+      setMessageList(data)
+    })
     socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
       setStage(data.stage)
@@ -49,7 +52,7 @@ const Room: React.FC = () => {
     if (message.length > 0) {
       // console.log(player[0].name, ': ', message)
       const m: Message = { sender: player[0].name, content: message }
-      socket.emit('send_message', m)
+      socket.emit('send_message', { message: m, roomName })
     }
     setMessage('')
   }
