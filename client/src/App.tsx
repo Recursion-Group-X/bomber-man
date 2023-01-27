@@ -10,9 +10,10 @@ import Room from './pages/Room'
 import Lobby from './pages/Lobby'
 import MultiGame from './pages/MultiGame'
 import MultiResult from './pages/MultiResult'
+import Ranking from './pages/Ranking'
 
-// const CONNECTION_PORT = 'localhost:3001'
-const CONNECTION_PORT = 'https://bomberman-server-2023.an.r.appspot.com'
+const CONNECTION_PORT = 'localhost:8080'
+// const CONNECTION_PORT = 'https://bomberman-server-2023.an.r.appspot.com'
 
 const App: React.FC = () => {
   const [socket, setSocket] = useAtom(socketAtom)
@@ -24,6 +25,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="ranking/" element={<Ranking />} />
           <Route path="lobby/" element={<Lobby />} />
           <Route path="game/" element={<Game />} />
           <Route path="result/" element={<Result />} />
