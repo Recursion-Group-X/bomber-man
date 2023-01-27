@@ -8,13 +8,17 @@ const Result: React.FC = () => {
   const { id, name, score }: { id: string; name: string; score: number } = useLocation().state
   const [recordList, setrecordList] = useState<GameRecord[]>()
   const gameRecordGateway = new GameRecordGateWay()
+  const [rank, setRank] = useState<number>(localStorage.bestRank)
 
   useEffect(() => {
     ;(async () => {
       setrecordList(await gameRecordGateway.getLatestGameTopFiftyRecord())
-      setBestRnak(getCurrRnak())
     })().catch(() => alert('ERORR'))
   }, [])
+
+  useEffect(() => {
+    setBestRnak(getCurrRnak())
+  }, [recordList])
 
   const navigateHome = (): void => {
     navigate('/')
@@ -34,16 +38,14 @@ const Result: React.FC = () => {
     return rank
   }
 
-  const setBestRnak = (rank: number): void => {
-    console.log(rank)
-    if (rank === 0 || rank > 50) {
-      return
-    }
-    if (localStorage.getItem('bestRank') === null) {
+  const setBestRnak = (rank: number): number => {
+    if (localStorage.getItem('bestRank') === null && rank <= 50 && rank > 0) {
       localStorage.bestRank = rank
-    } else if (localStorage.bestRank < rank) {
-      localStorage.bestRnak = rank
+    } else if (localStorage.bestRank >= rank && rank !== 0) {
+      localStorage.bestRank = rank
+      setRank(localStorage.bestRank)
     }
+    return localStorage.bestRank
   }
 
   const createRankingList = (currRank: number): any => {
@@ -187,9 +189,7 @@ const Result: React.FC = () => {
         <p>{name} Result</p>
         <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(score)}</p>
-        {localStorage.bestRank !== undefined && (
-          <p>Your Best Ranking is {convertToOdinalNumber(localStorage.bestRank)}</p>
-        )}
+        {localStorage.bestRank !== undefined && <p>Your Best Ranking is {convertToOdinalNumber(rank)}</p>}
       </div>
       <div className="flex justify-end w-2/3 mx-auto">
         <button className="m-4 border border-2 p-2 text-white" onClick={restartGame}>
