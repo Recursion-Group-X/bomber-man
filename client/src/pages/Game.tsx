@@ -49,15 +49,9 @@ const Game: React.FC = () => {
   }, [canvasContext])
 
   useEffect(() => {
-    if (gameStartFlag) {
-      addKeyEvents()
-    } else {
-      removeKeyEvents()
-    }
     if (interval === null) {
-      setCount('GAME OVER')
       gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
-      showResult().catch(() => alert('kkkk'))
+      showResult()
     }
   }, [gameStartFlag, interval])
 
@@ -71,10 +65,13 @@ const Game: React.FC = () => {
       enemies[i].drawEnemy(canvasContext)
     }
     if (!player.isAlive) {
+      removeKeyEvents()
       gameStartFlag = false
       setTimeout(() => {
         interval = null
-      }, 3000)
+      }, 2000)
+      setCount('GAME OVER')
+      document.querySelectorAll('.h-screen')[0].classList.add('overlay')
       // gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
       // showResult().catch(() => alert('kkkk'))
     }
@@ -89,6 +86,7 @@ const Game: React.FC = () => {
           document.querySelectorAll('.overlay')[0].classList.remove('overlay')
           setCount('')
           gameStartFlag = true
+          addKeyEvents()
         }, 1000)
       }
     },
@@ -127,7 +125,7 @@ const Game: React.FC = () => {
     player?.stopPlayer(e)
   }
 
-  const showResult = async (): Promise<void> => {
+  const showResult = (): void => {
     navigate('/result', {
       state: {
         id: currId,
