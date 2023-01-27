@@ -25,6 +25,7 @@ const useResetSingleGame = (): [() => void] => {
     const enemies: Enemies[] = []
     enemies.push(new Enemies(config1, newStage.getBoard(), true, newPlayer.x, newPlayer.y))
     enemies.push(new Enemies(config1, newStage.getBoard(), true, newPlayer.x, newPlayer.y))
+    enemies.push(new Enemies(config1, newStage.getBoard(), true, newPlayer.x, newPlayer.y))
     setEnemies(enemies)
   }
 

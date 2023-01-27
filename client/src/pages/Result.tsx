@@ -58,7 +58,7 @@ const Result: React.FC = () => {
       )
     }
 
-    if (currRank < 3) {
+    if (currRank > 0 && currRank < 3) {
       const displayList = recordList?.slice(0, 5)
       return (
         <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
@@ -80,7 +80,7 @@ const Result: React.FC = () => {
           </div>
         </div>
       )
-    } else if (recordList !== undefined && recordList.length - currRank < 3) {
+    } else if (recordList !== undefined && (recordList.length - currRank < 3 || currRank === 0)) {
       const displayList = recordList?.slice(-5)
       return (
         <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
@@ -149,6 +149,9 @@ const Result: React.FC = () => {
   }
 
   const convertToOdinalNumber = (rank: number): string => {
+    if (rank === 0) {
+      return 'OUT OF RANKING'
+    }
     if (rank !== 11 && rank !== 12 && rank !== 13 && rank % 10 === 1) {
       return `${rank}st`
     } else if (rank !== 11 && rank !== 12 && rank !== 13 && rank % 10 === 2) {

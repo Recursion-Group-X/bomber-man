@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import useInterval from 'use-interval'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import grassImg from '../assets/grass.png'
 import stoneImg from '../assets/stone.png'
@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid'
 import useResetSingleGame from '../hooks/useResetSingleGame'
 
 let interval: number | null = 10
+let gameStartFlag = false
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -45,8 +46,14 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
     }
-    return () => removeKeyEvents()
   }, [canvasContext])
+
+  useEffect(() => {
+    if (interval === null) {
+      gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
+      showResult()
+    }
+  }, [gameStartFlag, interval])
 
   useInterval(() => {
     setGameTime(gameTime + 0.01)
@@ -58,21 +65,27 @@ const Game: React.FC = () => {
       enemies[i].drawEnemy(canvasContext)
     }
     if (!player.isAlive) {
-      interval = null
-      gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
-      showResult().catch(() => alert('kkkk'))
+      removeKeyEvents()
+      gameStartFlag = false
+      setTimeout(() => {
+        interval = null
+      }, 2000)
+      setCount('GAME OVER')
+      document.querySelectorAll('.h-screen')[0].classList.add('overlay')
+      // gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
+      // showResult().catch(() => alert('kkkk'))
     }
   }, interval)
 
   useInterval(
     () => {
       setCount(count - 1)
-      removeKeyEvents()
       if (count === 1) {
         setCount('GAME START')
         setTimeout(() => {
           document.querySelectorAll('.overlay')[0].classList.remove('overlay')
           setCount('')
+          gameStartFlag = true
           addKeyEvents()
         }, 1000)
       }
@@ -91,15 +104,15 @@ const Game: React.FC = () => {
     // addEnemy();
   }, 8000)
 
-  const addKeyEvents = (): void => {
+  const addKeyEvents = useCallback((): void => {
     addEventListener('keydown', playerAction)
     addEventListener('keyup', stopPlayer)
-  }
+  }, [])
 
-  const removeKeyEvents = (): void => {
+  const removeKeyEvents = useCallback((): void => {
     removeEventListener('keydown', playerAction)
     removeEventListener('keyup', stopPlayer)
-  }
+  }, [])
 
   // Playerの移動方向を変える
   const playerAction = (e: any): void => {
@@ -112,17 +125,15 @@ const Game: React.FC = () => {
     player?.stopPlayer(e)
   }
 
-  const showResult = async (): Promise<void> => {
-    setTimeout(async () => {
-      navigate('/result', {
-        state: {
-          id: currId,
-          name: player.name,
-          score: gameTime,
-        },
-      })
-      resetAll()
-    }, 1000)
+  const showResult = (): void => {
+    navigate('/result', {
+      state: {
+        id: currId,
+        name: player.name,
+        score: gameTime,
+      },
+    })
+    resetAll()
   }
 
   const getCurrntRecord = (): GameRecord => {
