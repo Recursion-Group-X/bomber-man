@@ -47,7 +47,9 @@ const Room: React.FC = () => {
     const player: OnlinePlayer[] = players.filter((player: OnlinePlayer) => player.socketId === socket.id)
     if (player.length === 0) return
     if (message.length > 0) {
-      console.log(player[0].name, ': ', message)
+      // console.log(player[0].name, ': ', message)
+      const m: Message = { sender: player[0].name, content: message }
+      socket.emit('send_message', m)
     }
     setMessage('')
   }
