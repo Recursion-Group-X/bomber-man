@@ -56,3 +56,8 @@ export interface Bomb {
   stage: Stage
   isExploding: boolean
 }
+
+export interface Message {
+  sender: string
+  content: string
+}
