@@ -17,6 +17,10 @@ const MultiResult: React.FC = () => {
 
   const handleBackRoom = (): void => {
     socket?.emit('join_room', { roomName, playerName })
+    socket.emit('send_message', {
+      message: { sender: playerName, content: `${playerName} entered ${roomName}` },
+      roomName,
+    })
     navigate('/room')
   }
 
