@@ -9,6 +9,7 @@ import playerLeftWalkImg from '../assets/player-left-walk.png'
 import playerRightImg from '../assets/player-right.png'
 import playerRightWalkImg from '../assets/player-right-walk.png'
 import bombImg from '../assets/bomb.png'
+import deadImg from '../assets/dead.png'
 
 export class Player {
   name: string
@@ -112,17 +113,20 @@ export class Player {
     // 爆発のなかで止まっているとき、死亡
     if (currentStage[i][j] > this.stageMap.player && currentStage[i][j] < this.stageMap.bombUp) {
       this.isAlive = false
+      this.draw(canvas)
       return
     }
 
-    if (this.direction === 'up') {
-      this.checkPlayerMove(i, j, this.getIndex(centerY + this.step * -1), j, -1, 'vertical', currentStage)
-    } else if (this.direction === 'down') {
-      this.checkPlayerMove(i, j, this.getIndex(centerY + this.step * 1), j, 1, 'vertical', currentStage)
-    } else if (this.direction === 'left') {
-      this.checkPlayerMove(i, j, i, this.getIndex(centerX + this.step * -1), -1, 'horizontal', currentStage)
-    } else if (this.direction === 'right') {
-      this.checkPlayerMove(i, j, i, this.getIndex(centerX + this.step * 1), 1, 'horizontal', currentStage)
+    if (this.isAlive) {
+      if (this.direction === 'up') {
+        this.checkPlayerMove(i, j, this.getIndex(centerY + this.step * -1), j, -1, 'vertical', currentStage)
+      } else if (this.direction === 'down') {
+        this.checkPlayerMove(i, j, this.getIndex(centerY + this.step * 1), j, 1, 'vertical', currentStage)
+      } else if (this.direction === 'left') {
+        this.checkPlayerMove(i, j, i, this.getIndex(centerX + this.step * -1), -1, 'horizontal', currentStage)
+      } else if (this.direction === 'right') {
+        this.checkPlayerMove(i, j, i, this.getIndex(centerX + this.step * 1), 1, 'horizontal', currentStage)
+      }
     }
     this.draw(canvas)
   }
@@ -344,6 +348,9 @@ export class Player {
       } else if (this.direction === 'right') {
         src = this.playerImg === playerRightImg ? playerRightWalkImg : playerRightImg
       }
+    }
+    if (!this.isAlive) {
+      src = deadImg
     }
     this.playerImg = src
     return src
