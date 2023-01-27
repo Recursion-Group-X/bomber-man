@@ -15,11 +15,14 @@ import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
 import useDrawPlayers from '../hooks/useDrawPlayers'
 import usePlayerMove from '../hooks/usePlayerMove'
+import useTimeFormat from '../hooks/useTImeFormat'
 import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
-const INTERVAL_SPAN = 10
+const INTERVAL_SPAN = 30
 let interval: number | null = INTERVAL_SPAN
+
+let gameStartFlag = false
 const MultiGame: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
@@ -28,11 +31,15 @@ const MultiGame: React.FC = () => {
   const [myPlayer, setMyPlayer] = useState<OnlinePlayer | null>(null)
   const [lastDirection, setLastDirection] = useAtom(playersLastDirection)
   const [stage, setStage] = useState<number[][]>([])
+  const [gameTime, setGameTime] = useState<number>(0)
+  const [getOnlineGameTime] = useTimeFormat()
   const [roomName] = useAtom(roomNameAtom)
   const onlineCanvas = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   const [stopPlayer, changeDirection] = usePlayerMove()
   const [drawPlayersOnCanvas] = useDrawPlayers()
+
+  const [count, setCount] = useState<any>(3)
 
   const drawPlayers = async (plys: OnlinePlayer[]): Promise<void> => {
     if (canvasContext != null) {
@@ -93,40 +100,69 @@ const MultiGame: React.FC = () => {
     }
   }, [onlineCanvas, canvasContext])
 
+  useInterval(
+    () => {
+      setCount(count - 1)
+      if (count === 1) {
+        setCount('GAME START')
+        setTimeout(() => {
+          document.querySelectorAll('.overlay')[0].classList.remove('overlay')
+          setCount('')
+          gameStartFlag = true
+        }, 1000)
+      }
+    },
+    count > 0 ? 1000 : null
+  )
+
   useEffect(() => {
-    socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
+    socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][]; gameTime: number }) => {
       setPlayers(data.players)
       setMyPlayer(data.players.filter((player) => player.socketId === socket.id)[0])
       setStage(data.stage)
+      setGameTime(data.gameTime)
     })
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
       setLastDirection('stay')
       navigate('/online-result', { state: { data } })
     })
-
-    addKeyEvents()
-    return () => {
-      removeKeyEvents()
-      socket.off('send_game_status')
-      socket.off('send_game_result')
+    if (gameStartFlag) {
+      addKeyEvents()
+      return () => {
+        removeKeyEvents()
+        socket.off('send_game_status')
+        socket.off('send_game_result')
+      }
     }
   }, [socket, players])
 
   return (
-    <div className="h-screen bg-black text-xl">
+    <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">00:00</p>
+          <p className="ml-10 text-xl text-white">{getOnlineGameTime(gameTime)}</p>
           <p>{myPlayer?.name}</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
-          <div>Item1: </div>
-          <div>Item2:</div>
-          <div>Item3:</div>
+          <div className="flex items-center">
+            <img src={bombUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.numOfBombs - 1 : 0}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={fireUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.bombPower - 1 : 0}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.speed - 2 : 0}</p>
+          </div>
         </div>
       </div>
 
+      <div className="text-white">
+        <div className="text">{count}</div>
+      </div>
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>
         <table className="h-full w-full">
           {stage.map((row, i) => (

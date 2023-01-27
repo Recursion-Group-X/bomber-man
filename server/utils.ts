@@ -43,6 +43,9 @@ export const playerInterval = (socket, data) => {
     finishGame(socket, room);
   }
   sendGameStatus(room, socket);
+  if (!room.isShrinking && room.getGameTime() > 120) {
+    room.startShrink();
+  }
 };
 
 export const playerBomb = (socket, data) => {
@@ -70,10 +73,12 @@ function sendGameStatus(room: Room, socket: any): void {
   socket.to(room.roomName).emit("send_game_status", {
     players: room.players,
     stage: room.stage.board,
+    gameTime: room.getGameTime(),
   });
   socket.emit("send_game_status", {
     players: room.players,
     stage: room.stage.board,
+    gameTime: room.getGameTime(),
   });
 }
 

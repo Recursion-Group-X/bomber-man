@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { playerNameAtom, roomNameAtom, socketAtom } from '../atom/Atom'
 import { DeadPlayer } from '../bombermanConfig'
 import crownImg from '../assets/crown.png'
+import useTwitterMessage from '../hooks/useTwitterMessage'
 
 const MultiResult: React.FC = () => {
   const [deadPlayers, setDeadPlayers] = useState<DeadPlayer[]>([])
@@ -12,6 +13,7 @@ const MultiResult: React.FC = () => {
   const [socket] = useAtom(socketAtom)
   const location = useLocation()
   const navigate = useNavigate()
+  const [deadPlayerInfo] = useTwitterMessage()
 
   const handleBackRoom = (): void => {
     socket?.emit('join_room', { roomName, playerName })
@@ -37,8 +39,8 @@ const MultiResult: React.FC = () => {
   })
 
   return (
-    <div className="flex justify-center items-center w-full h-screen">
-      <div className="w-1/2 my-auto mx-auto border border-black rounded">
+    <div className="flex justify-center items-center w-full h-screen bg-black">
+      <div className="w-1/2 my-auto mx-auto nes-container is-rounded is-dark">
         <p className="text-center text-2xl my-5">GAME RESULT</p>
         <div className="flex text-2xl">
           <div className="w-full justify-center mx-auto">
@@ -70,16 +72,21 @@ const MultiResult: React.FC = () => {
             ))}
           </div>
         </div>
+        {deadPlayers.length > 0 && (
+          <div className="text-center">
+            <a href={`https://twitter.com/intent/tweet?text=${deadPlayerInfo(deadPlayers)}`}>Tweet</a>
+          </div>
+        )}
         <div className="w-1/2 mx-auto flex justify-around my-10">
           <button
             onClick={handleBackRoom}
-            className="p-2  bg-green-400 text-white text-xl font-semibold rounded-full hover:bg-green-500"
+            className="nes-btn is-success w-9/12 text-white text-base font-semibold hover:bg-green-500"
           >
             Back to Room
           </button>
           <button
             onClick={handleBackHome}
-            className="p-2  bg-blue-400 text-white text-xl font-semibold rounded-full hover:bg-blue-500"
+            className="nes-btn is-primary ml-6 w-9/12 text-white text-base font-semibold hover:bg-blue-500"
           >
             Go Home
           </button>

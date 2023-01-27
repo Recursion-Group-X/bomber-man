@@ -9,10 +9,14 @@ import playerLeftWalkImg from '../assets/player-left-walk.png'
 import playerRightImg from '../assets/player-right.png'
 import playerRightWalkImg from '../assets/player-right-walk.png'
 import { OnlinePlayer } from '../bombermanConfig'
+import { useAtom } from 'jotai'
+import { socketAtom } from '../atom/Atom'
 
 const useDrawPlayers = (): [
   (players: OnlinePlayer[], context: CanvasRenderingContext2D, canvasSize: number) => Promise<void>
 ] => {
+  const [socket] = useAtom(socketAtom)
+
   const changePlayerImg = async (player: OnlinePlayer): Promise<string> => {
     let src: string = playerFrontImg
     if (player.direction === 'stay') {
@@ -38,6 +42,11 @@ const useDrawPlayers = (): [
     })
   }
 
+  const changeTextColor = (player: OnlinePlayer, context: CanvasRenderingContext2D): void => {
+    if (player.socketId === socket.id) context.fillStyle = 'red'
+    else context.fillStyle = 'white'
+  }
+
   const drawPlayersOnCanvas = async (
     players: OnlinePlayer[],
     context: CanvasRenderingContext2D,
@@ -53,6 +62,7 @@ const useDrawPlayers = (): [
       await changePlayerImg(player).then((src) => {
         img.src = src
       })
+      changeTextColor(player, context)
       if (player.isAlive) {
         context.drawImage(img, player.x, player.y, player.size, player.size)
         context.fillText(player.name, player.x + player.size / 2, player.y)

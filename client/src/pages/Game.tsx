@@ -15,9 +15,10 @@ import { currentStageAtom, playerAtom, enemiesAtom, playerNameAtom } from '../at
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
-// import { useAddEnemies } from '../hooks/useAddEnemies'
+import { Player } from '../models/Player'
 import useAddEnemies from '../hooks/useAddEnemies'
 import { v4 as uuidv4 } from 'uuid'
+import useResetSingleGame from '../hooks/useResetSingleGame'
 
 let interval: number | null = 10
 const Game: React.FC = () => {
@@ -28,13 +29,14 @@ const Game: React.FC = () => {
   const [player] = useAtom(playerAtom)
   const [playerName] = useAtom(playerNameAtom)
   player.name = playerName
-
-  const [gameTime, setGameTime] = useState<number>(0)
+  const [gameTime, setGameTime] = useState<number>(-3)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay()
   const [putNewEnemies] = useAddEnemies()
   const currId = uuidv4()
+  const [count, setCount] = useState<any>(3)
+  const [resetAll] = useResetSingleGame()
 
   useEffect(() => {
     if (gameCanvasRef != null) {
@@ -42,7 +44,6 @@ const Game: React.FC = () => {
       setCavnasContext(a)
       player.draw(canvasContext)
     }
-    addKeyEvents()
     return () => removeKeyEvents()
   }, [canvasContext])
 
@@ -62,8 +63,30 @@ const Game: React.FC = () => {
     }
   }, interval)
 
+  useInterval(
+    () => {
+      setCount(count - 1)
+      removeKeyEvents()
+      if (count === 1) {
+        setCount('GAME START')
+        setTimeout(() => {
+          document.querySelectorAll('.overlay')[0].classList.remove('overlay')
+          setCount('')
+          addKeyEvents()
+        }, 1000)
+      }
+    },
+    count > 0 ? 1000 : null
+  )
+
   useInterval(() => {
-    putNewEnemies(2)
+    if (gameTime >= 100) {
+      putNewEnemies(4)
+    } else if (gameTime >= 60) {
+      putNewEnemies(3)
+    } else {
+      putNewEnemies(2)
+    }
     // addEnemy();
   }, 8000)
 
@@ -97,6 +120,7 @@ const Game: React.FC = () => {
           score: gameTime,
         },
       })
+      resetAll()
     }, 1000)
   }
 
@@ -110,16 +134,44 @@ const Game: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-black text-xl">
+    <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">00:00</p>
+          <p className="ml-10 text-xl text-white">PlayerName:{player.name}</p>
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
-          <div>Item1: </div>
-          <div>Item2:</div>
-          <div>Item3:</div>
+          <div className="flex items-center">
+            <img src={bombUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{player.numOfBombs - 2}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={fireUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{player.bombPower - 1}</p>
+          </div>
+          <div className="flex items-center">
+            <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
+            <p className="text-2xl text-white ml-2">×{(player.step - 1) / Player.SPEED_UP_ITEM}</p>
+          </div>
+          {/* <div className="w-1/3 items-center">
+            <p className="ml-10 text-xl text-white mt-2">{player.name}</p>
+          </div> */}
         </div>
+        <div className="w-1/6">
+          {gameTime > 0 ? (
+            <p className="ml-10 text-xl text-white">
+              {'0' +
+                Math.floor(gameTime / 60)
+                  .toString()
+                  .slice(-2)}
+              :{('00' + (Math.floor(gameTime) % 60).toString()).slice(-2)}
+            </p>
+          ) : (
+            <p className="ml-10 text-xl text-white">00:00</p>
+          )}
+        </div>
+      </div>
+      <div className="text-white">
+        <div className="text">{count}</div>
       </div>
 
       <div className=" mx-auto bg-white mt-12 flex" style={{ height: '510px', width: '510px' }}>

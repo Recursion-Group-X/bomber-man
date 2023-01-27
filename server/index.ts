@@ -2,6 +2,7 @@ const express = require("express");
 const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
+import { connect } from "http2";
 import { Room } from "./room";
 import {
   joinRoom,
@@ -20,17 +21,13 @@ export const rooms = [
   new Room("Room 2"),
   new Room("Room 3"),
   new Room("Room 4"),
-  new Room("Room 5"),
-  new Room("Room 6"),
-  new Room("Room 7"),
-  new Room("Room 8"),
 ];
 
 app.use(cors());
 app.use(express.json());
 
 const server = app.listen(process.env.PORT || 8080, () => {
-// const server = app.listen("3001", () => {
+  // const server = app.listen("3001", () => {
   console.log("Server is Running");
 });
 
