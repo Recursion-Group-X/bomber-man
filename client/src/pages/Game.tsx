@@ -51,12 +51,14 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (gameStartFlag) {
       addKeyEvents()
-      console.log('add')
     } else {
       removeKeyEvents()
-      console.log('remove')
     }
-  }, [gameStartFlag])
+    if (interval === null) {
+      gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
+      showResult().catch(() => alert('kkkk'))
+    }
+  }, [gameStartFlag, interval])
 
   useInterval(() => {
     setGameTime(gameTime + 0.01)
@@ -69,7 +71,9 @@ const Game: React.FC = () => {
     }
     if (!player.isAlive) {
       gameStartFlag = false
-      // interval = null
+      setTimeout(() => {
+        interval = null
+      }, 3000)
       // gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
       // showResult().catch(() => alert('kkkk'))
     }
@@ -123,16 +127,14 @@ const Game: React.FC = () => {
   }
 
   const showResult = async (): Promise<void> => {
-    setTimeout(async () => {
-      navigate('/result', {
-        state: {
-          id: currId,
-          name: player.name,
-          score: gameTime,
-        },
-      })
-      resetAll()
-    }, 1000)
+    navigate('/result', {
+      state: {
+        id: currId,
+        name: player.name,
+        score: gameTime,
+      },
+    })
+    resetAll()
   }
 
   const getCurrntRecord = (): GameRecord => {
