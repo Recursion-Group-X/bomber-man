@@ -11,28 +11,35 @@ import fireOriginImg from '../assets/fire-o.png'
 import bombUpImg from '../assets/bomb-up.png'
 import fireUpImg from '../assets/fire-up.png'
 import speedUpImg from '../assets/speed-up.png'
-import { currentStageAtom, playerAtom, enemiesAtom } from '../atom/Atom'
+import { currentStageAtom, playerAtom, enemiesAtom, playerNameAtom } from '../atom/Atom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
 import { config1 } from '../bombermanConfig'
 import { Player } from '../models/Player'
 import useAddEnemies from '../hooks/useAddEnemies'
+import { v4 as uuidv4 } from 'uuid'
 import useResetSingleGame from '../hooks/useResetSingleGame'
 
+let interval: number | null = 10
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
   const gameCanvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
+  // Todo 状態を統一したい
   const [player] = useAtom(playerAtom)
+  const [playerName] = useAtom(playerNameAtom)
+  player.name = playerName
   const [gameTime, setGameTime] = useState<number>(-3)
   const navigate = useNavigate()
   let [enemies] = useAtom(enemiesAtom)
   const gameRecordGateway = new GameRecordGateWay()
   const [putNewEnemies] = useAddEnemies()
+  const currId = uuidv4()
   const [count, setCount] = useState<any>(3)
   const [resetAll] = useResetSingleGame()
 
   useEffect(() => {
+    interval = 10
     if (gameCanvasRef != null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
@@ -40,6 +47,22 @@ const Game: React.FC = () => {
     }
     return () => removeKeyEvents()
   }, [canvasContext])
+
+  useInterval(() => {
+    setGameTime(gameTime + 0.01)
+    player?.move(canvasContext, currentStage)
+    player?.drawBombs(canvasContext)
+    enemies = enemies.filter((enemy) => enemy.isAlive)
+    for (let i: number = 0; i < enemies.length; i++) {
+      enemies[i].moveEnemy(canvasContext, currentStage, player)
+      enemies[i].drawEnemy(canvasContext)
+    }
+    if (!player.isAlive) {
+      interval = null
+      gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
+      showResult().catch(() => alert('kkkk'))
+    }
+  }, interval)
 
   useInterval(
     () => {
@@ -57,29 +80,12 @@ const Game: React.FC = () => {
     count > 0 ? 1000 : null
   )
 
-  useInterval(
-    () => {
-      setGameTime(gameTime+ 0.01)
-      player?.move(canvasContext, currentStage)
-      player?.drawBombs(canvasContext)
-      enemies = enemies.filter((enemy) => enemy.isAlive)
-      for (let i: number = 0; i < enemies.length; i++) {
-        enemies[i].moveEnemy(canvasContext, currentStage, player)
-        enemies[i].drawEnemy(canvasContext)
-      }
-      if (!player.isAlive) {
-        showResult().catch(() => alert('kkkk'))
-      }
-    },
-    player.isAlive ? 10 : null
-  )
-
   useInterval(() => {
-    if(gameTime >= 100){
+    if (gameTime >= 100) {
       putNewEnemies(4)
-    }else if(gameTime >= 60){
+    } else if (gameTime >= 60) {
       putNewEnemies(3)
-    }else{
+    } else {
       putNewEnemies(2)
     }
     // addEnemy();
@@ -107,25 +113,23 @@ const Game: React.FC = () => {
   }
 
   const showResult = async (): Promise<void> => {
-    setTimeout(() => {
+    setTimeout(async () => {
       navigate('/result', {
         state: {
+          id: currId,
           name: player.name,
-          score: Math.random() * (200 - 100) + 100,
-          alivedTime: gameTime,
+          score: gameTime,
         },
       })
       resetAll()
     }, 1000)
-    gameRecordGateway.postGameRecord(await getCurrntRecord()).catch(() => alert('ERORR'))
   }
 
-  const getCurrntRecord = async (): Promise<GameRecord> => {
+  const getCurrntRecord = (): GameRecord => {
     return {
-      id: (await gameRecordGateway.getNumOfGameRecords()) + 1,
+      id: currId,
       name: player.name,
-      score: Math.random() * (200 - 100) + 100,
-      alivedTime: gameTime,
+      score: gameTime,
       date: new Date(),
     }
   }
@@ -154,16 +158,18 @@ const Game: React.FC = () => {
           </div> */}
         </div>
         <div className="w-1/6">
-          {gameTime > 0 ?
-          <p className="ml-10 text-xl text-white">
-            {'0' + (Math.floor(gameTime/60).toString()).slice(-2)}:{('00' + (Math.floor(gameTime)%60).toString()).slice(-2)}
-          </p>:
-          <p className="ml-10 text-xl text-white">
-            00:00
-          </p>
-          }
+          {gameTime > 0 ? (
+            <p className="ml-10 text-xl text-white">
+              {'0' +
+                Math.floor(gameTime / 60)
+                  .toString()
+                  .slice(-2)}
+              :{('00' + (Math.floor(gameTime) % 60).toString()).slice(-2)}
+            </p>
+          ) : (
+            <p className="ml-10 text-xl text-white">00:00</p>
+          )}
         </div>
-        
       </div>
       <div className="text-white">
         <div className="text">{count}</div>

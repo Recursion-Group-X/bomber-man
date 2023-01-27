@@ -21,6 +21,9 @@ const Home: React.FC = () => {
     })
     socket?.emit('enter_lobby')
   }
+  const moveRanking = (): void => {
+    navigate('/ranking')
+  }
 
   useEffect(() => {
     const name: string | null = localStorage.getItem('username')
@@ -102,6 +105,15 @@ const Home: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div id="showrankinb" className="mt-20">
+          <button
+            className="px-2 py-1  bg-yellow-400 text-lg text-white font-semibold rounded-full hover:bg-yellow-500"
+            onClick={moveRanking}
+          >
+            SHOW RANKING
+          </button>
         </div>
       </div>
     </div>
