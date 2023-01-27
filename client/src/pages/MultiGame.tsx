@@ -155,7 +155,7 @@ const MultiGame: React.FC = () => {
           </div>
           <div className="flex items-center">
             <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
-            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.speed - 2 : 0}</p>
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.speed - 5 : 0}</p>
           </div>
         </div>
       </div>
