@@ -166,9 +166,11 @@ export class Player {
       if (this.bombs.length < this.numOfBombs) {
         this.bombs.push([i, j])
         setTimeout(() => {
-          this.bombs.splice(0, 1)
-          currentStage[i][j] = this.stageMap.grass
-          this.explodeBomb(i, j, currentStage)
+          if (this.bombs.filter((bomb: number[]) => bomb[0] === i && bomb[1] === j).length > 0) {
+            this.bombs.splice(0, 1)
+            currentStage[i][j] = this.stageMap.grass
+            this.explodeBomb(i, j, currentStage)
+          }
         }, 3000)
         currentStage[i][j] = this.stageMap.bomb
       }
@@ -198,13 +200,19 @@ export class Player {
   ): void {
     for (let k: number = 1; k < this.bombPower + 1; k++) {
       const pos = currentStage[i + k * direction * izero][j + k * direction * jzero]
+      const indexI = i + k * direction * izero
+      const indexJ = j + k * direction * jzero
       if (pos === this.stageMap.wall) {
         break
       } else if (pos === this.stageMap.stone) {
-        this.breakStone(i + k * direction * izero, j + k * direction * jzero, imgNum, currentStage)
+        this.breakStone(indexI, indexJ, imgNum, currentStage)
         break
       } else if (pos === this.stageMap.grass || pos === this.stageMap.player || pos >= this.stageMap.bombUp) {
-        currentStage[i + k * direction * izero][j + k * direction * jzero] = imgNum
+        currentStage[indexI][indexJ] = imgNum
+      } else if (pos === this.stageMap.bomb) {
+        this.bombs = this.bombs.filter((bomb: number[]) => !(bomb[0] === indexI && bomb[1] === indexJ))
+        currentStage[indexI][indexJ] = this.stageMap.grass
+        this.explodeBomb(indexI, indexJ, currentStage)
       }
     }
   }
