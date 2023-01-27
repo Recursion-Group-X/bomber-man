@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { roomNameAtom, socketAtom } from '../atom/Atom'
 import { Message, OnlinePlayer } from '../bombermanConfig'
@@ -13,6 +13,7 @@ const Room: React.FC = () => {
   const [messageList, setMessageList] = useState<Message[]>([])
   const [message, setMessage] = useState<string>('')
   const navigate = useNavigate()
+  const chatRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     socket?.on('send_player_id', (id: number) => {
@@ -21,6 +22,9 @@ const Room: React.FC = () => {
     })
     socket?.on('send_message_list', (data: Message[]) => {
       setMessageList(data)
+      if (chatRef.current != null) chatRef.current.scrollTop = chatRef.current?.scrollHeight
+      console.log(chatRef.current?.scrollTop)
+      // chatRef.current?.scrollIntoView()
     })
     socket?.on('send_game_status', (data: { players: OnlinePlayer[]; stage: number[][] }) => {
       setPlayers(data.players)
@@ -83,7 +87,7 @@ const Room: React.FC = () => {
         </button>
       </div>
       <div className="mt-6 flex justify-center flex-col items-center">
-        <div className="w-1/3 h-60 nes-container with-title is-centered is-dark overflow-y-scroll">
+        <div className="w-1/3 h-60 nes-container with-title is-centered is-dark overflow-y-scroll" ref={chatRef}>
           <p className="pt-2 w-full text-left ml-4">
             {messageList.map((message: Message, index: number) => (
               <p className="my-2" key={index}>
