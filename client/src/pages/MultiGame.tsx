@@ -19,7 +19,7 @@ import useTimeFormat from '../hooks/useTImeFormat'
 import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
-const INTERVAL_SPAN = 30
+const INTERVAL_SPAN = 100
 let interval: number | null = INTERVAL_SPAN
 
 let gameStartFlag = false
