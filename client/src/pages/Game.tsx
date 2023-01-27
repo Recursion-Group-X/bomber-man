@@ -55,6 +55,7 @@ const Game: React.FC = () => {
       removeKeyEvents()
     }
     if (interval === null) {
+      setCount('GAME OVER')
       gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
       showResult().catch(() => alert('kkkk'))
     }
@@ -87,8 +88,8 @@ const Game: React.FC = () => {
         setTimeout(() => {
           document.querySelectorAll('.overlay')[0].classList.remove('overlay')
           setCount('')
+          gameStartFlag = true
         }, 1000)
-        gameStartFlag = true
       }
     },
     count > 0 ? 1000 : null
