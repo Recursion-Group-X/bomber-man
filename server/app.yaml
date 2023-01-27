@@ -1,7 +1,7 @@
 env: standard
 runtime: nodejs16
 default_expiration: "12h"
-instance_class: F1
+instance_class: F4
 automatic_scaling:
   target_cpu_utilization: 0.95
   target_throughput_utilization: 0.95
