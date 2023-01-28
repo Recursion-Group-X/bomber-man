@@ -5,7 +5,7 @@ The game offers two styles of play: single player and multi-player. In the singl
 Multi-player mode allows up to 4 people to play at the same time, and we are offering 4 rooms for you, so this allows up to 16 players to play!
 In this mode, players try to hit their bombs each other and the last surviving player wins! Break the blocks to get as many items as possible and take advantage of the game!
 
-このゲームはコンピュータサイエンス学習プラットフォームであるRecursionのチーム開発イベントによって作成されました。
+このゲームはコンピュータサイエンス学習プラットフォームである[Recursion](https://recursionist.io/)のチーム開発イベントによって作成されました。
 ソロプレイとマルチプレイの両方があり、ソロプレイでは湧き出てくるエネミーを爆弾で倒しながらできるだけステージ内に長く生き残ることが目的です。
 ランキング機能も搭載されているので、ほかのプレイヤーたちとスコアを競い合うことができます。
 マルチプレイではリアルタイムで最大1ルームにつき4人のプレイヤーでバトルすることができます。アイテムを獲得して、ほかプレイヤーを爆発に巻き込み勝利を目指しましょう！
