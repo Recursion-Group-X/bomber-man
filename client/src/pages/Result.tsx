@@ -178,7 +178,7 @@ const Result: React.FC = () => {
       </div>
       <div className="mt-16 text-center text-2xl text-white">
         <p>{name}</p>
-        <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
+        <p>Your Ranking is {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(score)}</p>
       </div>
       {createRankingList(getCurrRnak())}

@@ -76,23 +76,29 @@ const MultiResult: React.FC = () => {
             ))}
           </div>
         </div>
-        {deadPlayers.length > 0 && (
-          <div className="text-center">
-            <a href={`https://twitter.com/intent/tweet?text=${deadPlayerInfo(deadPlayers)}`}>Tweet</a>
-          </div>
-        )}
-        <div className="w-1/2 mx-auto flex justify-around my-10">
+        
+        <div className="flex justify-center items-center my-10">
+          {deadPlayers.length > 0 && (
+            <div className="mr-4 text-center">
+              <a target="_blank" rel="noopener noreferrer" href={`https://twitter.com/intent/tweet?text=${deadPlayerInfo(deadPlayers)}`}>
+                <i className='nes-icon twitter is-medium '></i>
+              </a>
+            </div>
+          )}
           <button
             onClick={handleBackRoom}
-            className="nes-btn is-success w-9/12 text-white text-base font-semibold hover:bg-green-500"
+            className="nes-btn is-success ml-4 text-white hover:bg-green-500"
           >
-            Back to Room
+            <p>Back to</p>
+            <p>Room</p>
+          
           </button>
           <button
             onClick={handleBackHome}
-            className="nes-btn is-primary ml-6 w-9/12 text-white text-base font-semibold hover:bg-blue-500"
+            className="nes-btn is-primary ml-6 text-white hover:bg-blue-500"
           >
-            Go Home
+            <p>Go Home</p>
+            <p>  </p>
           </button>
         </div>
       </div>
