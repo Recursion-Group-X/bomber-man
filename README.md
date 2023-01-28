@@ -10,7 +10,7 @@ In this mode, players try to hit their bombs each other and the last surviving p
 ランキング機能も搭載されているので、ほかのプレイヤーたちとスコアを競い合うことができます。
 マルチプレイではリアルタイムで最大1ルームにつき4人のプレイヤーでバトルすることができます。アイテムを獲得して、ほかプレイヤーを爆発に巻き込みましょう！
 
-#How to Play
+# How to Play
 Use Arrow keys (Up, Down, Left, Right) to move. Put a bomb by punching the space key!
 
 十字キーで移動、スペースキーで爆弾を設置
