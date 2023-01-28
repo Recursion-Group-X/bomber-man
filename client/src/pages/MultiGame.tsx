@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import useInterval from 'use-interval'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { playersLastDirection, roomNameAtom, socketAtom } from '../atom/Atom'
@@ -125,6 +125,7 @@ const MultiGame: React.FC = () => {
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
       setLastDirection('stay')
+      gameStartFlag = false
       setTimeout(() => {
         navigate('/online-result', { state: { data } })
       }, 1000)
