@@ -35,7 +35,7 @@ const Lobby: React.FC = () => {
     <div className="h-screen bg-black">
       <div className="h-20 flex items-center justify-center text-white text-4xl">Lobby</div>
       <button
-        className="px-3 py-2 bg-gray-400 text-lg text-white ml-20 mt-8 font-semibold rounded-full hover:bg-gray-500"
+        className="px-3 py-2 ml-20 mt-8 nes-btn is-success text-lg text-white font-semibold hover:bg-gray-500"
         onClick={() => navigate('/')}
       >
         Home
@@ -43,6 +43,7 @@ const Lobby: React.FC = () => {
 
       <div className="my-10 flex flex-wrap justify-center">
         {rooms.map((room) => (
+          room.players.length !== 0 ?
           <div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
             <div>
               <p className="text-base text-left text-black">
@@ -50,17 +51,13 @@ const Lobby: React.FC = () => {
                 <span className="text-base">({room.players.length}/4)</span>
               </p>
             </div>
-
             <div className="pt-6 flex w-full h-auto">
-              <div className="">
-                <div className="text-left text-base pb-3">participant</div>
                 {room.players.map((player) => (
-                  <p className="text-xs pb-2" key={player.playerId}>
+                  <p className="text-base pb-2" key={player.playerId}>
                     {' '}
                     {player.name}
                   </p>
                 ))}
-              </div>
             </div>
             <div className="mt-5 mb-3 absolute bottom-0 right-0">
               {room.players.length >= 5 || room.gameStartTime !== undefined ? (
@@ -75,6 +72,31 @@ const Lobby: React.FC = () => {
               )}
             </div>
           </div>
+          :<div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
+          <div>
+            <p className="text-base text-left text-black">
+              {room.roomName}
+              <span className="text-base">({room.players.length}/4)</span>
+            </p>
+          </div>
+          <div className="pt-6 flex w-full h-auto">
+              <div>
+                 <p className='text-base nes-text is-error' >No Player</p> 
+              </div>
+          </div>
+          <div className="mt-5 mb-3 absolute bottom-0 right-0">
+            {room.players.length >= 5 || room.gameStartTime !== undefined ? (
+              <button className="nes-btn is-disabled text-xs text-white">Join</button>
+            ) : (
+              <button
+                className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
+                onClick={() => joinRoom(room.roomName)}
+              >
+                Join
+              </button>
+            )}
+          </div>
+        </div>
         ))}
 
         {/* <label htmlFor="room_name" className="block mb-2 text-sm font-medium">
