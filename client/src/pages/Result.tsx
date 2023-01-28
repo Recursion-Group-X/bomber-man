@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
@@ -18,7 +18,7 @@ const Result: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    setBestRnak(getCurrRnak())
+    setBestRnak()
   }, [recordList])
 
   const navigateHome = (): void => {
@@ -39,30 +39,29 @@ const Result: React.FC = () => {
     return rank
   }
 
-  const setBestRnak = (rank: number): void => {
+  const setBestRnak = (): void => {
     const localData = localStorage.getItem('bestScore')
-    if (localData === null && rank <= 50 && rank > 0) {
+    if (localData !== null) {
+      const newScore = JSON.parse(localData).bestScore < score ? score : JSON.parse(localData).bestScore
+      const newId = JSON.parse(localData).bestScore < score ? id : JSON.parse(localData).bestId
+      const newRank = getBestPosition(JSON.parse(localData))
+      setBestScore(newScore)
+      setRank(newRank)
+      const data = JSON.stringify({ bestId: newId, bestRank: newRank, bestScore: newScore })
+      localStorage.setItem('bestScore', data)
+    }
+    if (localData === null) {
       const data = JSON.stringify({ bestId: id, bestRank: rank, bestScore: score })
       localStorage.setItem('bestScore', data)
-    } else if (localData !== null) {
-      if (JSON.parse(localData).score < score && rank <= 50 && rank > 0) {
-        const data = JSON.stringify({ bestId: id, bestRank: rank, bestScore: score })
-        localStorage.setItem('bestScore', data)
-      }
     }
-    getBestPosition()
   }
 
-  const getBestPosition = (): string => {
-    let position = 'OUT OF RANKING'
+  const getBestPosition = (localData: any): number => {
+    let position = 0
     recordList?.forEach((value, index) => {
-      const localData = localStorage.getItem('bestScore')
-      if (localData !== null) {
-        if (JSON.parse(localData).bestId === value.id) {
-          position = convertToOdinalNumber(index + 1)
-          setRank(index + 1)
-          setBestScore(value.score)
-        }
+      if (localData.bestId === value.id) {
+        position = index + 1
+        console.log('here')
       }
     })
     return position
@@ -72,7 +71,7 @@ const Result: React.FC = () => {
     if (recordList !== undefined && recordList?.length < 5) {
       const displayList = recordList
       return (
-        <div className='flex justify-center mt-6'>
+        <div className="flex justify-center mt-6">
           <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6 justify-between">
             <div className="ml-20">
               {displayList?.map((record: GameRecord, index) => (
@@ -98,7 +97,7 @@ const Result: React.FC = () => {
     if (currRank > 0 && currRank < 3) {
       const displayList = recordList?.slice(0, 5)
       return (
-        <div className='flex justify-center mt-6'>
+        <div className="flex justify-center mt-6">
           <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6 flex justify-between">
             <div className="ml-20">
               {displayList?.map((record: GameRecord, index) => (
@@ -122,7 +121,7 @@ const Result: React.FC = () => {
     } else if (recordList !== undefined && (recordList.length - currRank < 3 || currRank === 0)) {
       const displayList = recordList?.slice(-5)
       return (
-        <div className='flex justify-center mt-6'>
+        <div className="flex justify-center mt-6">
           <div className="flex h-1/2 w-1/2 mx-auto mt-10 nes-container is-dark pt-6 flex justify-between">
             <div className="ml-20">
               {displayList?.map((record: GameRecord, index) => (
@@ -146,31 +145,31 @@ const Result: React.FC = () => {
     } else {
       const displayList = recordList?.slice(currRank - 3, currRank + 2)
       return (
-        <div className='flex justify-center mt-6'>
+        <div className="flex justify-center mt-6">
           <div className="flex mx-auto h-1/2 w-2/3 mt-10 nes-container is-dark pt-6 flex justify-between">
-              <div className="ml-20">
-                {displayList?.map((record: GameRecord, index) => (
-                  <div key={record.id}>
-                    <p className="text-start my-4 text-2xl">
-                      {index !== 2
-                        ? index < 2
-                          ? convertToOdinalNumber(currRank + index - 2)
-                          : convertToOdinalNumber(currRank + Math.floor(index / 2))
-                        : convertToOdinalNumber(currRank)}{' '}
-                      {record.name}{' '}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <div className="mr-20">
-                {displayList?.map((record: GameRecord, index) => (
-                  <div key={record.id}>
-                    <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="ml-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">
+                    {index !== 2
+                      ? index < 2
+                        ? convertToOdinalNumber(currRank + index - 2)
+                        : convertToOdinalNumber(currRank + Math.floor(index / 2))
+                      : convertToOdinalNumber(currRank)}{' '}
+                    {record.name}{' '}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mr-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+                </div>
+              ))}
             </div>
           </div>
+        </div>
       )
     }
   }
@@ -224,13 +223,14 @@ const Result: React.FC = () => {
       </div>
       {createRankingList(getCurrRnak())}
 
-      
       <div className="flex justify-end w-2/3 mx-auto">
-        <div className='pt-4 pr-2'>
-          <a target="_blank" rel="noopener noreferrer"
+        <div className="pt-4 pr-2">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
             href={`https://twitter.com/intent/tweet?text=I played solo Bomb Game? My score was ${score} https://bomb-game.netlify.app/`}
           >
-            <i className='nes-icon twitter is-medium '></i>
+            <i className="nes-icon twitter is-medium "></i>
           </a>
         </div>
         <button className="m-4 nes-btn is-success p-2 text-white" onClick={navigateHome}>
@@ -240,7 +240,6 @@ const Result: React.FC = () => {
           Restart
         </button>
       </div>
-      
     </div>
   )
 }
