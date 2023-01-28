@@ -42,11 +42,11 @@ const Result: React.FC = () => {
   const setBestRnak = (rank: number): void => {
     const localData = localStorage.getItem('bestScore')
     if (localData === null && rank <= 50 && rank > 0) {
-      const data = JSON.stringify({ id: id, rank: rank, score: score })
+      const data = JSON.stringify({ bestId: id, bestRank: rank, bestScore: score })
       localStorage.setItem('bestScore', data)
     } else if (localData !== null) {
       if (JSON.parse(localData).score < score && rank <= 50 && rank > 0) {
-        const data = JSON.stringify({ id: id, rank: rank, score: score })
+        const data = JSON.stringify({ bestId: id, bestRank: rank, bestScore: score })
         localStorage.setItem('bestScore', data)
       }
     }
@@ -58,7 +58,7 @@ const Result: React.FC = () => {
     recordList?.forEach((value, index) => {
       const localData = localStorage.getItem('bestScore')
       if (localData !== null) {
-        if (JSON.parse(localData).id === value.id) {
+        if (JSON.parse(localData).bestId === value.id) {
           position = convertToOdinalNumber(index + 1)
           setRank(index + 1)
           setBestScore(value.score)
