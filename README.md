@@ -23,3 +23,6 @@ TypeScript, React, Socket.io, Node.js
 
 # Link
 https://bomb-game.netlify.app/
+
+### Images
+images we used in this game are from [OpenGameArt](https://opengameart.org/content/bomb-party-the-complete-set)
