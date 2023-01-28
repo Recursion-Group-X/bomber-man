@@ -29,11 +29,14 @@ const Ranking: React.FC = () => {
   }
 
   return (
-    <div>
-      <div className="h-20 bg-slate-600 flex items-center justify-center">
-        <p className="text-center text-2xl text-white">RANKING</p>
+    <div className='bg-black'>
+      <div className="h-20 flex items-center justify-center">
+        <p className="text-center text-4xl text-white mt-10">RANKING</p>
       </div>
-      <div className="flex h-1/2 w-1/2 mx-auto mt-10 pt-6">
+      <button className="ml-40 nes-btn is-error p-2 text-white" onClick={navigateHome}>
+        Back
+      </button>
+      <div className="flex h-1/2 w-1/2 mx-auto mt-5 pt-6 text-white">
         <div className="w-1/3">
           <p>Rnak</p>
           {records?.map((record: GameRecord, index) => (
@@ -62,9 +65,7 @@ const Ranking: React.FC = () => {
           ))}
         </div>
       </div>
-      <button className="m-4 border border-2 p-2" onClick={navigateHome}>
-        Back
-      </button>
+      
     </div>
   )
 }
