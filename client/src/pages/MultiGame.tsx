@@ -145,7 +145,7 @@ const MultiGame: React.FC = () => {
       <div className="h-20 bg-slate-600 flex items-center">
         <div className="w-1/3 ml-20">
           <div>
-            <p className='text-red-500'><span className='text-white'>Your:</span>{myPlayer?.name}</p>
+            <p className='text-red-500'><span className='text-white'>You are:</span>{myPlayer?.name}</p>
             
           </div>
           
