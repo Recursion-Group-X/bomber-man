@@ -29,7 +29,7 @@ const Ranking: React.FC = () => {
   }
 
   return (
-    <div className='bg-black'>
+    <div className="bg-black">
       <div className="h-20 flex items-center justify-center">
         <p className="text-center text-4xl text-white mt-10">RANKING</p>
       </div>
@@ -38,7 +38,7 @@ const Ranking: React.FC = () => {
       </button>
       <div className="flex h-1/2 w-1/2 mx-auto mt-5 pt-6 text-white">
         <div className="w-1/3">
-          <p>Rnak</p>
+          <p>Rank</p>
           {records?.map((record: GameRecord, index) => (
             <div key={record.id}>
               <p className="text-start my-4 text-2xl">{index + 1}</p>
@@ -65,7 +65,6 @@ const Ranking: React.FC = () => {
           ))}
         </div>
       </div>
-      
     </div>
   )
 }
