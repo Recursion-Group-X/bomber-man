@@ -42,7 +42,6 @@ const MultiGame: React.FC = () => {
   const [count, setCount] = useState<any>(3)
 
   const drawPlayers = async (plys: OnlinePlayer[]): Promise<void> => {
-    console.log(gameStartFlag)
     if (canvasContext != null) {
       await drawPlayersOnCanvas(plys, canvasContext, STAGESIZE)
     }

@@ -51,7 +51,6 @@ const Result: React.FC = () => {
       }
     }
     getBestPosition()
-    console.log(localStorage.getItem('bestScore'))
   }
 
   const getBestPosition = (): string => {
