@@ -19,7 +19,7 @@ Use Arrow keys (Up, Down, Left, Right) to move. Put a bomb by punching the space
 We use a Two-dimensional array to manage a stage. Players and Enemies are painted on a canvas using JavaScript. Restrict player movement, acquire items and place bombs based on stage conditions. We use useIntervals to move players and enemies, based on the directional keys entered by the user.
 For Multi-Player mode, [Socket.io](https://github.com/socketio) was our best choice. We connect frontend to a server by using the tool and made it possible to play this game smoothly.
 
-TypeScript, React, Socket.io, Node.js
+TypeScript, React, Socket.io, Node.js, Google Cloud
 
 # Link
 https://bomb-game.netlify.app/
