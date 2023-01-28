@@ -42,6 +42,7 @@ const MultiGame: React.FC = () => {
   const [count, setCount] = useState<any>(3)
 
   const drawPlayers = async (plys: OnlinePlayer[]): Promise<void> => {
+    console.log(gameStartFlag)
     if (canvasContext != null) {
       await drawPlayersOnCanvas(plys, canvasContext, STAGESIZE)
     }
@@ -49,13 +50,11 @@ const MultiGame: React.FC = () => {
   }
 
   const addKeyEvents = (): void => {
-    console.log('add')
     addEventListener('keydown', handleKeyDown)
     addEventListener('keyup', handleKeyUp)
   }
 
   const removeKeyEvents = (): void => {
-    console.log('remove')
     removeEventListener('keydown', handleKeyDown)
     removeEventListener('keyup', handleKeyUp)
   }
@@ -128,6 +127,7 @@ const MultiGame: React.FC = () => {
       interval = null
       setLastDirection('stay')
       navigate('/online-result', { state: { data } })
+      gameStartFlag = false
     })
     if (gameStartFlag) {
       addKeyEvents()
