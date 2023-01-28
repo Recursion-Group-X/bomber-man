@@ -8,7 +8,8 @@ const Result: React.FC = () => {
   const { id, name, score }: { id: string; name: string; score: number } = useLocation().state
   const [recordList, setrecordList] = useState<GameRecord[]>()
   const gameRecordGateway = new GameRecordGateWay()
-  const [rank, setRank] = useState<number>(localStorage.bestRank)
+  const [rank, setRank] = useState<number>(0)
+  const [bestScore, setBestScore] = useState<number>(0)
 
   useEffect(() => {
     ;(async () => {
@@ -38,14 +39,33 @@ const Result: React.FC = () => {
     return rank
   }
 
-  const setBestRnak = (rank: number): number => {
-    if (localStorage.getItem('bestRank') === null && rank <= 50 && rank > 0) {
-      localStorage.bestRank = rank
-    } else if (localStorage.bestRank >= rank && rank !== 0) {
-      localStorage.bestRank = rank
-      setRank(localStorage.bestRank)
+  const setBestRnak = (rank: number): void => {
+    const localData = localStorage.getItem('bestScore')
+    if (localData === null && rank <= 50 && rank > 0) {
+      const data = JSON.stringify({ id: id, rank: rank, score: score })
+      localStorage.setItem('bestScore', data)
+    } else if (localData !== null) {
+      if (JSON.parse(localData).score < score && rank <= 50 && rank > 0) {
+        const data = JSON.stringify({ id: id, rank: rank, score: score })
+        localStorage.setItem('bestScore', data)
+      }
     }
-    return localStorage.bestRank
+    getBestPosition()
+  }
+
+  const getBestPosition = (): string => {
+    let position = 'OUT OF RANKING'
+    recordList?.forEach((value, index) => {
+      const localData = localStorage.getItem('bestScore')
+      if (localData !== null) {
+        if (JSON.parse(localData).id === value.id) {
+          position = convertToOdinalNumber(index + 1)
+          setRank(index + 1)
+          setBestScore(value.score)
+        }
+      }
+    })
+    return position
   }
 
   const createRankingList = (currRank: number): any => {
@@ -189,7 +209,12 @@ const Result: React.FC = () => {
         <p>{name} Result</p>
         <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(score)}</p>
-        {localStorage.bestRank !== undefined && <p>Your Best Ranking is {convertToOdinalNumber(rank)}</p>}
+        {localStorage.bestRank !== undefined && (
+          <div>
+            <p>Your Best Ranking is {convertToOdinalNumber(rank)}</p>
+            <p>{convertTimeToScore(bestScore)}</p>
+          </div>
+        )}
       </div>
       <div className="flex justify-end w-2/3 mx-auto">
         <button className="m-4 border border-2 p-2 text-white" onClick={restartGame}>
