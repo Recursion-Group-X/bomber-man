@@ -72,22 +72,24 @@ const Result: React.FC = () => {
     if (recordList !== undefined && recordList?.length < 5) {
       const displayList = recordList
       return (
-        <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
-          <div className="w-1/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">
-                  {convertToOdinalNumber(index + 1)} {record.name}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="w-2/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
-              </div>
-            ))}
+        <div className='flex justify-center mt-6'>
+          <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6 justify-between">
+            <div className="ml-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">
+                    {convertToOdinalNumber(index + 1)} {record.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mr-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )
@@ -96,73 +98,79 @@ const Result: React.FC = () => {
     if (currRank > 0 && currRank < 3) {
       const displayList = recordList?.slice(0, 5)
       return (
-        <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
-          <div className="w-1/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">
-                  {convertToOdinalNumber(index + 1)} {record.name}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="w-2/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
-              </div>
-            ))}
+        <div className='flex justify-center mt-6'>
+          <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6 flex justify-between">
+            <div className="ml-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">
+                    {convertToOdinalNumber(index + 1)} {record.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mr-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )
     } else if (recordList !== undefined && (recordList.length - currRank < 3 || currRank === 0)) {
       const displayList = recordList?.slice(-5)
       return (
-        <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
-          <div className="w-1/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">
-                  {convertToOdinalNumber(recordList.length - 4 + index)} {record.name}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="w-2/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
-              </div>
-            ))}
+        <div className='flex justify-center mt-6'>
+          <div className="flex h-1/2 w-1/2 mx-auto mt-10 nes-container is-dark pt-6 flex justify-between">
+            <div className="ml-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">
+                    {convertToOdinalNumber(recordList.length - 4 + index)} {record.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mr-20">
+              {displayList?.map((record: GameRecord, index) => (
+                <div key={record.id}>
+                  <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )
     } else {
       const displayList = recordList?.slice(currRank - 3, currRank + 2)
       return (
-        <div className="flex h-1/2 w-1/2 mx-auto mt-10 bg-slate-600 pt-6">
-          <div className="w-1/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">
-                  {index !== 2
-                    ? index < 2
-                      ? convertToOdinalNumber(currRank + index - 2)
-                      : convertToOdinalNumber(currRank + Math.floor(index / 2))
-                    : convertToOdinalNumber(currRank)}{' '}
-                  {record.name}{' '}
-                </p>
+        <div className='flex justify-center mt-6'>
+          <div className="flex mx-auto h-1/2 w-2/3 mt-10 nes-container is-dark pt-6 flex justify-between">
+              <div className="ml-20">
+                {displayList?.map((record: GameRecord, index) => (
+                  <div key={record.id}>
+                    <p className="text-start my-4 text-2xl">
+                      {index !== 2
+                        ? index < 2
+                          ? convertToOdinalNumber(currRank + index - 2)
+                          : convertToOdinalNumber(currRank + Math.floor(index / 2))
+                        : convertToOdinalNumber(currRank)}{' '}
+                      {record.name}{' '}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="w-2/3">
-            {displayList?.map((record: GameRecord, index) => (
-              <div key={record.id}>
-                <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+              <div className="mr-20">
+                {displayList?.map((record: GameRecord, index) => (
+                  <div key={record.id}>
+                    <p className="text-start my-4 text-2xl">{convertTimeToScore(record.score)}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
       )
     }
   }
@@ -203,11 +211,9 @@ const Result: React.FC = () => {
       <div className="h-20 flex items-center justify-center">
         <p className="pt-10 text-center text-4xl text-white">RESULT</p>
       </div>
-      {createRankingList(getCurrRnak())}
-
-      <div className="text-center text-2xl">
-        <p>{name} Result</p>
-        <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
+      <div className="mt-16 text-center text-2xl text-white">
+        <p>{name}</p>
+        <p>Your Ranking is {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(score)}</p>
         {localStorage.getItem('bestScore') !== null && (
           <div>
@@ -216,21 +222,25 @@ const Result: React.FC = () => {
           </div>
         )}
       </div>
+      {createRankingList(getCurrRnak())}
+
+      
       <div className="flex justify-end w-2/3 mx-auto">
-        <button className="m-4 border border-2 p-2 text-white" onClick={restartGame}>
-          Restart
-        </button>
-        <button className="m-4 border border-2 p-2 text-white" onClick={navigateHome}>
+        <div className='pt-4 pr-2'>
+          <a target="_blank" rel="noopener noreferrer"
+            href={`https://twitter.com/intent/tweet?text=I played solo Bomb Game? My score was ${score} https://bomb-game.netlify.app/`}
+          >
+            <i className='nes-icon twitter is-medium '></i>
+          </a>
+        </div>
+        <button className="m-4 nes-btn is-success p-2 text-white" onClick={navigateHome}>
           Home
         </button>
+        <button className="m-4 nes-btn is-primary text-white" onClick={restartGame}>
+          Restart
+        </button>
       </div>
-      <div className="text-center">
-        <a
-          href={`https://twitter.com/intent/tweet?text=I played solo Bomb Game? My score was ${score} https://bomb-game.netlify.app/`}
-        >
-          Tweet
-        </a>
-      </div>
+      
     </div>
   )
 }

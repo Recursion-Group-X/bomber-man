@@ -19,7 +19,7 @@ import useTimeFormat from '../hooks/useTImeFormat'
 import { DeadPlayer, OnlinePlayer, config1 } from '../bombermanConfig'
 
 const STAGESIZE: number = 510
-const INTERVAL_SPAN = 30
+const INTERVAL_SPAN = 100
 let interval: number | null = INTERVAL_SPAN
 
 let gameStartFlag = false
@@ -125,8 +125,10 @@ const MultiGame: React.FC = () => {
     socket?.on('send_game_result', (data: DeadPlayer[]) => {
       interval = null
       setLastDirection('stay')
-      navigate('/online-result', { state: { data } })
       gameStartFlag = false
+      setTimeout(() => {
+        navigate('/online-result', { state: { data } })
+      }, 1000)
     })
     if (gameStartFlag) {
       addKeyEvents()
@@ -141,9 +143,12 @@ const MultiGame: React.FC = () => {
   return (
     <div className="h-screen bg-black text-xl overlay">
       <div className="h-20 bg-slate-600 flex items-center">
-        <div className="w-1/3">
-          <p className="ml-10 text-xl text-white">{getOnlineGameTime(gameTime)}</p>
-          <p>{myPlayer?.name}</p>
+        <div className="w-1/3 ml-20">
+          <div>
+            <p className='text-red-500'><span className='text-white'>Your:</span>{myPlayer?.name}</p>
+            
+          </div>
+          
         </div>
         <div className="w-1/3 mx-auto flex justify-around">
           <div className="flex items-center">
@@ -156,8 +161,11 @@ const MultiGame: React.FC = () => {
           </div>
           <div className="flex items-center">
             <img src={speedUpImg} alt="bombUp" height="40px" width="40px" />
-            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.speed - 2 : 0}</p>
+            <p className="text-2xl text-white ml-2">×{myPlayer != null ? myPlayer.speed - 5 : 0}</p>
           </div>
+        </div>
+        <div className='mr-20'>
+          <p className="text-xl text-white">{getOnlineGameTime(gameTime)}</p>
         </div>
       </div>
 

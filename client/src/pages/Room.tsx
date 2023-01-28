@@ -97,17 +97,19 @@ const Room: React.FC = () => {
             ))}
           </p>
         </div>
-        <div className="w-full flex justify-center">
-          <input
-            className="w-1/4 h-8"
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') sendMessage()
-            }}
-          />
-          <button className="bg-sky-600 text-white p-1 ml-1" onClick={sendMessage}>
+        <div className="w-full flex justify-center nes-field is-inline">
+          <div className=' w-1/4 h-8 mr-2'>
+            <input
+              className="nes-input is-dark"
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') sendMessage()
+              }}
+            />
+          </div>
+          <button className="nes-btn is-primary text-white mt-6 p-1 ml-2" onClick={sendMessage}>
             Send
           </button>
         </div>
