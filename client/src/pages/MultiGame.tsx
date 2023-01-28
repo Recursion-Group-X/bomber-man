@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import useInterval from 'use-interval'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { playersLastDirection, roomNameAtom, socketAtom } from '../atom/Atom'
@@ -49,11 +49,13 @@ const MultiGame: React.FC = () => {
   }
 
   const addKeyEvents = (): void => {
+    console.log('add')
     addEventListener('keydown', handleKeyDown)
     addEventListener('keyup', handleKeyUp)
   }
 
   const removeKeyEvents = (): void => {
+    console.log('remove')
     removeEventListener('keydown', handleKeyDown)
     removeEventListener('keyup', handleKeyUp)
   }
