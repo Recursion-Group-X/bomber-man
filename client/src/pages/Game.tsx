@@ -45,6 +45,11 @@ const Game: React.FC = () => {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
+      if (playerName === 'bomberman') {
+        player.numOfBombs = Infinity
+        player.bombPower = 15
+        player.step = 2
+      }
     }
   }, [canvasContext])
 
