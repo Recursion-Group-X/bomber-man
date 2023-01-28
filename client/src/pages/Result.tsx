@@ -210,7 +210,7 @@ const Result: React.FC = () => {
         <p>{name} Result</p>
         <p>Your Ranking is: {convertToOdinalNumber(getCurrRnak())}</p>
         <p>{convertTimeToScore(score)}</p>
-        {localStorage.bestRank !== undefined && (
+        {localStorage.getItem('bestScore') !== null && (
           <div>
             <p>Your Best Ranking is {convertToOdinalNumber(rank)}</p>
             <p>{convertTimeToScore(bestScore)}</p>
