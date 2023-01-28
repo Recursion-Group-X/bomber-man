@@ -1,4 +1,4 @@
-# bomber-man
+# Bomb Game
 This is a Bomb Game inspired by "Bomber Man" that is a game where players can move and place bombs on a square stage and survive longer there.
 The game offers two styles of play: single player and multi-player. In the single player mode, you can play a game in which you try to survive as long as possible by using bombs to kill the enemies that keep appearing on the stage. Compete with other users to win first place!
 
