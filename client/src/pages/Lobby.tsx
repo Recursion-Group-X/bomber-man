@@ -42,62 +42,64 @@ const Lobby: React.FC = () => {
       </button>
 
       <div className="my-10 flex flex-wrap justify-center">
-        {rooms.map((room) => (
-          room.players.length !== 0 ?
-          <div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
-            <div>
-              <p className="text-base text-left text-black">
-                {room.roomName}
-                <span className="text-base">({room.players.length}/4)</span>
-              </p>
-            </div>
-            <div className="pt-6 flex w-full h-auto">
+        {rooms.map((room) =>
+          room.players.length !== 0 ? (
+            <div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
+              <div>
+                <p className="text-base text-left text-black">
+                  {room.roomName}
+                  <span className="text-base">({room.players.length}/4)</span>
+                </p>
+              </div>
+              <div className="pt-6 flex w-full h-auto">
                 {room.players.map((player) => (
                   <p className="text-base pb-2" key={player.playerId}>
                     {' '}
                     {player.name}
                   </p>
                 ))}
-            </div>
-            <div className="mt-5 mb-3 absolute bottom-0 right-0">
-              {room.players.length >= 5 || room.gameStartTime !== undefined ? (
-                <button className="nes-btn is-disabled text-xs text-white">Join</button>
-              ) : (
-                <button
-                  className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
-                  onClick={() => joinRoom(room.roomName)}
-                >
-                  Join
-                </button>
-              )}
-            </div>
-          </div>
-          :<div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
-          <div>
-            <p className="text-base text-left text-black">
-              {room.roomName}
-              <span className="text-base">({room.players.length}/4)</span>
-            </p>
-          </div>
-          <div className="pt-6 flex w-full h-auto">
-              <div>
-                 <p className='text-base nes-text is-error' >No Player</p> 
               </div>
-          </div>
-          <div className="mt-5 mb-3 absolute bottom-0 right-0">
-            {room.players.length >= 5 || room.gameStartTime !== undefined ? (
-              <button className="nes-btn is-disabled text-xs text-white">Join</button>
-            ) : (
-              <button
-                className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
-                onClick={() => joinRoom(room.roomName)}
-              >
-                Join
-              </button>
-            )}
-          </div>
-        </div>
-        ))}
+              <div className="mt-5 mb-3 absolute bottom-0 right-0">
+                {room.players.length >= 5 || room.gameStartTime !== undefined ? (
+                  <button className="nes-btn is-disabled text-xs text-white">Join</button>
+                ) : (
+                  <button
+                    className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
+                    onClick={() => joinRoom(room.roomName)}
+                  >
+                    Join
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="w-1/5 h-60 bg-white nes-container is-rounded" key={room.roomName}>
+              <div>
+                <p className="text-base text-left text-black">
+                  {room.roomName}
+                  <span className="text-base">({room.players.length}/4)</span>
+                </p>
+              </div>
+              <div className="pt-6 flex w-full h-auto">
+                <div>
+                  <p className="text-base nes-text is-error">No Player</p>
+                </div>
+              </div>
+              <div className="mt-5 mb-3 absolute bottom-0 right-0">
+                {room.players.length >= 5 || room.gameStartTime !== undefined ? (
+                  <button className="nes-btn is-disabled text-xs text-white">Join</button>
+                ) : (
+                  <button
+                    className="nes-btn is-primary hover:bg-sky-600 text-xs text-white"
+                    onClick={() => joinRoom(room.roomName)}
+                  >
+                    Join
+                  </button>
+                )}
+              </div>
+            </div>
+          )
+        )}
 
         {/* <label htmlFor="room_name" className="block mb-2 text-sm font-medium">
           ROOM NAME

@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import io from 'socket.io-client'
-import { socketAtom } from './atom/Atom'
+import { playerNameAtom, socketAtom } from './atom/Atom'
 import Game from './pages/Game'
 import Home from './pages/Home'
 import Result from './pages/Result'
@@ -17,8 +17,11 @@ const CONNECTION_PORT = 'https://bomberman-server-2023.an.r.appspot.com'
 
 const App: React.FC = () => {
   const [socket, setSocket] = useAtom(socketAtom)
+  const [playerName, setPlayerName] = useAtom(playerNameAtom)
   useEffect(() => {
     setSocket(io(CONNECTION_PORT))
+    const name: string | null = localStorage.getItem('username')
+    if (name != null) setPlayerName(name)
   }, [CONNECTION_PORT])
   return (
     <>

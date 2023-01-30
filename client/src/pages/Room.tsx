@@ -35,6 +35,17 @@ const Room: React.FC = () => {
     })
   }, [socket])
 
+  useEffect(() => {
+    window.addEventListener('popstate', handleBrowserBack)
+    // return () => removeEventListener('popstate', handleBrowserBack)
+  }, [])
+
+  const handleBrowserBack = (e: any): void => {
+    // window.removeEventListener('popstate', handleBrowserBack)
+    history.go(1)
+    backLobby()
+  }
+
   const handleStartGame = (): void => {
     socket?.emit('start_game', {
       roomName,
@@ -47,7 +58,9 @@ const Room: React.FC = () => {
 
   const backLobby = (): void => {
     socket.emit('leave_room', roomName)
-    navigate('/lobby')
+    setTimeout(() => {
+      navigate('/lobby')
+    }, 100)
   }
 
   const sendMessage = (): void => {
@@ -98,7 +111,7 @@ const Room: React.FC = () => {
           </p>
         </div>
         <div className="w-full flex justify-center nes-field is-inline">
-          <div className=' w-1/4 h-8 mr-2'>
+          <div className=" w-1/4 h-8 mr-2">
             <input
               className="nes-input is-dark"
               type="text"
