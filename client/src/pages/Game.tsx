@@ -20,11 +20,10 @@ import useAddEnemies from '../hooks/useAddEnemies'
 import { v4 as uuidv4 } from 'uuid'
 import useResetSingleGame from '../hooks/useResetSingleGame'
 
-let interval: number | null = 10
 let gameStartFlag = false
 const Game: React.FC = () => {
   const [currentStage] = useAtom(currentStageAtom)
-  const gameCanvasRef = useRef<HTMLCanvasElement>(null)
+  const gameCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const [canvasContext, setCavnasContext] = useState<CanvasRenderingContext2D | null | undefined>(null)
   // Todo 状態を統一したい
   const [player] = useAtom(playerAtom)
@@ -38,10 +37,10 @@ const Game: React.FC = () => {
   const currId = uuidv4()
   const [count, setCount] = useState<any>(3)
   const [resetAll] = useResetSingleGame()
+  const [interval, setInterval] = useState<number | null>(10)
 
   useEffect(() => {
-    interval = 10
-    if (gameCanvasRef != null) {
+    if (gameCanvasRef !== null) {
       const a = gameCanvasRef.current?.getContext('2d')
       setCavnasContext(a)
       player.draw(canvasContext)
@@ -58,7 +57,7 @@ const Game: React.FC = () => {
       gameRecordGateway.postGameRecord(getCurrntRecord()).catch(() => alert('ERORR'))
       showResult()
     }
-  }, [gameStartFlag, interval])
+  }, [interval])
 
   useInterval(() => {
     setGameTime(gameTime + 0.01)
@@ -73,7 +72,7 @@ const Game: React.FC = () => {
       removeKeyEvents()
       gameStartFlag = false
       setTimeout(() => {
-        interval = null
+        setInterval(null)
       }, 2000)
       setCount('GAME OVER')
       document.querySelectorAll('.h-screen')[0].classList.add('overlay')
