@@ -61,7 +61,6 @@ const Result: React.FC = () => {
     recordList?.forEach((value, index) => {
       if (localData.bestId === value.id) {
         position = index + 1
-        console.log('here')
       }
     })
     return position
