@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { GameRecordGateWay } from '../dataaccess/gameRecordGateway'
 import { GameRecord } from '../dataaccess/recordType'
@@ -173,22 +173,6 @@ const Result: React.FC = () => {
     }
   }
 
-  const convertTimeToScore = (time: number): any => {
-    const min: string =
-      Math.floor((time % 3600) / 60) <= 9
-        ? `0${Math.floor((time % 3600) / 60)}`
-        : Math.floor((time % 3600) / 60).toString()
-    const sec = time % 60 <= 10 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
-    const msec = (time % 60).toFixed(2).split('.')[1]
-    return (
-      <div>
-        <p>
-          {min}:{sec}.<span className="text-lg">{msec}</span>
-        </p>
-      </div>
-    )
-  }
-
   const convertToOdinalNumber = (rank: number): string => {
     if (rank === 0) {
       return 'OUT OF RANKING'
@@ -204,6 +188,26 @@ const Result: React.FC = () => {
     }
   }
 
+  const convertTimeToScore = (time: number): string => {
+    const min: string =
+      Math.floor((time % 3600) / 60) <= 9
+        ? `0${Math.floor((time % 3600) / 60)}`
+        : Math.floor((time % 3600) / 60).toString()
+    const sec = time % 60 <= 10 ? `0${(time % 60).toFixed()}` : (time % 60).toFixed()
+    const msec = (time % 60).toFixed(2).split('.')[1]
+    return `${min}:${sec}.${msec}`
+  }
+
+  const createScoreElemnt = (score: string): ReactElement => {
+    return (
+      <div>
+        <p>
+          {score.slice(0, 2)}:{score.slice(3, 5)}.<span className="text-lg">{score.slice(6, 8)}</span>
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen text-xl bg-black">
       <div className="h-20 flex items-center justify-center">
@@ -212,11 +216,11 @@ const Result: React.FC = () => {
       <div className="mt-16 text-center text-2xl text-white">
         <p>{name}</p>
         <p>Your Ranking is {convertToOdinalNumber(getCurrRnak())}</p>
-        <p>{convertTimeToScore(score)}</p>
+        <p>{createScoreElemnt(convertTimeToScore(score))}</p>
         {localStorage.getItem('bestScore') !== null && (
           <div>
             <p>Your Best Ranking is {convertToOdinalNumber(rank)}</p>
-            <p>{convertTimeToScore(bestScore)}</p>
+            <p>{createScoreElemnt(convertTimeToScore(bestScore))}</p>
           </div>
         )}
       </div>
@@ -227,7 +231,9 @@ const Result: React.FC = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://twitter.com/intent/tweet?text=I played solo Bomb Game? My score was ${score} https://bomb-game.netlify.app/`}
+            href={`https://twitter.com/intent/tweet?text=I played solo Bomb Game? My score was "${convertTimeToScore(
+              score
+            )}" .  Rank is "${convertToOdinalNumber(getCurrRnak())}" . https://bomb-game.netlify.app/`}
           >
             <i className="nes-icon twitter is-medium "></i>
           </a>
