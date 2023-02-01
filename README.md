@@ -28,4 +28,4 @@ https://bomb-game.netlify.app/
 images we used in this game are from [OpenGameArt](https://opengameart.org/content/bomb-party-the-complete-set)
 
 ### Demo Video
-![Demo](https://user-images.githubusercontent.com/109770597/215923438-1e4cca6f-91cf-4abb-8a93-58e7b3f71e10.gif =250x250)
+<img src="[/images/output/video1.gif](https://user-images.githubusercontent.com/109770597/215923438-1e4cca6f-91cf-4abb-8a93-58e7b3f71e10.gif)" width="250" height="250"/>
